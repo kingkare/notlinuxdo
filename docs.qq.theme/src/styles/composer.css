@@ -1,0 +1,79 @@
+/* 腾讯文档 - 发帖与回复弹窗伪装 */
+#reply-control {
+  background: var(--qqdocs-bg-card) !important;
+  border-top: 1px solid var(--qqdocs-border-color) !important;
+  box-shadow: var(--qqdocs-shadow-lg) !important;
+  border-radius: var(--qqdocs-radius-lg) var(--qqdocs-radius-lg) 0 0 !important;
+}
+
+#reply-control .composer-fields {
+  border-bottom: 1px solid var(--qqdocs-border-color) !important;
+  padding: 8px 16px !important;
+}
+
+#reply-control .title-input input {
+  border: 1px solid var(--qqdocs-border-color) !important;
+  border-radius: var(--qqdocs-radius-md) !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+#reply-control .title-input input:focus {
+  border-color: var(--qqdocs-brand-color) !important;
+  box-shadow: 0 0 0 2px var(--qqdocs-brand-focus) !important;
+}
+
+/* 编辑器工具栏 */
+.d-editor .d-editor-button-bar {
+  background: var(--qqdocs-bg-hover) !important;
+  border-bottom: 1px solid var(--qqdocs-border-color) !important;
+  padding: 4px 8px !important;
+  border-radius: var(--qqdocs-radius-md) var(--qqdocs-radius-md) 0 0 !important;
+}
+
+.d-editor .d-editor-button-bar button {
+  color: var(--qqdocs-text-secondary) !important;
+  border-radius: var(--qqdocs-radius-sm) !important;
+}
+.d-editor .d-editor-button-bar button:hover {
+  background: #e2e5eb !important;
+  color: var(--qqdocs-brand-color) !important;
+}
+
+/* 文本输入框 */
+.d-editor-textarea-wrapper {
+  background: #ffffff !important;
+  border: 1px solid var(--qqdocs-border-color) !important;
+  border-radius: 0 0 var(--qqdocs-radius-md) var(--qqdocs-radius-md) !important;
+}
+
+.d-editor-textarea-wrapper textarea {
+  font-family: var(--qqdocs-font-family) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  padding: 12px !important;
+}
+
+/* 提交按钮重构 (腾讯蓝主按钮) */
+#reply-control .submit-panel .btn-primary,
+.btn-primary.create {
+  background-color: var(--qqdocs-brand-color) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: var(--qqdocs-radius-md) !important;
+  padding: 6px 16px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 4px rgba(0, 82, 217, 0.2) !important;
+  transition: all 0.15s ease !important;
+}
+
+#reply-control .submit-panel .btn-primary:hover,
+.btn-primary.create:hover {
+  background-color: var(--qqdocs-brand-hover) !important;
+  box-shadow: 0 4px 8px rgba(0, 82, 217, 0.3) !important;
+}
+
+#reply-control .submit-panel .btn-flat {
+  color: var(--qqdocs-text-secondary) !important;
+  border-radius: var(--qqdocs-radius-md) !important;
+}

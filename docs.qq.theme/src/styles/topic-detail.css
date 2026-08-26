@@ -1,0 +1,158 @@
+/* 腾讯文档在线 Word 文档阅读视图 (详情页伪装) */
+
+/* 顶部虚拟 Word 在线工具栏 */
+.qqdocs-doc-toolbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--border-medium) !important;
+  padding: 8px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  user-select: none !important;
+  font-size: 12px !important;
+  color: var(--text-strong) !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  border-radius: 4px !important;
+}
+
+.qqdocs-doc-toolbar-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.qqdocs-doc-menu {
+  display: flex !important;
+  gap: 14px !important;
+  font-weight: 500 !important;
+  padding-right: 14px !important;
+  border-right: 1px solid var(--border-medium) !important;
+}
+.qqdocs-doc-menu span {
+  cursor: pointer !important;
+}
+.qqdocs-doc-menu span:hover {
+  color: var(--accent-default) !important;
+}
+
+.qqdocs-doc-tools {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.qqdocs-tool-btn {
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  background: var(--bg-lv3-medium) !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+}
+.qqdocs-tool-btn:hover {
+  background: #e4e7eb !important;
+  color: var(--accent-default) !important;
+}
+
+/* 详情页主容器 */
+.topic-container {
+  max-width: 920px !important;
+  margin: 0 auto !important;
+}
+
+/* 帖子标题栏重构为在线文档标题 */
+#topic-title {
+  padding: 16px 0 12px 0 !important;
+  margin-bottom: 12px !important;
+  border-bottom: 1px solid var(--border-weak) !important;
+}
+
+#topic-title h1 {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: var(--text-ultrastrong) !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+}
+
+#topic-title .topic-category,
+#topic-title .badge-wrapper,
+#topic-title .topic-status {
+  display: none !important;
+}
+
+/* 首楼作为文档正文 (白色 A4 纸卡片质感) */
+.topic-post:first-child {
+  background: #ffffff !important;
+  border: 1px solid var(--border-medium) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 6px !important;
+  padding: 24px 32px !important;
+  margin-bottom: 24px !important;
+}
+
+.topic-post:first-child .topic-body {
+  border-top: none !important;
+  padding: 0 !important;
+}
+
+.topic-post:first-child .topic-meta-data {
+  padding-bottom: 14px !important;
+  margin-bottom: 18px !important;
+  border-bottom: 1px dashed var(--border-medium) !important;
+}
+
+/* 正文排版 */
+.cooked {
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+  color: #1f2329 !important;
+}
+
+.cooked p {
+  margin-bottom: 12px !important;
+}
+
+/* 隐藏正文下方论坛的点赞头像群弹幕 */
+.post-retort__reactions,
+.who-liked,
+.topic-post:first-child .post-controls .reactions,
+.topic-post:first-child .post-controls .show-more-actions {
+  display: none !important;
+}
+
+/* 楼下回复 (伪装为“协同批注 / 评论讨论”) */
+.topic-post:not(:first-child) {
+  margin-top: 16px !important;
+  background: #fafbfc !important;
+  border: 1px solid var(--border-medium) !important;
+  border-radius: 6px !important;
+  padding: 14px 20px !important;
+  position: relative !important;
+}
+
+.topic-post:not(:first-child)::before {
+  content: "💬 协同批注";
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  background: #eef4ff;
+  color: var(--accent-default);
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: 1px solid rgba(30, 111, 255, 0.2);
+}
+
+/* 操作按钮重构 */
+nav.post-controls .actions button {
+  background: transparent !important;
+  color: var(--text-medium) !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+}
+nav.post-controls .actions button:hover {
+  background: var(--bg-lv3-medium) !important;
+  color: var(--accent-default) !important;
+}

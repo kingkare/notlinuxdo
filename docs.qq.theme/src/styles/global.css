@@ -1,0 +1,120 @@
+/* 全局基础重置与工作台布局 (彻底解决 #main-outlet-wrapper 居中与重复偏移) */
+
+html, body {
+  background-color: #ffffff !important;
+  color: var(--text-ultrastrong) !important;
+  font-family: var(--font-family) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  width: 100vw !important;
+}
+
+/* 1. 彻底隐藏 Linux Do 原生的所有 Banner、Notice、公告、原生侧栏与导航条 */
+.welcome-banner,
+.custom-search-banner-wrap,
+.global-notice,
+.alert,
+.alert-info,
+.alert-update-topics,
+.above-main-container-outlet,
+.list-controls,
+.navigation-container,
+.navigation-controls,
+.nav-pills,
+.categories-admin-dropdown,
+.category-breadcrumb,
+.category-boxes,
+.top-notices,
+.community-rule,
+#site-text-logo,
+.sidebar-wrapper,
+#d-sidebar,
+.d-sidebar-wrapper,
+.topic-list-bottom,
+.nav-tabs,
+.select-kit,
+.loading-container {
+  display: none !important;
+}
+
+/* 2. 重置 Discourse 外层包装容器 #main-outlet-wrapper (去除原版的 max-width: 1110px 和 margin: 0 auto) */
+#main-outlet-wrapper,
+#main-outlet-wrapper.wrap {
+  display: block !important;
+  margin: 0 0 0 var(--sidebar-width) !important;
+  padding: 0 !important;
+  width: calc(100vw - var(--sidebar-width)) !important;
+  max-width: calc(100vw - var(--sidebar-width)) !important;
+  box-sizing: border-box !important;
+  min-height: calc(100vh - var(--topbar-height)) !important;
+  grid-template-columns: 1fr !important;
+}
+
+/* 3. #main-outlet 与主容器直接贴紧左侧栏，消除任何多余空白 */
+#main-outlet {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 16px 28px !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  display: block !important;
+}
+
+#main-container,
+#main-container.container,
+#main-outlet > .container,
+#main-outlet > .container.list-container,
+#main-outlet > .ember-view,
+.topic-list-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* 4. 滚动条轻量化 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+/* 5. 浮动模式切换小按钮 (Alt+Q) */
+.qqdocs-toggle-badge {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999999;
+  background: #ffffff;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-medium);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+.qqdocs-toggle-badge:hover {
+  color: var(--accent-default);
+  border-color: var(--accent-default);
+}

@@ -1,0 +1,148 @@
+/* 腾讯文档官方原生 Sidebar 样式 (Fixed 固定左侧) */
+.desktop-layout-sidebar-pc {
+  position: fixed !important;
+  left: 0 !important;
+  top: var(--topbar-height) !important;
+  width: var(--sidebar-width) !important;
+  min-width: var(--sidebar-width) !important;
+  max-width: var(--sidebar-width) !important;
+  background: var(--bg-lv3-medium) !important;
+  border-right: 0 !important;
+  padding: 16px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - var(--topbar-height)) !important;
+  box-sizing: border-box !important;
+  user-select: none !important;
+  z-index: 1000 !important;
+}
+
+/* 顶部操作按钮 */
+.desktop-create-button-pc {
+  background-color: var(--accent-default) !important;
+  color: #ffffff !important;
+  height: 36px !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  border: none !important;
+  width: 100% !important;
+  margin-bottom: 8px !important;
+  transition: background-color 0.15s ease !important;
+  text-decoration: none !important;
+}
+.desktop-create-button-pc:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+.desktop-upload-button-pc {
+  background-color: #ffffff !important;
+  color: var(--text-ultrastrong) !important;
+  border: 1px solid var(--border-medium) !important;
+  height: 32px !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+  transition: all 0.15s ease !important;
+  text-decoration: none !important;
+}
+.desktop-upload-button-pc:hover {
+  background-color: var(--feedback-hover) !important;
+  border-color: var(--border-strong) !important;
+}
+
+/* 导航链接 */
+.desktop-sidebar-nav-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  flex: 1 !important;
+}
+
+.desktop-node-link-router {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  color: var(--text-strong) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.desktop-node-link-router:hover {
+  background-color: var(--feedback-hover) !important;
+  color: var(--text-ultrastrong) !important;
+}
+.desktop-node-link-router.desktop-link-active {
+  background-color: var(--bg-lv3-medium) !important;
+  color: var(--text-ultrastrong) !important;
+  font-weight: 600 !important;
+}
+
+/* 企业版卡片 */
+.desktop-enterprise-edition-entry {
+  margin-top: auto !important;
+  margin-bottom: 12px !important;
+}
+.desktop-promo-card {
+  background: linear-gradient(180deg, #f0f5ff 0%, #f7f9fc 100%) !important;
+  border: 1px solid #e1eaff !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+}
+.desktop-promo-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 4px !important;
+}
+.desktop-promo-title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--text-ultrastrong) !important;
+}
+.desktop-promo-subtitle {
+  font-size: 11px !important;
+  color: var(--text-weak) !important;
+  margin-bottom: 8px !important;
+}
+.desktop-promo-button {
+  background: var(--accent-default) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  padding: 4px 0 !important;
+  text-align: center !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+}
+
+/* 空间容量进度条 */
+.desktop-storage-panel {
+  padding: 6px 2px !important;
+  font-size: 11px !important;
+  color: var(--text-weak) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.desktop-storage-panel a {
+  color: var(--text-weak) !important;
+  text-decoration: none !important;
+}
+.desktop-storage-panel a:hover {
+  color: var(--accent-default) !important;
+}

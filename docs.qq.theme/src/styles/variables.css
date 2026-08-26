@@ -1,0 +1,34 @@
+/* 腾讯文档 2026 官方 Design Token 变量 */
+:root {
+  --text-ultrastrong: rgba(0, 0, 0, 0.9);
+  --text-strong: rgba(0, 0, 0, 0.76);
+  --text-medium: rgba(0, 0, 0, 0.56);
+  --text-weak: rgba(0, 0, 0, 0.26);
+  --text-link: #175ceb;
+  --text-white: #fff;
+  --text-vip: #e59837;
+
+  --accent-default: #1e6fff;
+  --accent-hover: #175ceb;
+  --accent-pressed: #134ae0;
+  --accent-disabled: #c2d8ff;
+
+  --bg-lv1-default: #fff;
+  --bg-lv2-default: #fff;
+  --bg-lv3-default: #fff;
+  --bg-lv4-default: #fff;
+  --bg-lv3-medium: #f3f5f7;
+
+  --border-weak: rgba(0, 0, 0, 0.04);
+  --border-medium: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.12);
+
+  --feedback-hover: rgba(51, 77, 102, 0.06);
+  --feedback-active: rgba(51, 77, 102, 0.08);
+
+  --sidebar-width: 244px;
+  /* 腾讯文档桌面端实测：顶部栏高 60px，左侧栏宽 244px。 */
+  --topbar-height: 60px;
+
+  --font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
+}

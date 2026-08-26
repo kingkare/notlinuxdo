@@ -1,0 +1,17 @@
+{
+  "name": "notlinuxdo-themes",
+  "version": "1.0.0",
+  "description": "LINUX DO 多主题与伪装油猴脚本合集项目",
+  "scripts": {
+    "build:docs.qq": "node docs.qq.theme/build.js",
+    "build:all": "node docs.qq.theme/build.js"
+  },
+  "keywords": [
+    "tampermonkey",
+    "userscript",
+    "linux-do",
+    "themes"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
