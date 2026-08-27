@@ -46,6 +46,12 @@ body.qqdocs-topic-detail #main-outlet {
   box-sizing: border-box !important;
 }
 
+/* Discourse mounts the topic route in a generated .regular.ember-view wrapper.
+   Keep that full-width wrapper on the editor canvas instead of its white default. */
+body.qqdocs-topic-detail #main-outlet > .regular.ember-view {
+  background: #f3f5f7 !important;
+}
+
 body.qqdocs-topic-detail .container.posts {
   display: block !important;
   width: 100% !important;
