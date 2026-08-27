@@ -16,6 +16,8 @@
   border-radius: var(--qqdocs-radius-md) !important;
   padding: 8px 12px !important;
   font-size: 14px !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-body) !important;
 }
 #reply-control .title-input input:focus {
   border-color: var(--qqdocs-brand-color) !important;
@@ -49,7 +51,8 @@
 .d-editor-textarea-wrapper textarea {
   font-family: var(--qqdocs-font-family) !important;
   font-size: 14px !important;
-  line-height: 1.6 !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: 20px !important;
   padding: 12px !important;
 }
 
@@ -61,8 +64,9 @@
   border: none !important;
   border-radius: var(--qqdocs-radius-md) !important;
   padding: 6px 16px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+  font-size: 14px !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-body) !important;
   box-shadow: 0 2px 4px rgba(0, 82, 217, 0.2) !important;
   transition: all 0.15s ease !important;
 }

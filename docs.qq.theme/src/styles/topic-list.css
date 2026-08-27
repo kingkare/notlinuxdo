@@ -33,12 +33,13 @@
 }
 
 .desktop-tab-link {
-  font-size: 14px !important;
-  color: var(--text-strong) !important;
+  font-size: var(--font-size-tab) !important;
+  line-height: 48px !important;
+  color: var(--text-medium) !important;
   cursor: pointer !important;
-  padding-bottom: 8px !important;
+  padding-bottom: 0 !important;
   position: relative !important;
-  font-weight: 500 !important;
+  font-weight: var(--font-weight-regular) !important;
   text-decoration: none !important;
 }
 .desktop-tab-link:hover {
@@ -68,8 +69,10 @@
   display: flex !important;
   align-items: center !important;
   gap: 4px !important;
-  font-size: 12px !important;
-  color: var(--text-strong) !important;
+  font-size: var(--font-size-caption) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  line-height: var(--line-height-caption) !important;
+  color: var(--text-ultrastrong) !important;
   cursor: pointer !important;
   background: transparent !important;
   border: none !important;
@@ -96,9 +99,10 @@
 }
 
 .topic-list th {
-  color: var(--text-weak) !important;
-  font-size: 12px !important;
-  font-weight: normal !important;
+  color: var(--text-strong) !important;
+  font-size: var(--font-size-caption) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
   text-align: left !important;
   padding: 10px 8px !important;
   background: transparent !important;
@@ -160,6 +164,7 @@
   color: var(--text-ultrastrong) !important;
   font-size: 14px !important;
   font-weight: 400 !important;
+  line-height: var(--line-height-title) !important;
   text-decoration: none !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -208,6 +213,8 @@
 .topic-list-item .posters {
   font-size: 12px !important;
   color: var(--text-strong) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
   padding: 0 8px !important;
   vertical-align: middle !important;
   white-space: nowrap !important;
@@ -222,7 +229,9 @@
 /* 位置列 */
 .topic-list-item .posts {
   font-size: 12px !important;
-  color: var(--text-weak) !important;
+  color: var(--text-strong) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
   padding: 0 8px !important;
   vertical-align: middle !important;
   white-space: nowrap !important;
@@ -234,7 +243,9 @@
 /* 最近查看列 */
 .topic-list-item .views {
   font-size: 12px !important;
-  color: var(--text-weak) !important;
+  color: var(--text-strong) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
   padding: 0 8px !important;
   vertical-align: middle !important;
   text-align: left !important;
@@ -243,7 +254,9 @@
 /* 文档大小列 */
 .topic-list-item .activity {
   font-size: 12px !important;
-  color: var(--text-weak) !important;
+  color: var(--text-strong) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
   text-align: right !important;
   padding: 0 8px !important;
   vertical-align: middle !important;

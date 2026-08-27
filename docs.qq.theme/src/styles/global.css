@@ -4,12 +4,55 @@ html, body {
   background-color: #ffffff !important;
   color: var(--text-ultrastrong) !important;
   font-family: var(--font-family) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
+  font-size: 16px !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: normal !important;
+  letter-spacing: normal !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow-x: hidden !important;
   width: 100vw !important;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-family) !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+}
+
+/* 覆盖 Discourse 自带字体变量，确保伪装界面的所有文字都落到腾讯文档字体栈。 */
+.d-header,
+.d-header *,
+.desktop-layout-sidebar-pc,
+.desktop-layout-sidebar-pc *,
+#main-outlet,
+#main-outlet *,
+#reply-control,
+#reply-control *,
+.menu-panel,
+.menu-panel *,
+.modal-inner-container,
+.modal-inner-container * {
+  font-family: var(--font-family) !important;
+  letter-spacing: normal !important;
+}
+
+/* 正文中的代码仍保持语义正确的等宽字体。 */
+#main-outlet code,
+#main-outlet pre,
+#main-outlet kbd,
+#main-outlet samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+}
+
+/* Discourse 刷新遮罩：仅移除遮罩中的巨大站点 Logo，保留加载点与页面启动流程。 */
+#d-splash .splash-logo-container {
+  display: none !important;
+  background-image: none !important;
+  animation: none !important;
 }
 
 /* 1. 彻底隐藏 Linux Do 原生的所有 Banner、Notice、公告、原生侧栏与导航条 */
@@ -44,7 +87,7 @@ html, body {
 #main-outlet-wrapper,
 #main-outlet-wrapper.wrap {
   display: block !important;
-  margin: 0 0 0 var(--sidebar-width) !important;
+  margin: var(--topbar-height) 0 0 var(--sidebar-width) !important;
   padding: 0 !important;
   width: calc(100vw - var(--sidebar-width)) !important;
   max-width: calc(100vw - var(--sidebar-width)) !important;
@@ -106,6 +149,8 @@ html, body {
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
   color: var(--text-medium);
   display: flex;
   align-items: center;

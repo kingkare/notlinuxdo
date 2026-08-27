@@ -19,7 +19,9 @@
   border-radius: var(--qqdocs-radius-md) !important;
   color: var(--qqdocs-text-primary) !important;
   padding: 8px 12px !important;
-  font-size: 13px !important;
+  font-size: var(--font-size-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-body) !important;
   transition: background 0.15s ease !important;
 }
 
@@ -47,6 +49,7 @@
 .modal-header h3 {
   font-size: 16px !important;
   font-weight: 600 !important;
+  line-height: 24px !important;
   color: var(--qqdocs-text-primary) !important;
 }
 

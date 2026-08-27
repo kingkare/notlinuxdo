@@ -28,7 +28,8 @@
   justify-content: center !important;
   gap: 6px !important;
   font-size: 14px !important;
-  font-weight: 500 !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: 16px !important;
   cursor: pointer !important;
   border: none !important;
   width: 100% !important;
@@ -50,7 +51,9 @@
   align-items: center !important;
   justify-content: center !important;
   gap: 6px !important;
-  font-size: 13px !important;
+  font-size: var(--font-size-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-body) !important;
   cursor: pointer !important;
   width: 100% !important;
   margin-bottom: 16px !important;
@@ -76,8 +79,10 @@
   gap: 10px !important;
   padding: 8px 12px !important;
   border-radius: 4px !important;
-  font-size: 13px !important;
-  color: var(--text-strong) !important;
+  font-size: var(--font-size-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-body) !important;
+  color: var(--text-ultrastrong) !important;
   text-decoration: none !important;
   cursor: pointer !important;
   transition: all 0.15s ease !important;
@@ -110,37 +115,44 @@
   margin-bottom: 4px !important;
 }
 .desktop-promo-title {
-  font-size: 12px !important;
+  font-size: var(--font-size-body) !important;
   font-weight: 600 !important;
-  color: var(--text-ultrastrong) !important;
+  line-height: var(--line-height-body) !important;
+  color: var(--text-strong) !important;
 }
 .desktop-promo-subtitle {
-  font-size: 11px !important;
+  font-size: var(--font-size-caption) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
   color: var(--text-weak) !important;
   margin-bottom: 8px !important;
 }
 .desktop-promo-button {
   background: var(--accent-default) !important;
   color: #fff !important;
-  font-size: 11px !important;
+  font-size: var(--font-size-body) !important;
+  line-height: var(--line-height-body) !important;
   padding: 4px 0 !important;
   text-align: center !important;
   border-radius: 12px !important;
   cursor: pointer !important;
-  font-weight: 500 !important;
+  font-weight: var(--font-weight-regular) !important;
 }
 
 /* 空间容量进度条 */
 .desktop-storage-panel {
   padding: 6px 2px !important;
-  font-size: 11px !important;
-  color: var(--text-weak) !important;
+  font-family: var(--font-family-numeric) !important;
+  font-size: var(--font-size-caption) !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: var(--line-height-caption) !important;
+  color: var(--text-medium) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
 }
 .desktop-storage-panel a {
-  color: var(--text-weak) !important;
+  color: var(--text-medium) !important;
   text-decoration: none !important;
 }
 .desktop-storage-panel a:hover {

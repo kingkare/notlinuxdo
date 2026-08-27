@@ -1,158 +1,585 @@
-/* 腾讯文档在线 Word 文档阅读视图 (详情页伪装) */
-
-/* 顶部虚拟 Word 在线工具栏 */
-.qqdocs-doc-toolbar {
-  background: #ffffff !important;
-  border-bottom: 1px solid var(--border-medium) !important;
-  padding: 8px 16px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  user-select: none !important;
-  font-size: 12px !important;
-  color: var(--text-strong) !important;
-  margin-bottom: 20px !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-  border-radius: 4px !important;
+/* Tencent Docs document shell for topic detail pages. */
+body.qqdocs-topic-detail {
+  --qqdocs-editor-top: 150px;
+  background: #f3f5f7 !important;
 }
 
-.qqdocs-doc-toolbar-left {
-  display: flex !important;
-  align-items: center !important;
-  gap: 16px !important;
-}
-
-.qqdocs-doc-menu {
-  display: flex !important;
-  gap: 14px !important;
-  font-weight: 500 !important;
-  padding-right: 14px !important;
-  border-right: 1px solid var(--border-medium) !important;
-}
-.qqdocs-doc-menu span {
-  cursor: pointer !important;
-}
-.qqdocs-doc-menu span:hover {
-  color: var(--accent-default) !important;
-}
-
-.qqdocs-doc-tools {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.qqdocs-tool-btn {
-  padding: 3px 8px !important;
-  border-radius: 4px !important;
-  background: var(--bg-lv3-medium) !important;
-  cursor: pointer !important;
-  font-size: 12px !important;
-}
-.qqdocs-tool-btn:hover {
-  background: #e4e7eb !important;
-  color: var(--accent-default) !important;
-}
-
-/* 详情页主容器 */
-.topic-container {
-  max-width: 920px !important;
-  margin: 0 auto !important;
-}
-
-/* 帖子标题栏重构为在线文档标题 */
-#topic-title {
-  padding: 16px 0 12px 0 !important;
-  margin-bottom: 12px !important;
-  border-bottom: 1px solid var(--border-weak) !important;
-}
-
-#topic-title h1 {
-  font-size: 22px !important;
-  font-weight: 600 !important;
-  color: var(--text-ultrastrong) !important;
-  line-height: 1.4 !important;
-  margin: 0 !important;
-}
-
-#topic-title .topic-category,
-#topic-title .badge-wrapper,
-#topic-title .topic-status {
+/* A topic has its own document chrome; the forum chrome is not shown here. */
+body.qqdocs-topic-detail .d-header,
+body.qqdocs-topic-detail .desktop-layout-sidebar-pc {
   display: none !important;
 }
 
-/* 首楼作为文档正文 (白色 A4 纸卡片质感) */
-.topic-post:first-child {
-  background: #ffffff !important;
-  border: 1px solid var(--border-medium) !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
-  border-radius: 6px !important;
-  padding: 24px 32px !important;
-  margin-bottom: 24px !important;
+body.qqdocs-topic-detail .qqdocs-doc-toolbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
 }
 
-.topic-post:first-child .topic-body {
-  border-top: none !important;
+body.qqdocs-topic-detail,
+body.qqdocs-topic-detail #main,
+body.qqdocs-topic-detail #main-outlet-wrapper,
+body.qqdocs-topic-detail #main-outlet,
+body.qqdocs-topic-detail .container.posts {
+  background: #f3f5f7 !important;
+}
+
+body.qqdocs-topic-detail #main-outlet-wrapper,
+body.qqdocs-topic-detail #main-outlet-wrapper.wrap {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
   padding: 0 !important;
 }
 
-.topic-post:first-child .topic-meta-data {
-  padding-bottom: 14px !important;
-  margin-bottom: 18px !important;
-  border-bottom: 1px dashed var(--border-medium) !important;
+body.qqdocs-topic-detail #main-outlet {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: calc(var(--qqdocs-editor-top) + 12px) 32px 72px !important;
+  box-sizing: border-box !important;
 }
 
-/* 正文排版 */
-.cooked {
-  font-size: 14px !important;
-  line-height: 1.8 !important;
+body.qqdocs-topic-detail .container.posts {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* Three non-interactive rows: titlebar, menu tabs, and the ribbon. */
+.qqdocs-editor-shell {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 1400 !important;
+  height: var(--qqdocs-editor-top) !important;
+  overflow: hidden !important;
+  background: #f3f5f7 !important;
+  color: #1f2329 !important;
+  border-bottom: 1px solid #dfe2e7 !important;
+  box-sizing: border-box !important;
+  font-family: var(--font-family) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.qqdocs-editor-titlebar {
+  height: 40px !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+  font-size: 13px !important;
+}
+
+.qqdocs-editor-title-left,
+.qqdocs-editor-title-actions {
+  display: flex !important;
+  align-items: center !important;
+  min-width: 0 !important;
+}
+
+.qqdocs-editor-title-left {
+  height: 40px !important;
+  margin-right: 16px !important;
+  overflow: hidden !important;
+}
+
+.qqdocs-editor-title-left > .qqdocs-editor-home {
+  width: 28px !important;
+  height: 28px !important;
+  margin-right: 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 28px !important;
+}
+
+.qqdocs-editor-title-left > .qqdocs-editor-plus {
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 24px !important;
+}
+
+.qqdocs-editor-divider {
+  width: 1px !important;
+  height: 16px !important;
+  margin-right: 8px !important;
+  display: inline-block !important;
+  flex: 0 0 1px !important;
+  background: #dfe2e7 !important;
+}
+
+.qqdocs-editor-title-text {
+  max-width: min(560px, 42vw) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #1f2329 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 28px !important;
+}
+
+.qqdocs-editor-readonly {
+  height: 24px !important;
+  margin-left: 12px !important;
+  padding: 0 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex: 0 0 auto !important;
+  background: #fff !important;
+  border: 1px solid #d8dce3 !important;
+  border-radius: 3px !important;
+  box-sizing: border-box !important;
+  color: #646a73 !important;
+  font-size: 12px !important;
+  line-height: 22px !important;
+}
+
+.qqdocs-editor-star,
+.qqdocs-editor-folder {
+  width: 24px !important;
+  height: 24px !important;
+  margin-left: 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 24px !important;
+}
+
+.qqdocs-editor-title-actions {
+  height: 40px !important;
+  gap: 16px !important;
+  flex: 0 0 auto !important;
+  color: #454d5a !important;
+}
+
+.qqdocs-editor-action,
+.qqdocs-editor-collaborator {
+  width: 24px !important;
+  height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  flex: 0 0 24px !important;
+}
+
+.qqdocs-editor-presentation {
+  width: 28px !important;
+  height: 28px !important;
+  flex-basis: 28px !important;
+}
+
+.qqdocs-editor-collaborator sup {
+  position: absolute !important;
+  top: -4px !important;
+  right: -3px !important;
+  color: #454d5a !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  line-height: 12px !important;
+}
+
+.qqdocs-editor-share {
+  width: 56px !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 56px !important;
+  background: #1e6fff !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  line-height: 28px !important;
+}
+
+.qqdocs-editor-account {
+  width: 28px !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  flex: 0 0 28px !important;
+  background: #fff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+}
+
+.qqdocs-editor-account > .qqdocs-chrome-icon:first-child { color: #454d5a !important; }
+
+.qqdocs-editor-account > .qqdocs-chrome-icon:last-child {
+  position: absolute !important;
+  right: -2px !important;
+  bottom: -2px !important;
+}
+
+.qqdocs-editor-tabs {
+  height: 40px !important;
+  padding: 0 9px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 26px !important;
+  box-sizing: border-box !important;
+  color: #3c424a !important;
+  font-size: 12px !important;
+  line-height: 32px !important;
+}
+
+.qqdocs-editor-tabs > span {
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  position: relative !important;
+  white-space: nowrap !important;
+}
+
+.qqdocs-editor-tabs > span.is-active {
+  color: #1f2329 !important;
+  font-weight: 600 !important;
+}
+
+.qqdocs-editor-tabs > span.is-active::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 2px !important;
+  background: #1e6fff !important;
+  border-radius: 2px !important;
+}
+
+.qqdocs-editor-ribbon {
+  height: 70px !important;
+  margin: 0 8px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 8px 8px 0 0 !important;
+  box-shadow: 0 1px 5px rgba(31, 35, 41, 0.08) !important;
+  box-sizing: border-box !important;
+  color: #454d5a !important;
+}
+
+.qqdocs-ribbon-group {
+  min-width: 0 !important;
+  padding: 0 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-right: 1px solid #eceef1 !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+.qqdocs-ribbon-group > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+}
+
+.qqdocs-ribbon-history {
+  width: 82px !important;
+  padding: 0 5px !important;
+  flex-wrap: wrap !important;
+  align-content: center !important;
+  column-gap: 8px !important;
+  row-gap: 0 !important;
+}
+
+.qqdocs-ribbon-insert-group {
+  width: 62px !important;
+  padding: 0 7px !important;
+}
+
+.qqdocs-ribbon-labeled {
+  flex-direction: column !important;
+  gap: 1px !important;
+  color: #454d5a !important;
+  font-size: 11px !important;
+  line-height: 14px !important;
+}
+
+.qqdocs-ribbon-font {
+  width: 348px !important;
+  padding: 0 8px !important;
+  flex-wrap: wrap !important;
+  align-content: center !important;
+  gap: 4px 8px !important;
+}
+
+.qqdocs-ribbon-select,
+.qqdocs-ribbon-size {
+  height: 24px !important;
+  padding: 0 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 7px !important;
+  background: #f5f6f7 !important;
+  border-radius: 3px !important;
+  box-sizing: border-box !important;
+  color: #454d5a !important;
+  font-size: 12px !important;
+  line-height: 24px !important;
+}
+
+.qqdocs-ribbon-select { width: 116px !important; }
+.qqdocs-ribbon-size { width: 56px !important; }
+
+.qqdocs-ribbon-paragraph {
+  width: 272px !important;
+  padding: 0 8px !important;
+  flex-wrap: wrap !important;
+  align-content: center !important;
+  gap: 4px 8px !important;
+}
+
+.qqdocs-ribbon-styles {
+  width: 408px !important;
+  padding: 0 8px !important;
+  gap: 4px !important;
+}
+
+.qqdocs-ribbon-styles > span {
+  width: 61px !important;
+  height: 36px !important;
+  padding: 0 5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f7f8fa !important;
+  border-radius: 3px !important;
+  box-sizing: border-box !important;
+  color: #646a73 !important;
+  font-size: 12px !important;
+}
+
+.qqdocs-ribbon-styles > span.is-selected {
+  background: #fff !important;
+  border: 1px solid #7db0ff !important;
   color: #1f2329 !important;
 }
 
-.cooked p {
-  margin-bottom: 12px !important;
+.qqdocs-ribbon-tools {
+  width: 390px !important;
+  padding: 0 8px !important;
+  gap: 12px !important;
+  color: #454d5a !important;
+  font-size: 12px !important;
 }
 
-/* 隐藏正文下方论坛的点赞头像群弹幕 */
-.post-retort__reactions,
-.who-liked,
-.topic-post:first-child .post-controls .reactions,
-.topic-post:first-child .post-controls .show-more-actions {
+.qqdocs-ribbon-tools > span { gap: 3px !important; }
+
+.qqdocs-ribbon-search {
+  min-width: 64px !important;
+  margin-left: auto !important;
+  padding: 0 8px 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  color: #646a73 !important;
+}
+
+/* All icon wrappers are inert inline SVGs captured from the reference shell. */
+.qqdocs-chrome-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  color: currentColor !important;
+}
+
+.qqdocs-chrome-icon > svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+/* Title and post stream are one continuous 794px document page. */
+body.qqdocs-topic-detail #topic-title,
+body.qqdocs-topic-detail .topic-area {
+  width: min(794px, calc(100% - 48px)) !important;
+  max-width: 794px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  background: #fff !important;
+}
+
+body.qqdocs-topic-detail #topic-title {
+  margin-bottom: 0 !important;
+  padding: 66px 56px 22px !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  border-bottom: 0 !important;
+  border-radius: 2px 2px 0 0 !important;
+  box-shadow: 0 -1px 14px rgba(31, 35, 41, 0.06) !important;
+}
+
+body.qqdocs-topic-detail #topic-title h1 {
+  margin: 0 !important;
+  color: #1f2329 !important;
+  font-size: 27px !important;
+  font-weight: 600 !important;
+  line-height: 38px !important;
+  text-align: center !important;
+}
+
+body.qqdocs-topic-detail #topic-title .topic-category,
+body.qqdocs-topic-detail #topic-title .badge-wrapper,
+body.qqdocs-topic-detail #topic-title .topic-status {
   display: none !important;
 }
 
-/* 楼下回复 (伪装为“协同批注 / 评论讨论”) */
-.topic-post:not(:first-child) {
-  margin-top: 16px !important;
-  background: #fafbfc !important;
-  border: 1px solid var(--border-medium) !important;
-  border-radius: 6px !important;
-  padding: 14px 20px !important;
-  position: relative !important;
+body.qqdocs-topic-detail .topic-area {
+  padding: 0 56px 70px !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  border-top: 0 !important;
+  border-radius: 0 0 2px 2px !important;
+  box-shadow: 0 8px 14px rgba(31, 35, 41, 0.06) !important;
 }
 
-.topic-post:not(:first-child)::before {
-  content: "💬 协同批注";
-  position: absolute;
-  top: -10px;
-  right: 16px;
-  background: #eef4ff;
-  color: var(--accent-default);
-  font-size: 11px;
-  padding: 1px 8px;
-  border-radius: 10px;
-  font-weight: 500;
-  border: 1px solid rgba(30, 111, 255, 0.2);
+body.qqdocs-topic-detail .posts-wrapper,
+body.qqdocs-topic-detail .post-stream {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
 }
 
-/* 操作按钮重构 */
-nav.post-controls .actions button {
+body.qqdocs-topic-detail .topic-post,
+body.qqdocs-topic-detail .topic-post:first-child,
+body.qqdocs-topic-detail .topic-post:not(:first-child) {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 28px 0 !important;
+  box-sizing: border-box !important;
   background: transparent !important;
-  color: var(--text-medium) !important;
-  border-radius: 4px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.qqdocs-topic-detail .topic-post:first-child { padding-top: 18px !important; }
+body.qqdocs-topic-detail .topic-post:last-child { border-bottom: 0 !important; }
+body.qqdocs-topic-detail .topic-post:not(:first-child)::before { content: none !important; }
+
+body.qqdocs-topic-detail .topic-post > article,
+body.qqdocs-topic-detail .post__row,
+body.qqdocs-topic-detail .post__body,
+body.qqdocs-topic-detail .post__contents {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-topic-detail .post__row { display: block !important; }
+
+body.qqdocs-topic-detail .topic-meta-data {
+  min-height: 28px !important;
+  margin: 0 0 16px !important;
+  padding: 0 0 10px !important;
+  border: 0 !important;
+}
+
+body.qqdocs-topic-detail .cooked {
+  max-width: none !important;
+  color: rgba(0, 0, 0, 0.88) !important;
+  font-family: var(--font-family) !important;
+  font-size: 15px !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: 28px !important;
+}
+
+body.qqdocs-topic-detail .cooked p { margin: 0 0 14px !important; }
+
+/* Hide forum identity avatars only; ordinary content images remain visible. */
+body.qqdocs-topic-detail .topic-avatar,
+body.qqdocs-topic-detail .topic-map__users-list,
+body.qqdocs-topic-detail .d-header-icons #current-user .avatar,
+body.qqdocs-topic-detail .post-avatar,
+body.qqdocs-topic-detail .post-retort__reactions img.avatar,
+body.qqdocs-topic-detail .who-liked img.avatar,
+body.qqdocs-topic-detail .discourse-boosts img.avatar,
+body.qqdocs-topic-detail .reply-to-tab img.avatar,
+body.qqdocs-topic-detail .presence-avatars img.avatar,
+body.qqdocs-topic-detail .presence-users img.avatar,
+body.qqdocs-topic-detail .cooked .quote img.avatar,
+body.qqdocs-topic-detail .cooked blockquote img.avatar,
+body.qqdocs-topic-detail .user-card img.avatar,
+body.qqdocs-topic-detail [role="dialog"] img.avatar,
+body.qqdocs-topic-detail .avatar-flair,
+body.qqdocs-topic-detail .topic-map__users-list .poster {
+  display: none !important;
+}
+
+body.qqdocs-topic-detail .topic-avatar + .post__body { margin-left: 0 !important; }
+body.qqdocs-topic-detail .topic-navigation { display: none !important; }
+
+body.qqdocs-topic-detail nav.post-controls .actions button {
   padding: 4px 8px !important;
+  background: transparent !important;
+  border-radius: 4px !important;
+  color: var(--text-medium) !important;
   font-size: 12px !important;
 }
-nav.post-controls .actions button:hover {
-  background: var(--bg-lv3-medium) !important;
-  color: var(--accent-default) !important;
+
+@media (max-width: 1100px) {
+  .qqdocs-ribbon-styles > span:nth-child(n+5),
+  .qqdocs-ribbon-tools { display: none !important; }
+  .qqdocs-ribbon-font { width: 320px !important; }
+  .qqdocs-ribbon-paragraph { width: 272px !important; }
+}
+
+@media (max-width: 760px) {
+  body.qqdocs-topic-detail #main-outlet {
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+  }
+
+  .qqdocs-editor-title-actions > span:not(.qqdocs-editor-share),
+  .qqdocs-editor-readonly,
+  .qqdocs-editor-star,
+  .qqdocs-editor-folder,
+  .qqdocs-ribbon-styles { display: none !important; }
+
+  .qqdocs-editor-title-text { max-width: 44vw !important; }
+  .qqdocs-editor-tabs { gap: 14px !important; }
+  .qqdocs-editor-ribbon { margin-left: 4px !important; margin-right: 4px !important; }
+  .qqdocs-ribbon-font { width: 240px !important; }
+  .qqdocs-ribbon-paragraph { width: 180px !important; }
+
+  body.qqdocs-topic-detail #topic-title,
+  body.qqdocs-topic-detail .topic-area {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body.qqdocs-topic-detail #topic-title { padding: 44px 24px 18px !important; }
+  body.qqdocs-topic-detail .topic-area { padding: 0 24px 48px !important; }
 }

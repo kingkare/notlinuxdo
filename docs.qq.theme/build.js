@@ -29,7 +29,8 @@ for (const file of styleFiles) {
   }
 }
 
-// 读取 JS 逻辑
+// 读取官方图标资产与 JS 逻辑
+const iconsJS = fs.readFileSync(path.join(srcDir, 'assets', 'icons.js'), 'utf8');
 const disguiseJS = fs.readFileSync(path.join(srcDir, 'core', 'disguise.js'), 'utf8');
 
 // 油猴脚本元数据头
@@ -61,6 +62,8 @@ const userscriptHeader = `// ==UserScript==
   }
 
   // 核心逻辑执行
+  ${iconsJS}
+
   ${disguiseJS}
 
   // DOM 就绪时初始化
