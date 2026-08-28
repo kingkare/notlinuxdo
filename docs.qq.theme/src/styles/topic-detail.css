@@ -431,8 +431,7 @@ body.qqdocs-topic-detail .container.posts {
 }
 
 /* The native title stays in the DOM as a source for the shell, but is not part
-   of the document paper. This keeps the Discourse route reversible when the
-   disguise is toggled off. */
+   of the document paper. */
 body.qqdocs-topic-detail #topic-title {
   display: none !important;
 }

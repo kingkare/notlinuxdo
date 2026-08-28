@@ -38,7 +38,7 @@ const userscriptHeader = `// ==UserScript==
 // @name         LINUX DO 伪装腾讯文档 (Docs QQ Theme)
 // @namespace    https://linux.do/
 // @version      1.0.0
-// @description  将 LINUX DO 论坛界面深度伪装为腾讯文档工作台与在线文档风格，支持 Favicon/Title 劫持、文档列表转换、Word 视图与 Alt+Q 快速切换
+// @description  将 LINUX DO 论坛界面深度伪装为腾讯文档工作台与在线文档风格，支持 Favicon/Title 劫持、文档列表转换与 Word 视图
 // @author       Antigravity
 // @match        https://linux.do/*
 // @grant        GM_addStyle
@@ -68,9 +68,9 @@ const userscriptHeader = `// ==UserScript==
 
   // DOM 就绪时初始化
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => DisguiseEngine.init(styleEl));
+    document.addEventListener('DOMContentLoaded', () => DisguiseEngine.init());
   } else {
-    DisguiseEngine.init(styleEl);
+    DisguiseEngine.init();
   }
 })();
 `;

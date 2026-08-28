@@ -136,30 +136,3 @@ select {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.22);
 }
-
-/* 5. 浮动模式切换小按钮 (Alt+Q) */
-.qqdocs-toggle-badge {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 999999;
-  background: #ffffff;
-  border: 1px solid var(--border-medium);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-caption);
-  color: var(--text-medium);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.2s ease;
-}
-.qqdocs-toggle-badge:hover {
-  color: var(--accent-default);
-  border-color: var(--accent-default);
-}

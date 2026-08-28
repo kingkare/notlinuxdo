@@ -1,7 +1,5 @@
 // 腾讯文档官方原型对齐的伪装核心引擎
 const DisguiseEngine = (function () {
-  let isDisguiseEnabled = true;
-  let customStyleElement = null;
   let domObserver = null;
   let renderPassQueued = false;
   let routeListenersAttached = false;
@@ -571,7 +569,7 @@ const DisguiseEngine = (function () {
   }
 
   function handlePostImageClick(event) {
-    if (!isDisguiseEnabled || !isTopicDetailActive()) return;
+    if (!isTopicDetailActive()) return;
     const toggle = findPostImageToggle(event.target);
     if (!toggle) return;
 
@@ -583,7 +581,7 @@ const DisguiseEngine = (function () {
   }
 
   function handlePostImageDoubleClick(event) {
-    if (!isDisguiseEnabled || !isTopicDetailActive()) return;
+    if (!isTopicDetailActive()) return;
     const toggle = findPostImageToggle(event.target);
     if (!toggle) return;
 
@@ -593,7 +591,7 @@ const DisguiseEngine = (function () {
   }
 
   function handlePostImageKeydown(event) {
-    if (!isDisguiseEnabled || !isTopicDetailActive()) return;
+    if (!isTopicDetailActive()) return;
     if (event.key !== 'Enter' && event.key !== ' ') return;
 
     // The surrounding lightbox anchor can remain in the tab order. Treat a
@@ -658,7 +656,7 @@ const DisguiseEngine = (function () {
   }
 
   function syncPostImageToggles() {
-    const active = isDisguiseEnabled && isTopicDetailActive();
+    const active = isTopicDetailActive();
     if (!active) {
       cleanupPostImageToggles();
       return;
@@ -849,7 +847,7 @@ const DisguiseEngine = (function () {
   }
 
   function syncPostEmojiLabels() {
-    const active = isDisguiseEnabled && isTopicDetailActive();
+    const active = isTopicDetailActive();
     if (!active) {
       cleanupPostEmojiLabels();
       return;
@@ -896,7 +894,6 @@ const DisguiseEngine = (function () {
       Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'title');
 
     function getFormattedTitle(rawTitle) {
-      if (!isDisguiseEnabled) return rawTitle;
       if (!rawTitle) return '腾讯文档';
 
       let clean = rawTitle.replace(/\s*-\s*LINUX DO.*$/i, '').trim();
@@ -932,7 +929,6 @@ const DisguiseEngine = (function () {
 
   // 3. 顶部 Header (100% 官方 DOM 结构还原)
   function renderHeader() {
-    if (!isDisguiseEnabled) return;
     const headerTitle = document.querySelector('.d-header .title');
     if (headerTitle && !headerTitle.querySelector('.desktop-top-bar-left')) {
       const brand = document.createElement('div');
@@ -1012,7 +1008,6 @@ const DisguiseEngine = (function () {
 
   // 4. 左侧 Sidebar (Fixed 定位挂载至 body)
   function renderSidebar() {
-    if (!isDisguiseEnabled) return;
     if (!document.querySelector('.desktop-layout-sidebar-pc')) {
       const sidebar = document.createElement('aside');
       sidebar.className = 'desktop-layout-sidebar-pc';
@@ -1071,8 +1066,6 @@ const DisguiseEngine = (function () {
 
   // 5. 列表页表头与数据行 (内联矢量 SVG 图标)
   function renderTopicList() {
-    if (!isDisguiseEnabled) return;
-
     // 清理残余可能干扰布局的节点
     document.querySelectorAll('.welcome-banner, .global-notice, .list-controls, .top-notices, .alert, .community-rule, #site-text-logo').forEach(el => el.style.display = 'none');
 
@@ -1444,7 +1437,7 @@ const DisguiseEngine = (function () {
     const oldToolbar = document.querySelector('.qqdocs-doc-toolbar');
     if (oldToolbar) oldToolbar.remove();
 
-    if (!postStream || !isDisguiseEnabled) {
+    if (!postStream) {
       document.querySelector('.qqdocs-editor-shell')?.remove();
       return;
     }
@@ -1548,7 +1541,6 @@ const DisguiseEngine = (function () {
     renderTopicDetail();
     syncPostImageToggles();
     syncPostEmojiLabels();
-    mountToggleBadge();
   }
 
   function queueRenderPass() {
@@ -1569,68 +1561,7 @@ const DisguiseEngine = (function () {
     window.addEventListener('hashchange', queueRenderPass);
   }
 
-  // 7. 快捷切换悬浮徽标 (Alt + Q)
-  function mountToggleBadge() {
-    if (document.querySelector('.qqdocs-toggle-badge')) return;
-
-    const badge = document.createElement('div');
-    badge.className = 'qqdocs-toggle-badge';
-    badge.title = '快捷键 Alt + Q 切换伪装模式';
-    badge.innerHTML = `
-      ${renderOfficialIcon('toolkit', 14)}
-      <span class="qqdocs-badge-text">${isDisguiseEnabled ? '腾讯文档模式 (Alt+Q)' : '原版模式 (Alt+Q)'}</span>
-    `;
-
-    badge.addEventListener('click', toggleDisguise);
-    document.body.appendChild(badge);
-
-    window.addEventListener('keydown', function (e) {
-      if (e.altKey && (e.key === 'q' || e.key === 'Q')) {
-        e.preventDefault();
-        toggleDisguise();
-      }
-    });
-  }
-
-  function toggleDisguise() {
-    isDisguiseEnabled = !isDisguiseEnabled;
-    const badgeText = document.querySelector('.qqdocs-badge-text');
-    if (badgeText) {
-      badgeText.textContent = isDisguiseEnabled ? '腾讯文档模式 (Alt+Q)' : '原版模式 (Alt+Q)';
-    }
-
-    if (customStyleElement) {
-      customStyleElement.disabled = !isDisguiseEnabled;
-    }
-
-    const sidebar = document.querySelector('.desktop-layout-sidebar-pc');
-    if (sidebar) sidebar.style.display = isDisguiseEnabled ? 'flex' : 'none';
-
-    const tabs = document.querySelector('.desktop-home-page-tab-header-pc');
-    if (tabs) tabs.style.display = isDisguiseEnabled ? 'flex' : 'none';
-
-    const searchWrap = document.querySelector('.desktop-search-input-pc');
-    if (searchWrap) searchWrap.style.display = isDisguiseEnabled ? 'flex' : 'none';
-
-    const editorShell = document.querySelector('.qqdocs-editor-shell');
-    if (editorShell) editorShell.style.display = isDisguiseEnabled ? '' : 'none';
-
-    if (isDisguiseEnabled) {
-      applyFavicon();
-      document.title = document.title;
-      renderTopicDetail();
-      syncPostImageToggles();
-      syncPostEmojiLabels();
-    } else {
-      document.title = 'LINUX DO';
-      cleanupPostImageToggles();
-      cleanupPostEmojiLabels();
-      renderTopicDetail();
-    }
-  }
-
-  function init(styleEl) {
-    customStyleElement = styleEl;
+  function init() {
     applyFavicon();
     hijackTitle();
     attachRouteListeners();
@@ -1646,10 +1577,7 @@ const DisguiseEngine = (function () {
     });
   }
 
-  return {
-    init: init,
-    toggle: toggleDisguise
-  };
+  return { init: init };
 })();
 
 if (typeof module !== 'undefined' && module.exports) {
