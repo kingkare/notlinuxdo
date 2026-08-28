@@ -103,10 +103,27 @@ body.qqdocs-topic-detail .container.posts {
   width: 28px !important;
   height: 28px !important;
   margin-right: 4px !important;
+  padding: 0 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex: 0 0 28px !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  appearance: none !important;
+}
+
+.qqdocs-editor-title-left > .qqdocs-editor-home:hover {
+  background: rgba(51, 77, 102, 0.06) !important;
+}
+
+.qqdocs-editor-title-left > .qqdocs-editor-home:focus-visible {
+  outline: 2px solid rgba(30, 111, 255, 0.5) !important;
+  outline-offset: 1px !important;
 }
 
 .qqdocs-editor-title-left > .qqdocs-editor-plus {

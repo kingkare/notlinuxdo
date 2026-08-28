@@ -1341,6 +1341,52 @@ const DisguiseEngine = (function () {
     });
   }
 
+  function renderSearchResults() {
+    const searchContainer = document.querySelector('.search-container');
+    document.body?.classList.toggle('qqdocs-search-page', Boolean(searchContainer));
+    if (!searchContainer) return;
+
+    const entries = searchContainer.querySelector('.search-results .fps-result-entries');
+    if (!entries) return;
+
+    let header = searchContainer.querySelector('.qqdocs-search-list-header');
+    if (!header) {
+      header = document.createElement('div');
+      header.className = 'qqdocs-search-list-header';
+      header.setAttribute('aria-hidden', 'true');
+      header.innerHTML = '<span>名称</span><span>所有者</span><span>位置</span><span>最近查看 ▾</span><span>匹配内容</span>';
+    }
+    if (header.nextElementSibling !== entries) entries.parentNode.insertBefore(header, entries);
+
+    entries.querySelectorAll('.fps-result:not([data-qqdocs-search-styled="true"])').forEach((result) => {
+      result.setAttribute('data-qqdocs-search-styled', 'true');
+
+      const topic = result.querySelector('.fps-topic');
+      const topicId = Number(topic?.getAttribute('data-topic-id')) || 0;
+      const iconTypes = ['sheet', 'doc', 'slide'];
+      const iconType = iconTypes[Math.abs(topicId) % iconTypes.length];
+
+      if (!result.querySelector('.qqdocs-search-row-icon')) {
+        const icon = document.createElement('span');
+        icon.className = 'qqdocs-search-row-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.innerHTML = renderOfficialFileIcon(iconType, 24);
+        result.insertBefore(icon, result.firstChild);
+      }
+
+      const authorLink = result.querySelector('.author a[data-user-card], .author a');
+      if (authorLink && !authorLink.querySelector('.qqdocs-search-owner')) {
+        const username = authorLink.getAttribute('data-user-card') ||
+          authorLink.querySelector('img.avatar')?.getAttribute('title') ||
+          '—';
+        const owner = document.createElement('span');
+        owner.className = 'qqdocs-search-owner';
+        owner.textContent = username;
+        authorLink.appendChild(owner);
+      }
+    });
+  }
+
   const TOPIC_STAT_DEFINITIONS = {
     views: {
       label: '浏览量',
@@ -1582,7 +1628,7 @@ const DisguiseEngine = (function () {
     statsContainer.setAttribute('aria-hidden', String(!hasStats));
   }
 
-  // 6. 详情页腾讯文档编辑器外壳（全部为无交互的视觉装饰）
+  // 6. 详情页腾讯文档编辑器外壳
   function renderTopicDetail() {
     const postStream = document.querySelector('.post-stream');
     const oldToolbar = document.querySelector('.qqdocs-doc-toolbar');
@@ -1604,27 +1650,30 @@ const DisguiseEngine = (function () {
 
     let shell = document.querySelector('.qqdocs-editor-shell');
     // Rebuild a shell injected by an older userscript version during hot update.
-    if (shell && (!shell.querySelector('.qqdocs-editor-divider') || !shell.querySelector('.qqdocs-topic-stats'))) {
+    if (shell && (
+      !shell.querySelector('.qqdocs-editor-divider') ||
+      !shell.querySelector('.qqdocs-topic-stats') ||
+      !shell.querySelector('button.qqdocs-editor-home')
+    )) {
       shell.remove();
       shell = null;
     }
     if (!shell) {
       shell = document.createElement('div');
       shell.className = 'qqdocs-editor-shell';
-      shell.setAttribute('aria-hidden', 'true');
       shell.innerHTML = `
         <div class="qqdocs-editor-titlebar">
           <div class="qqdocs-editor-title-left">
-            <span class="qqdocs-editor-home">${renderTdocsChromeIcon('home', 28)}</span>
-            <span class="qqdocs-editor-plus">${renderTdocsChromeIcon('plus', 24)}</span>
-            <span class="qqdocs-editor-divider"></span>
+            <button class="qqdocs-editor-home" type="button" aria-label="返回上一页" title="返回上一页">${renderTdocsChromeIcon('home', 28)}</button>
+            <span class="qqdocs-editor-plus" aria-hidden="true">${renderTdocsChromeIcon('plus', 24)}</span>
+            <span class="qqdocs-editor-divider" aria-hidden="true"></span>
             <strong class="qqdocs-editor-title-text"></strong>
             <span class="qqdocs-topic-stats" role="group" aria-label="主题统计" aria-live="polite"></span>
             <span class="qqdocs-editor-readonly"><span>只能查看</span>${renderTdocsChromeIcon('arrow', 6)}</span>
             <span class="qqdocs-editor-star">${renderTdocsChromeIcon('star', 16)}</span>
             <span class="qqdocs-editor-folder">${renderTdocsChromeIcon('folder', 16)}</span>
           </div>
-          <div class="qqdocs-editor-title-actions">
+          <div class="qqdocs-editor-title-actions" aria-hidden="true">
             <span class="qqdocs-editor-action">${renderTdocsChromeIcon('more', 24)}</span>
             <span class="qqdocs-editor-action">${renderTdocsChromeIcon('ai', 24)}</span>
             <span class="qqdocs-editor-action qqdocs-editor-presentation">${renderTdocsChromeIcon('presentation', 24)}</span>
@@ -1633,11 +1682,11 @@ const DisguiseEngine = (function () {
             <span class="qqdocs-editor-account">${renderTdocsChromeIcon('collaborator', 24)}${renderTdocsChromeIcon('wechat', 14)}</span>
           </div>
         </div>
-        <div class="qqdocs-editor-tabs">
+        <div class="qqdocs-editor-tabs" aria-hidden="true">
           <span class="is-active">开始</span><span>插入</span><span>页面</span><span>引用</span>
           <span>审阅</span><span>视图</span><span>效率工具</span><span>公文助手</span><span>会员专享</span>
         </div>
-        <div class="qqdocs-editor-ribbon">
+        <div class="qqdocs-editor-ribbon" aria-hidden="true">
           <div class="qqdocs-ribbon-group qqdocs-ribbon-history">
             <span>${renderTdocsChromeIcon('undo', 24)}</span><span>${renderTdocsChromeIcon('redo', 24)}</span>
             <span>${renderTdocsChromeIcon('format', 24)}</span><span>${renderTdocsChromeIcon('clear', 24)}</span>
@@ -1675,6 +1724,12 @@ const DisguiseEngine = (function () {
 
     const shellTitle = shell.querySelector('.qqdocs-editor-title-text');
     if (shellTitle && shellTitle.textContent !== topicTitle) shellTitle.textContent = topicTitle;
+
+    const homeButton = shell.querySelector('button.qqdocs-editor-home');
+    if (homeButton && homeButton.dataset.qqdocsHistoryBackBound !== 'true') {
+      homeButton.dataset.qqdocsHistoryBackBound = 'true';
+      homeButton.addEventListener('click', () => window.history.back());
+    }
     renderTopicStatistics(shell);
   }
 
@@ -1689,6 +1744,7 @@ const DisguiseEngine = (function () {
     renderHeader();
     renderSidebar();
     renderTopicList();
+    renderSearchResults();
     renderTopicDetail();
     syncPostImageToggles();
     syncPostEmojiLabels();
