@@ -13,7 +13,7 @@
   'use strict';
 
   // 注入 CSS 样式
-  const css = "\n/* --- variables.css --- */\n/* 腾讯文档 2026 官方 Design Token 变量 */\n:root {\n  --text-ultrastrong: rgba(0, 0, 0, 0.9);\n  --text-strong: rgba(0, 0, 0, 0.76);\n  --text-medium: rgba(0, 0, 0, 0.56);\n  --text-weak: rgba(0, 0, 0, 0.26);\n  --text-link: #175ceb;\n  --text-white: #fff;\n  --text-vip: #e59837;\n\n  --accent-default: #1e6fff;\n  --accent-hover: #175ceb;\n  --accent-pressed: #134ae0;\n  --accent-disabled: #c2d8ff;\n\n  --bg-lv1-default: #fff;\n  --bg-lv2-default: #fff;\n  --bg-lv3-default: #fff;\n  --bg-lv4-default: #fff;\n  --bg-lv3-medium: #f3f5f7;\n\n  --border-weak: rgba(0, 0, 0, 0.04);\n  --border-medium: rgba(0, 0, 0, 0.08);\n  --border-strong: rgba(0, 0, 0, 0.12);\n\n  --feedback-hover: rgba(51, 77, 102, 0.06);\n  --feedback-active: rgba(51, 77, 102, 0.08);\n\n  --sidebar-width: 244px;\n  /* 腾讯文档桌面端实测：顶部栏高 60px，左侧栏宽 244px。 */\n  --topbar-height: 60px;\n\n  /* 2026-08-27 从腾讯文档 desktop 实际 computed style 提取。 */\n  --font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", Ubuntu, Cantarell, \"Helvetica Neue\", apple-system, Helvetica, Arial, \"PingFang SC\", \"Microsoft YaHei\", \"Source Han Sans SC\", \"Noto Sans CJK SC\", \"WenQuanYi Micro Hei\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", TdocsUncommon;\n  --font-family-numeric: Bahnschrift, \"DIN Alternate\", var(--font-family);\n  --font-size-caption: 12px;\n  --font-size-body: 14px;\n  --font-size-tab: 16px;\n  --line-height-caption: 16px;\n  --line-height-body: 20px;\n  --line-height-title: 24px;\n  --font-weight-regular: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n\n  /* 兼容 composer/modal 中的旧变量名。 */\n  --qqdocs-font-family: var(--font-family);\n  --qqdocs-text-primary: var(--text-ultrastrong);\n  --qqdocs-text-secondary: var(--text-strong);\n  --qqdocs-brand-color: var(--accent-default);\n  --qqdocs-brand-hover: var(--accent-hover);\n  --qqdocs-bg-hover: var(--bg-lv3-medium);\n}\n\n/* --- global.css --- */\n/* 全局基础重置与工作台布局 (彻底解决 #main-outlet-wrapper 居中与重复偏移) */\n\nhtml, body {\n  background-color: #ffffff !important;\n  color: var(--text-ultrastrong) !important;\n  font-family: var(--font-family) !important;\n  font-size: 16px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: normal !important;\n  letter-spacing: normal !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  overflow-x: hidden !important;\n  width: 100vw !important;\n}\n\nbutton,\ninput,\ntextarea,\nselect {\n  font-family: var(--font-family) !important;\n  font-style: normal !important;\n  letter-spacing: normal !important;\n}\n\n/* 覆盖 Discourse 自带字体变量，确保伪装界面的所有文字都落到腾讯文档字体栈。 */\n.d-header,\n.d-header *,\n.desktop-layout-sidebar-pc,\n.desktop-layout-sidebar-pc *,\n#main-outlet,\n#main-outlet *,\n#reply-control,\n#reply-control *,\n.menu-panel,\n.menu-panel *,\n.modal-inner-container,\n.modal-inner-container * {\n  font-family: var(--font-family) !important;\n  letter-spacing: normal !important;\n}\n\n/* 正文中的代码仍保持语义正确的等宽字体。 */\n#main-outlet code,\n#main-outlet pre,\n#main-outlet kbd,\n#main-outlet samp {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", monospace !important;\n}\n\n/* Discourse 刷新遮罩：仅移除遮罩中的巨大站点 Logo，保留加载点与页面启动流程。 */\n#d-splash .splash-logo-container {\n  display: none !important;\n  background-image: none !important;\n  animation: none !important;\n}\n\n/* 1. 彻底隐藏 Linux Do 原生的所有 Banner、Notice、公告、原生侧栏与导航条 */\n.welcome-banner,\n.custom-search-banner-wrap,\n.global-notice,\n.alert,\n.alert-info,\n.alert-update-topics,\n.above-main-container-outlet,\n.list-controls,\n.navigation-container,\n.navigation-controls,\n.nav-pills,\n.categories-admin-dropdown,\n.category-breadcrumb,\n.category-boxes,\n.top-notices,\n.community-rule,\n#site-text-logo,\n.sidebar-wrapper,\n#d-sidebar,\n.d-sidebar-wrapper,\n.topic-list-bottom,\n.nav-tabs,\n.select-kit,\n.loading-container {\n  display: none !important;\n}\n\n/* 2. 重置 Discourse 外层包装容器 #main-outlet-wrapper (去除原版的 max-width: 1110px 和 margin: 0 auto) */\n#main-outlet-wrapper,\n#main-outlet-wrapper.wrap {\n  display: block !important;\n  margin: var(--topbar-height) 0 0 var(--sidebar-width) !important;\n  padding: 0 !important;\n  width: calc(100vw - var(--sidebar-width)) !important;\n  max-width: calc(100vw - var(--sidebar-width)) !important;\n  box-sizing: border-box !important;\n  min-height: calc(100vh - var(--topbar-height)) !important;\n  grid-template-columns: 1fr !important;\n}\n\n/* 3. #main-outlet 与主容器直接贴紧左侧栏，消除任何多余空白 */\n#main-outlet {\n  margin: 0 !important;\n  width: 100% !important;\n  max-width: 100% !important;\n  padding: 16px 28px !important;\n  box-sizing: border-box !important;\n  background: #ffffff !important;\n  display: block !important;\n}\n\n#main-container,\n#main-container.container,\n#main-outlet > .container,\n#main-outlet > .container.list-container,\n#main-outlet > .ember-view,\n.topic-list-container {\n  width: 100% !important;\n  max-width: 100% !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  box-sizing: border-box !important;\n  display: block !important;\n}\n\n/* 4. 滚动条轻量化 */\n::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n}\n::-webkit-scrollbar-track {\n  background: transparent;\n}\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.12);\n  border-radius: 3px;\n}\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.22);\n}\n\n/* 5. 浮动模式切换小按钮 (Alt+Q) */\n.qqdocs-toggle-badge {\n  position: fixed;\n  right: 16px;\n  bottom: 16px;\n  z-index: 999999;\n  background: #ffffff;\n  border: 1px solid var(--border-medium);\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);\n  padding: 5px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: var(--font-weight-regular);\n  line-height: var(--line-height-caption);\n  color: var(--text-medium);\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  cursor: pointer;\n  user-select: none;\n  transition: all 0.2s ease;\n}\n.qqdocs-toggle-badge:hover {\n  color: var(--accent-default);\n  border-color: var(--accent-default);\n}\n\n/* --- header.css --- */\n/* 腾讯文档官方原生 Header 样式 */\n.d-header {\n  background: var(--bg-lv3-medium) !important;\n  border-bottom: 0 !important;\n  box-shadow: none !important;\n  height: var(--topbar-height) !important;\n  padding: 0 !important;\n  position: fixed !important;\n  top: 0 !important;\n  left: 0 !important;\n  right: 0 !important;\n  transform: none !important;\n  z-index: 1100 !important;\n  width: 100vw !important;\n  max-width: 100vw !important;\n  box-sizing: border-box !important;\n}\n\n.d-header .wrap {\n  max-width: 100% !important;\n  width: 100% !important;\n  height: 100% !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n}\n\n.d-header .contents {\n  height: 100% !important;\n  display: flex !important;\n  align-items: center !important;\n  width: 100% !important;\n  justify-content: flex-start !important;\n  flex-flow: row nowrap !important;\n  min-width: 0 !important;\n  position: relative !important;\n}\n\n/* Discourse 2026 的 Logo outlet 本身也是 flex item，必须固定为侧栏宽度。 */\n.d-header .home-logo-wrapper-outlet {\n  display: flex !important;\n  align-items: center !important;\n  width: var(--sidebar-width) !important;\n  min-width: var(--sidebar-width) !important;\n  height: 100% !important;\n  flex: 0 0 var(--sidebar-width) !important;\n  overflow: visible !important;\n  order: 0 !important;\n}\n\n/* 彻底隐藏原论坛左侧边栏折叠按钮、Logo与右侧原生各种按钮 */\n.header-sidebar-toggle,\n.btn-sidebar-toggle,\n.d-header .title a img,\n.d-header .title a .title-text,\n.d-header-icons .hamburger-dropdown,\n.d-header-icons .language-switcher,\n.d-header-icons .search-dropdown,\n.d-header-icons .chat-header-icon,\n.d-header-icons .header-dropdown-toggle:not(#current-user):not(.desktop-top-bar-right) {\n  display: none !important;\n}\n\n/* 官方左侧 Logo 容器 */\n.d-header .title {\n  display: flex !important;\n  align-items: center !important;\n  width: var(--sidebar-width) !important;\n  min-width: var(--sidebar-width) !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  flex-shrink: 0 !important;\n  position: static !important;\n  overflow: visible !important;\n  box-sizing: border-box !important;\n  order: 0 !important;\n}\n\n.desktop-top-bar-left {\n  display: flex !important;\n  align-items: center !important;\n  width: 100% !important;\n}\n\n.desktop-logo-pc {\n  display: inline-flex !important;\n  align-items: center !important;\n  text-decoration: none !important;\n  width: 100% !important;\n  height: 26px !important;\n  padding-left: 32px !important;\n  box-sizing: border-box !important;\n  flex-shrink: 0 !important;\n}\n.desktop-logo-pc svg {\n  display: block !important;\n  width: 195px !important;\n  height: 26px !important;\n  max-width: 195px !important;\n  flex: 0 0 195px !important;\n}\n\n/* 搜索框 (DUI 官方规范) */\n.d-header .desktop-search-input-pc {\n  position: relative !important;\n  display: flex !important;\n  align-items: center !important;\n  background: #ffffff !important;\n  border: 1px solid var(--border-medium) !important;\n  border-radius: 8px !important;\n  height: 38px !important;\n  width: clamp(220px, calc(100vw - var(--sidebar-width) - 558px), 960px) !important;\n  max-width: 960px !important;\n  min-width: 220px !important;\n  padding: 0 14px !important;\n  box-sizing: border-box !important;\n  transition: all 0.2s ease !important;\n  margin: 0 !important;\n  flex: 0 1 clamp(220px, calc(100vw - var(--sidebar-width) - 558px), 960px) !important;\n  order: 1 !important;\n  overflow: hidden !important;\n}\n.d-header .desktop-search-input-pc:focus-within {\n  background: #ffffff !important;\n  border: 1px solid var(--accent-default) !important;\n  box-shadow: 0 0 0 2px rgba(30, 111, 255, 0.15) !important;\n}\n.d-header .desktop-search-input-pc input {\n  display: block !important;\n  flex: 1 1 auto !important;\n  min-width: 0 !important;\n  height: 36px !important;\n  border: none !important;\n  outline: none !important;\n  background: transparent !important;\n  box-shadow: none !important;\n  appearance: none !important;\n  -webkit-appearance: none !important;\n  font-size: 12px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 36px !important;\n  color: var(--text-ultrastrong) !important;\n  width: 100% !important;\n  margin: 0 !important;\n  padding: 0 0 0 6px !important;\n  box-sizing: border-box !important;\n}\n.d-header .desktop-search-input-pc input::placeholder {\n  color: var(--text-weak) !important;\n  line-height: 36px !important;\n  opacity: 1 !important;\n}\n\n/* 接管原生 panel (右侧按钮组容器) */\n.d-header .panel {\n  display: flex !important;\n  align-items: center !important;\n  margin-left: auto !important;\n  float: none !important;\n  height: 100% !important;\n  min-width: 0 !important;\n  padding: 0 16px 0 24px !important;\n  box-sizing: border-box !important;\n  flex: 0 0 auto !important;\n  order: 2 !important;\n}\n\n/* 顶部右侧功能按钮组 */\n.d-header-icons {\n  display: flex !important;\n  align-items: center !important;\n}\n\n.desktop-top-bar-right {\n  display: flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n}\n\n.desktop-top-bar-button {\n  background: transparent !important;\n  border: none !important;\n  outline: none !important;\n  cursor: pointer !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 4px !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-ultrastrong) !important;\n  padding: 4px 8px !important;\n  border-radius: 4px !important;\n  transition: background-color 0.15s ease !important;\n  user-select: none !important;\n  text-decoration: none !important;\n}\n.desktop-top-bar-button:hover {\n  background-color: var(--feedback-hover) !important;\n  color: var(--text-ultrastrong) !important;\n}\n\n.desktop-vip-center-button {\n  color: var(--text-vip) !important;\n  font-weight: 500 !important;\n}\n.desktop-vip-center-button:hover {\n  color: #c97f26 !important;\n}\n\n.desktop-notification-badge {\n  background: #f54a45 !important;\n  color: #fff !important;\n  font-size: 12px !important;\n  font-weight: var(--font-weight-medium) !important;\n  padding: 0 4px !important;\n  height: 14px !important;\n  line-height: 14px !important;\n  border-radius: 7px !important;\n  margin-left: 2px !important;\n}\n\n/* 窄屏时先收起文字型次要入口，始终给品牌和搜索框保留独立空间。 */\n@media (max-width: 1180px) {\n  .desktop-top-bar-button span:not(.desktop-notification-badge) {\n    display: none !important;\n  }\n\n  .desktop-top-bar-right {\n    gap: 2px !important;\n  }\n\n  .d-header .panel {\n    padding-left: 12px !important;\n  }\n}\n\n@media (max-width: 760px) {\n  .d-header .title {\n    width: 72px !important;\n    min-width: 72px !important;\n  }\n\n  .desktop-logo-pc {\n    padding-left: 20px !important;\n  }\n\n  .desktop-logo-pc svg {\n    width: 28px !important;\n    max-width: 28px !important;\n    flex-basis: 28px !important;\n  }\n\n  .d-header .desktop-search-input-pc {\n    min-width: 120px !important;\n    width: auto !important;\n    flex: 1 1 auto !important;\n  }\n}\n\n/* 用户头像 */\n.d-header-icons #current-user .avatar {\n  width: 28px !important;\n  height: 28px !important;\n  border-radius: 50% !important;\n  border: 1px solid var(--border-weak) !important;\n}\n\n/* --- sidebar.css --- */\n/* 腾讯文档官方原生 Sidebar 样式 (Fixed 固定左侧) */\n.desktop-layout-sidebar-pc {\n  position: fixed !important;\n  left: 0 !important;\n  top: var(--topbar-height) !important;\n  width: var(--sidebar-width) !important;\n  min-width: var(--sidebar-width) !important;\n  max-width: var(--sidebar-width) !important;\n  background: var(--bg-lv3-medium) !important;\n  border-right: 0 !important;\n  padding: 16px 12px !important;\n  display: flex !important;\n  flex-direction: column !important;\n  height: calc(100vh - var(--topbar-height)) !important;\n  box-sizing: border-box !important;\n  user-select: none !important;\n  z-index: 1000 !important;\n}\n\n/* 顶部操作按钮 */\n.desktop-create-button-pc {\n  background-color: var(--accent-default) !important;\n  color: #ffffff !important;\n  height: 36px !important;\n  border-radius: 4px !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 6px !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 16px !important;\n  cursor: pointer !important;\n  border: none !important;\n  width: 100% !important;\n  margin-bottom: 8px !important;\n  transition: background-color 0.15s ease !important;\n  text-decoration: none !important;\n}\n.desktop-create-button-pc:hover {\n  background-color: var(--accent-hover) !important;\n}\n\n.desktop-upload-button-pc {\n  background-color: #ffffff !important;\n  color: var(--text-ultrastrong) !important;\n  border: 1px solid var(--border-medium) !important;\n  height: 32px !important;\n  border-radius: 4px !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 6px !important;\n  font-size: var(--font-size-body) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  cursor: pointer !important;\n  width: 100% !important;\n  margin-bottom: 16px !important;\n  transition: all 0.15s ease !important;\n  text-decoration: none !important;\n}\n.desktop-upload-button-pc:hover {\n  background-color: var(--feedback-hover) !important;\n  border-color: var(--border-strong) !important;\n}\n\n/* 导航链接 */\n.desktop-sidebar-nav-list {\n  display: flex !important;\n  flex-direction: column !important;\n  gap: 2px !important;\n  flex: 1 !important;\n}\n\n.desktop-node-link-router {\n  display: flex !important;\n  align-items: center !important;\n  gap: 10px !important;\n  padding: 8px 12px !important;\n  border-radius: 4px !important;\n  font-size: var(--font-size-body) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  color: var(--text-ultrastrong) !important;\n  text-decoration: none !important;\n  cursor: pointer !important;\n  transition: all 0.15s ease !important;\n}\n.desktop-node-link-router:hover {\n  background-color: var(--feedback-hover) !important;\n  color: var(--text-ultrastrong) !important;\n}\n.desktop-node-link-router.desktop-link-active {\n  background-color: var(--bg-lv3-medium) !important;\n  color: var(--text-ultrastrong) !important;\n  font-weight: 600 !important;\n}\n\n/* 企业版卡片 */\n.desktop-enterprise-edition-entry {\n  margin-top: auto !important;\n  margin-bottom: 12px !important;\n}\n.desktop-promo-card {\n  background: linear-gradient(180deg, #f0f5ff 0%, #f7f9fc 100%) !important;\n  border: 1px solid #e1eaff !important;\n  border-radius: 6px !important;\n  padding: 12px !important;\n}\n.desktop-promo-header {\n  display: flex !important;\n  align-items: center !important;\n  gap: 6px !important;\n  margin-bottom: 4px !important;\n}\n.desktop-promo-title {\n  font-size: var(--font-size-body) !important;\n  font-weight: 600 !important;\n  line-height: var(--line-height-body) !important;\n  color: var(--text-strong) !important;\n}\n.desktop-promo-subtitle {\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-weak) !important;\n  margin-bottom: 8px !important;\n}\n.desktop-promo-button {\n  background: var(--accent-default) !important;\n  color: #fff !important;\n  font-size: var(--font-size-body) !important;\n  line-height: var(--line-height-body) !important;\n  padding: 4px 0 !important;\n  text-align: center !important;\n  border-radius: 12px !important;\n  cursor: pointer !important;\n  font-weight: var(--font-weight-regular) !important;\n}\n\n/* 空间容量进度条 */\n.desktop-storage-panel {\n  padding: 6px 2px !important;\n  font-family: var(--font-family-numeric) !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-medium) !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n}\n.desktop-storage-panel a {\n  color: var(--text-medium) !important;\n  text-decoration: none !important;\n}\n.desktop-storage-panel a:hover {\n  color: var(--accent-default) !important;\n}\n\n/* --- topic-list.css --- */\n/* 腾讯文档官方原生列表页样式 (深度适配 Discourse 原生 Table 结构) */\n\n.list-container,\n.topic-list-container,\n#main-container,\n#main-outlet .container.list-container,\n#main-outlet > .ember-view {\n  width: 100% !important;\n  max-width: 100% !important;\n  background: #ffffff !important;\n  border: none !important;\n  box-shadow: none !important;\n  box-sizing: border-box !important;\n  padding: 0 !important;\n  margin: 0 !important;\n}\n\n/* 顶部 Tab 切换头 (最近 / 空间 / 收藏) */\n.desktop-home-page-tab-header-pc {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n  border-bottom: 1px solid var(--border-weak) !important;\n  padding-bottom: 8px !important;\n  margin-bottom: 12px !important;\n  width: 100% !important;\n}\n\n.desktop-tab-group {\n  display: flex !important;\n  align-items: center !important;\n  gap: 24px !important;\n}\n\n.desktop-tab-link {\n  font-size: var(--font-size-tab) !important;\n  line-height: 48px !important;\n  color: var(--text-medium) !important;\n  cursor: pointer !important;\n  padding-bottom: 0 !important;\n  position: relative !important;\n  font-weight: var(--font-weight-regular) !important;\n  text-decoration: none !important;\n}\n.desktop-tab-link:hover {\n  color: var(--text-ultrastrong) !important;\n}\n.desktop-tab-link.desktop-link-active {\n  color: var(--text-ultrastrong) !important;\n  font-weight: 600 !important;\n}\n.desktop-tab-link.desktop-link-active::after {\n  content: '';\n  position: absolute;\n  bottom: -9px;\n  left: 0;\n  width: 100%;\n  height: 2px;\n  background-color: var(--text-ultrastrong);\n}\n\n.desktop-page-header-extra-pc {\n  display: flex !important;\n  align-items: center !important;\n  gap: 16px !important;\n}\n\n.desktop-header-action-btn {\n  display: flex !important;\n  align-items: center !important;\n  gap: 4px !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-semibold) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-ultrastrong) !important;\n  cursor: pointer !important;\n  background: transparent !important;\n  border: none !important;\n}\n.desktop-header-action-btn:hover {\n  color: var(--text-ultrastrong) !important;\n}\n\n/* 表格主体 */\n.topic-list {\n  width: 100% !important;\n  border-collapse: collapse !important;\n  table-layout: fixed !important;\n  margin: 0 !important;\n}\n\n/* 表头重构 */\n.topic-list thead {\n  display: table-header-group !important;\n}\n\n.topic-list thead tr {\n  border-bottom: 1px solid var(--border-weak) !important;\n}\n\n.topic-list th {\n  color: var(--text-strong) !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  text-align: left !important;\n  padding: 10px 8px !important;\n  background: transparent !important;\n  border: none !important;\n}\n\n/* 列宽分配 (与腾讯文档完全一致) */\n.topic-list th.default,\n.topic-list th.topic-list-data:nth-child(1),\n.topic-list td.main-link {\n  width: 50% !important;\n}\n.topic-list th.posters,\n.topic-list td.posters {\n  width: 13% !important;\n}\n.topic-list th.posts,\n.topic-list td.posts {\n  width: 12% !important;\n}\n.topic-list th.views,\n.topic-list td.views {\n  width: 13% !important;\n}\n.topic-list th.activity,\n.topic-list td.activity {\n  width: 12% !important;\n  text-align: right !important;\n}\n\n/* 行样式 */\n.topic-list-item {\n  border-bottom: 1px solid #f7f8fa !important;\n  /* 行高调为 56px */\n  height: 56px !important;\n  transition: background-color 0.1s ease !important;\n}\n.topic-list-item:hover {\n  background-color: #f7f8fa !important;\n}\n\n.topic-list-item .main-link {\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  white-space: nowrap !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n}\n\n.topic-list-item .link-top-line {\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  width: 100% !important;\n  overflow: hidden !important;\n}\n\n.topic-list-item .title {\n  color: var(--text-ultrastrong) !important;\n  font-size: 14px !important;\n  font-weight: 400 !important;\n  line-height: var(--line-height-title) !important;\n  text-decoration: none !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  white-space: nowrap !important;\n  display: inline !important;\n}\n.topic-list-item .title:hover {\n  color: var(--accent-default) !important;\n}\n\n/* 隐藏未读蓝点、标题下方的论坛分类条与摘要 */\n.topic-list-item .link-bottom-line,\n.topic-list-item .topic-statuses,\n.topic-list-item .topic-excerpt,\n.topic-list-item .unread-indicator,\n.topic-list-item .badge-notification.unread-posts {\n  display: none !important;\n}\n\n/* 腾讯文档单选圆圈双保险隐藏（如果有旧DOM） */\n.qqdocs-select-circle {\n  display: none !important;\n}\n\n/* 图标容器 */\n.qqdocs-row-icon-wrap {\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  margin-right: 8px !important;\n  flex-shrink: 0 !important;\n  vertical-align: middle !important;\n}\n\n.qqdocs-doc-svg {\n  width: 20px !important;\n  height: 20px !important;\n  min-width: 20px !important;\n  min-height: 20px !important;\n  flex-shrink: 0 !important;\n  display: inline-block !important;\n  vertical-align: middle !important;\n}\n\n/* 所有者列 */\n.topic-list-item .posters {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  white-space: nowrap !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n}\n.topic-list-item .posters img.avatar,\n.topic-list-item .posters a:not(:first-child) {\n  display: none !important;\n}\n\n/* 位置列 */\n.topic-list-item .posts {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  white-space: nowrap !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  text-align: left !important;\n}\n\n/* 最近查看列 */\n.topic-list-item .views {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  text-align: left !important;\n}\n\n/* 文档大小列 */\n.topic-list-item .activity {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  text-align: right !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n}\n\n/* --- topic-detail.css --- */\n/* Tencent Docs document shell for topic detail pages. */\r\nbody.qqdocs-topic-detail {\r\n  --qqdocs-editor-top: 150px;\r\n  background: #f3f5f7 !important;\r\n}\r\n\r\n/* A topic has its own document chrome; the forum chrome is not shown here. */\r\nbody.qqdocs-topic-detail .d-header,\r\nbody.qqdocs-topic-detail .desktop-layout-sidebar-pc {\r\n  display: none !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .qqdocs-doc-toolbar {\r\n  display: none !important;\r\n  width: 0 !important;\r\n  height: 0 !important;\r\n  min-height: 0 !important;\r\n  margin: 0 !important;\r\n  padding: 0 !important;\r\n  border: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail,\r\nbody.qqdocs-topic-detail #main,\r\nbody.qqdocs-topic-detail #main-outlet-wrapper,\r\nbody.qqdocs-topic-detail #main-outlet,\r\nbody.qqdocs-topic-detail .container.posts {\r\n  background: #f3f5f7 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail #main-outlet-wrapper,\r\nbody.qqdocs-topic-detail #main-outlet-wrapper.wrap {\r\n  width: 100vw !important;\r\n  max-width: 100vw !important;\r\n  min-height: 100vh !important;\r\n  margin: 0 !important;\r\n  padding: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail #main-outlet {\n  width: 100% !important;\n  max-width: none !important;\n  min-height: 100vh !important;\n  margin: 0 !important;\n  padding: calc(var(--qqdocs-editor-top) + 12px) 32px 72px !important;\n  box-sizing: border-box !important;\n}\n\n/* Discourse mounts the topic route in a generated .regular.ember-view wrapper.\n   Keep that full-width wrapper on the editor canvas instead of its white default. */\nbody.qqdocs-topic-detail #main-outlet > .regular.ember-view {\n  background: #f3f5f7 !important;\n}\n\nbody.qqdocs-topic-detail .container.posts {\n  display: block !important;\r\n  width: 100% !important;\r\n  max-width: none !important;\r\n  margin: 0 !important;\r\n}\r\n\r\n/* Three non-interactive rows: titlebar, menu tabs, and the ribbon. */\r\n.qqdocs-editor-shell {\r\n  position: fixed !important;\r\n  inset: 0 0 auto 0 !important;\r\n  z-index: 1400 !important;\r\n  height: var(--qqdocs-editor-top) !important;\r\n  overflow: hidden !important;\r\n  background: #f3f5f7 !important;\r\n  color: #1f2329 !important;\r\n  border-bottom: 1px solid #dfe2e7 !important;\r\n  box-sizing: border-box !important;\r\n  font-family: var(--font-family) !important;\r\n  pointer-events: none !important;\r\n  user-select: none !important;\r\n}\r\n\r\n.qqdocs-editor-titlebar {\r\n  height: 40px !important;\r\n  padding: 0 12px !important;\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  justify-content: space-between !important;\r\n  box-sizing: border-box !important;\r\n  font-size: 13px !important;\r\n}\r\n\r\n.qqdocs-editor-title-left,\r\n.qqdocs-editor-title-actions {\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  min-width: 0 !important;\r\n}\r\n\r\n.qqdocs-editor-title-left {\n  height: 40px !important;\n  margin-right: 16px !important;\n  flex: 1 1 auto !important;\n  overflow: hidden !important;\n}\n\r\n.qqdocs-editor-title-left > .qqdocs-editor-home {\r\n  width: 28px !important;\r\n  height: 28px !important;\r\n  margin-right: 4px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 28px !important;\r\n}\r\n\r\n.qqdocs-editor-title-left > .qqdocs-editor-plus {\r\n  width: 24px !important;\r\n  height: 24px !important;\r\n  margin-right: 8px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 24px !important;\r\n}\r\n\r\n.qqdocs-editor-divider {\r\n  width: 1px !important;\r\n  height: 16px !important;\r\n  margin-right: 8px !important;\r\n  display: inline-block !important;\r\n  flex: 0 0 1px !important;\r\n  background: #dfe2e7 !important;\r\n}\r\n\r\n.qqdocs-editor-title-text {\n  min-width: 0 !important;\n  flex: 0 1 auto !important;\n  max-width: min(560px, 42vw) !important;\n  overflow: hidden !important;\r\n  text-overflow: ellipsis !important;\r\n  white-space: nowrap !important;\r\n  color: #1f2329 !important;\r\n  font-size: 16px !important;\r\n  font-weight: 600 !important;\r\n  line-height: 28px !important;\r\n}\r\n\r\n.qqdocs-editor-readonly {\r\n  height: 24px !important;\r\n  margin-left: 12px !important;\r\n  padding: 0 7px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  gap: 4px !important;\r\n  flex: 0 0 auto !important;\r\n  background: #fff !important;\r\n  border: 1px solid #d8dce3 !important;\r\n  border-radius: 3px !important;\r\n  box-sizing: border-box !important;\r\n  color: #646a73 !important;\r\n  font-size: 12px !important;\r\n  line-height: 22px !important;\r\n}\r\n\r\n.qqdocs-editor-star,\r\n.qqdocs-editor-folder {\r\n  width: 24px !important;\r\n  height: 24px !important;\r\n  margin-left: 4px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 24px !important;\r\n}\r\n\r\n.qqdocs-editor-title-actions {\r\n  height: 40px !important;\r\n  gap: 16px !important;\r\n  flex: 0 0 auto !important;\r\n  color: #454d5a !important;\r\n}\r\n\r\n.qqdocs-editor-action,\r\n.qqdocs-editor-collaborator {\r\n  width: 24px !important;\r\n  height: 24px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  position: relative !important;\r\n  flex: 0 0 24px !important;\r\n}\r\n\r\n.qqdocs-editor-presentation {\r\n  width: 28px !important;\r\n  height: 28px !important;\r\n  flex-basis: 28px !important;\r\n}\r\n\r\n.qqdocs-editor-collaborator sup {\r\n  position: absolute !important;\r\n  top: -4px !important;\r\n  right: -3px !important;\r\n  color: #454d5a !important;\r\n  font-size: 11px !important;\r\n  font-weight: 400 !important;\r\n  line-height: 12px !important;\r\n}\r\n\r\n.qqdocs-editor-share {\r\n  width: 56px !important;\r\n  height: 28px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 56px !important;\r\n  background: #1e6fff !important;\r\n  border-radius: 4px !important;\r\n  box-sizing: border-box !important;\r\n  color: #fff !important;\r\n  font-size: 13px !important;\r\n  line-height: 28px !important;\r\n}\r\n\r\n.qqdocs-editor-account {\r\n  width: 28px !important;\r\n  height: 28px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  position: relative !important;\r\n  flex: 0 0 28px !important;\r\n  background: #fff !important;\r\n  border: 1px solid #e5e7eb !important;\r\n  border-radius: 50% !important;\r\n  box-sizing: border-box !important;\r\n}\r\n\r\n.qqdocs-editor-account > .qqdocs-chrome-icon:first-child { color: #454d5a !important; }\r\n\r\n.qqdocs-editor-account > .qqdocs-chrome-icon:last-child {\r\n  position: absolute !important;\r\n  right: -2px !important;\r\n  bottom: -2px !important;\r\n}\r\n\r\n.qqdocs-editor-tabs {\r\n  height: 40px !important;\r\n  padding: 0 9px !important;\r\n  display: flex !important;\r\n  align-items: flex-end !important;\r\n  gap: 26px !important;\r\n  box-sizing: border-box !important;\r\n  color: #3c424a !important;\r\n  font-size: 12px !important;\r\n  line-height: 32px !important;\r\n}\r\n\r\n.qqdocs-editor-tabs > span {\r\n  height: 32px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  position: relative !important;\r\n  white-space: nowrap !important;\r\n}\r\n\r\n.qqdocs-editor-tabs > span.is-active {\r\n  color: #1f2329 !important;\r\n  font-weight: 600 !important;\r\n}\r\n\r\n.qqdocs-editor-tabs > span.is-active::after {\r\n  content: \"\" !important;\r\n  position: absolute !important;\r\n  left: 0 !important;\r\n  right: 0 !important;\r\n  bottom: 0 !important;\r\n  height: 2px !important;\r\n  background: #1e6fff !important;\r\n  border-radius: 2px !important;\r\n}\r\n\r\n.qqdocs-editor-ribbon {\r\n  height: 70px !important;\r\n  margin: 0 8px !important;\r\n  padding: 8px 10px !important;\r\n  display: flex !important;\r\n  align-items: stretch !important;\r\n  gap: 0 !important;\r\n  overflow: hidden !important;\r\n  background: #fff !important;\r\n  border: 1px solid #e1e4e8 !important;\r\n  border-radius: 8px 8px 0 0 !important;\r\n  box-shadow: 0 1px 5px rgba(31, 35, 41, 0.08) !important;\r\n  box-sizing: border-box !important;\r\n  color: #454d5a !important;\r\n}\r\n\r\n.qqdocs-ribbon-group {\r\n  min-width: 0 !important;\r\n  padding: 0 10px !important;\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  gap: 8px !important;\r\n  border-right: 1px solid #eceef1 !important;\r\n  box-sizing: border-box !important;\r\n  white-space: nowrap !important;\r\n}\r\n\r\n.qqdocs-ribbon-group > span {\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 auto !important;\r\n}\r\n\r\n.qqdocs-ribbon-history {\r\n  width: 82px !important;\r\n  padding: 0 5px !important;\r\n  flex-wrap: wrap !important;\r\n  align-content: center !important;\r\n  column-gap: 8px !important;\r\n  row-gap: 0 !important;\r\n}\r\n\r\n.qqdocs-ribbon-insert-group {\r\n  width: 62px !important;\r\n  padding: 0 7px !important;\r\n}\r\n\r\n.qqdocs-ribbon-labeled {\r\n  flex-direction: column !important;\r\n  gap: 1px !important;\r\n  color: #454d5a !important;\r\n  font-size: 11px !important;\r\n  line-height: 14px !important;\r\n}\r\n\r\n.qqdocs-ribbon-font {\r\n  width: 348px !important;\r\n  padding: 0 8px !important;\r\n  flex-wrap: wrap !important;\r\n  align-content: center !important;\r\n  gap: 4px 8px !important;\r\n}\r\n\r\n.qqdocs-ribbon-select,\r\n.qqdocs-ribbon-size {\r\n  height: 24px !important;\r\n  padding: 0 7px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: space-between !important;\r\n  gap: 7px !important;\r\n  background: #f5f6f7 !important;\r\n  border-radius: 3px !important;\r\n  box-sizing: border-box !important;\r\n  color: #454d5a !important;\r\n  font-size: 12px !important;\r\n  line-height: 24px !important;\r\n}\r\n\r\n.qqdocs-ribbon-select { width: 116px !important; }\r\n.qqdocs-ribbon-size { width: 56px !important; }\r\n\r\n.qqdocs-ribbon-paragraph {\r\n  width: 272px !important;\r\n  padding: 0 8px !important;\r\n  flex-wrap: wrap !important;\r\n  align-content: center !important;\r\n  gap: 4px 8px !important;\r\n}\r\n\r\n.qqdocs-ribbon-styles {\r\n  width: 408px !important;\r\n  padding: 0 8px !important;\r\n  gap: 4px !important;\r\n}\r\n\r\n.qqdocs-ribbon-styles > span {\r\n  width: 61px !important;\r\n  height: 36px !important;\r\n  padding: 0 5px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  background: #f7f8fa !important;\r\n  border-radius: 3px !important;\r\n  box-sizing: border-box !important;\r\n  color: #646a73 !important;\r\n  font-size: 12px !important;\r\n}\r\n\r\n.qqdocs-ribbon-styles > span.is-selected {\r\n  background: #fff !important;\r\n  border: 1px solid #7db0ff !important;\r\n  color: #1f2329 !important;\r\n}\r\n\r\n.qqdocs-ribbon-tools {\r\n  width: 390px !important;\r\n  padding: 0 8px !important;\r\n  gap: 12px !important;\r\n  color: #454d5a !important;\r\n  font-size: 12px !important;\r\n}\r\n\r\n.qqdocs-ribbon-tools > span { gap: 3px !important; }\r\n\r\n.qqdocs-ribbon-search {\r\n  min-width: 64px !important;\r\n  margin-left: auto !important;\r\n  padding: 0 8px 0 14px !important;\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  justify-content: flex-end !important;\r\n  gap: 8px !important;\r\n  color: #646a73 !important;\r\n}\r\n\r\n/* All icon wrappers are inert inline SVGs captured from the reference shell. */\r\n.qqdocs-chrome-icon {\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 auto !important;\r\n  color: currentColor !important;\r\n}\r\n\r\n.qqdocs-chrome-icon > svg {\r\n  width: 100% !important;\r\n  height: 100% !important;\r\n  display: block !important;\r\n  overflow: visible !important;\r\n}\r\n\r\n/* The native title stays in the DOM as a source for the shell, but is not part\n   of the document paper. This keeps the Discourse route reversible when the\n   disguise is toggled off. */\nbody.qqdocs-topic-detail #topic-title {\n  display: none !important;\n}\n\n/* The post stream is one continuous 794px document page. */\nbody.qqdocs-topic-detail .topic-area {\n  width: min(794px, calc(100% - 48px)) !important;\n  max-width: 794px !important;\n  margin-left: auto !important;\n  margin-right: auto !important;\n  min-height: calc(100vh - var(--qqdocs-editor-top) - 84px) !important;\n  box-sizing: border-box !important;\n  background: #fff !important;\n  padding: 46px 56px 70px !important;\n  border: 1px solid rgba(0, 0, 0, 0.09) !important;\n  border-radius: 2px !important;\n  box-shadow: 0 4px 16px rgba(31, 35, 41, 0.08) !important;\n}\n\r\nbody.qqdocs-topic-detail .posts-wrapper,\r\nbody.qqdocs-topic-detail .post-stream {\r\n  width: 100% !important;\r\n  max-width: none !important;\r\n  margin: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .topic-post,\r\nbody.qqdocs-topic-detail .topic-post:first-child,\r\nbody.qqdocs-topic-detail .topic-post:not(:first-child) {\r\n  width: 100% !important;\r\n  margin: 0 !important;\r\n  padding: 28px 0 !important;\r\n  box-sizing: border-box !important;\r\n  background: transparent !important;\r\n  border: 0 !important;\r\n  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;\r\n  border-radius: 0 !important;\r\n  box-shadow: none !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .topic-post:first-child { padding-top: 18px !important; }\r\nbody.qqdocs-topic-detail .topic-post:last-child { border-bottom: 0 !important; }\r\nbody.qqdocs-topic-detail .topic-post:not(:first-child)::before { content: none !important; }\r\n\r\nbody.qqdocs-topic-detail .topic-post > article,\r\nbody.qqdocs-topic-detail .post__row,\r\nbody.qqdocs-topic-detail .post__body,\r\nbody.qqdocs-topic-detail .post__contents {\r\n  width: 100% !important;\r\n  max-width: none !important;\r\n  box-sizing: border-box !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .post__row { display: block !important; }\r\n\r\nbody.qqdocs-topic-detail .topic-meta-data {\r\n  min-height: 28px !important;\r\n  margin: 0 0 16px !important;\r\n  padding: 0 0 10px !important;\r\n  border: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .cooked {\r\n  max-width: none !important;\r\n  color: rgba(0, 0, 0, 0.88) !important;\r\n  font-family: var(--font-family) !important;\r\n  font-size: 15px !important;\r\n  font-weight: var(--font-weight-regular) !important;\r\n  line-height: 28px !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .cooked p { margin: 0 0 14px !important; }\n\n/*\n * Post images are intentionally represented by an opaque, same-size surface\n * until the reader double-clicks them. The wrapper keeps an actual hit target\n * even while the image itself is visibility-hidden, so no source pixels can\n * leak through a blur or translucent veil.\n */\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle {\n  position: relative !important;\n  display: inline-block !important;\n  max-width: 100% !important;\n  vertical-align: baseline !important;\n  line-height: inherit !important;\n  overflow: hidden !important;\n  cursor: zoom-in !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > img,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > picture,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > picture > img {\n  max-width: 100% !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > img,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > picture,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > picture > img {\n  visibility: hidden !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay {\n  position: absolute !important;\n  inset: 0 !important;\n  z-index: 2 !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  min-width: 120px !important;\n  min-height: 48px !important;\n  box-sizing: border-box !important;\n  padding: 10px 18px !important;\n  border: 1px dashed rgba(30, 111, 255, 0.38) !important;\n  border-radius: 4px !important;\n  background: #f3f5f7 !important;\n  color: #646a73 !important;\n  font-family: var(--font-family) !important;\n  font-size: 13px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 20px !important;\n  text-align: center !important;\n  white-space: nowrap !important;\n  cursor: zoom-in !important;\n  user-select: none !important;\n  outline: none !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay:hover,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay:focus-visible {\n  border-color: var(--accent-default) !important;\n  background: #eaf2ff !important;\n  color: var(--accent-default) !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--shown {\n  cursor: zoom-out !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--shown .qqdocs-image-toggle-overlay {\n  display: none !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay[hidden] {\n  display: none !important;\n}\n\n/* Hide forum identity avatars only; ordinary content images remain visible. */\nbody.qqdocs-topic-detail .topic-avatar,\nbody.qqdocs-topic-detail .topic-map__users-list,\r\nbody.qqdocs-topic-detail .d-header-icons #current-user .avatar,\r\nbody.qqdocs-topic-detail .post-avatar,\r\nbody.qqdocs-topic-detail .post-retort__reactions img.avatar,\r\nbody.qqdocs-topic-detail .who-liked img.avatar,\r\nbody.qqdocs-topic-detail .discourse-boosts img.avatar,\r\nbody.qqdocs-topic-detail .reply-to-tab img.avatar,\r\nbody.qqdocs-topic-detail .presence-avatars img.avatar,\r\nbody.qqdocs-topic-detail .presence-users img.avatar,\r\nbody.qqdocs-topic-detail .cooked .quote img.avatar,\r\nbody.qqdocs-topic-detail .cooked blockquote img.avatar,\r\nbody.qqdocs-topic-detail .user-card img.avatar,\r\nbody.qqdocs-topic-detail [role=\"dialog\"] img.avatar,\r\nbody.qqdocs-topic-detail .avatar-flair,\r\nbody.qqdocs-topic-detail .topic-map__users-list .poster {\r\n  display: none !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .topic-avatar + .post__body { margin-left: 0 !important; }\nbody.qqdocs-topic-detail .topic-navigation { display: none !important; }\n\n/* The same facts are rendered in the shell titlebar. Hide both native maps so\n   the avatar strip and the duplicate first-post map cannot overflow the page. */\nbody.qqdocs-topic-detail .topic-map.--bottom,\nbody.qqdocs-topic-detail .post__topic-map.topic-map.--op {\n  display: none !important;\n}\n\n.qqdocs-topic-stats {\n  min-width: 0 !important;\n  max-width: min(280px, 25vw) !important;\n  margin-left: 12px !important;\n  padding-left: 10px !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  flex: 0 1 auto !important;\n  overflow: hidden !important;\n  border-left: 1px solid #dfe2e7 !important;\n  color: #81868f !important;\n  font-size: 11px !important;\n  line-height: 18px !important;\n  white-space: nowrap !important;\n}\n\n.qqdocs-topic-stats[hidden] { display: none !important; }\n\n.qqdocs-topic-stat {\n  min-width: 0 !important;\n  display: inline-flex !important;\n  align-items: baseline !important;\n  gap: 3px !important;\n  flex: 0 1 auto !important;\n  overflow: hidden !important;\n}\n\n.qqdocs-topic-stat-value {\n  min-width: 0 !important;\n  max-width: 8ch !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  color: #454d5a !important;\n  font-size: 12px !important;\n  font-weight: 600 !important;\n  line-height: 18px !important;\n}\n\n.qqdocs-topic-stat-label {\n  min-width: 0 !important;\n  max-width: 4em !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  color: #81868f !important;\n  font-size: 11px !important;\n  font-weight: 400 !important;\n}\n\r\nbody.qqdocs-topic-detail nav.post-controls .actions button {\r\n  padding: 4px 8px !important;\r\n  background: transparent !important;\r\n  border-radius: 4px !important;\r\n  color: var(--text-medium) !important;\r\n  font-size: 12px !important;\r\n}\r\n\r\n@media (max-width: 1100px) {\n  .qqdocs-ribbon-styles > span:nth-child(n+5),\n  .qqdocs-ribbon-tools { display: none !important; }\n  .qqdocs-ribbon-font { width: 320px !important; }\n  .qqdocs-ribbon-paragraph { width: 272px !important; }\n\n  .qqdocs-editor-title-left { margin-right: 8px !important; }\n  .qqdocs-editor-title-actions { gap: 8px !important; }\n  .qqdocs-editor-title-text { max-width: min(360px, 32vw) !important; }\n  .qqdocs-topic-stats {\n    max-width: min(230px, 24vw) !important;\n    margin-left: 8px !important;\n    padding-left: 8px !important;\n    gap: 6px !important;\n  }\n}\n\r\n@media (max-width: 760px) {\r\n  body.qqdocs-topic-detail #main-outlet {\r\n    padding-right: 12px !important;\r\n    padding-left: 12px !important;\r\n  }\r\n\r\n  .qqdocs-editor-title-actions > span:not(.qqdocs-editor-share),\r\n  .qqdocs-editor-readonly,\r\n  .qqdocs-editor-star,\r\n  .qqdocs-editor-folder,\r\n  .qqdocs-ribbon-styles { display: none !important; }\r\n\r\n  .qqdocs-editor-title-left { margin-right: 0 !important; }\n  .qqdocs-editor-title-text {\n    min-width: 0 !important;\n    max-width: min(44vw, 220px) !important;\n  }\n  .qqdocs-topic-stats {\n    max-width: min(36vw, 190px) !important;\n    margin-left: 6px !important;\n    padding-left: 6px !important;\n    gap: 5px !important;\n  }\n  .qqdocs-topic-stat { gap: 2px !important; }\n  .qqdocs-editor-tabs { gap: 14px !important; }\n  .qqdocs-editor-ribbon { margin-left: 4px !important; margin-right: 4px !important; }\r\n  .qqdocs-ribbon-font { width: 240px !important; }\r\n  .qqdocs-ribbon-paragraph { width: 180px !important; }\r\n\r\n  body.qqdocs-topic-detail .topic-area {\n    width: 100% !important;\n    max-width: none !important;\n  }\n\n  body.qqdocs-topic-detail .topic-area { padding: 46px 24px 48px !important; }\n}\n\n@media (max-width: 500px) {\n  .qqdocs-editor-plus { display: none !important; }\n  .qqdocs-editor-title-text { max-width: 26vw !important; }\n  .qqdocs-topic-stats { max-width: 32vw !important; gap: 4px !important; }\n  .qqdocs-topic-stat-label { display: none !important; }\n}\n\n/* --- composer.css --- */\n/* 腾讯文档 - 发帖与回复弹窗伪装 */\n#reply-control {\n  background: var(--qqdocs-bg-card) !important;\n  border-top: 1px solid var(--qqdocs-border-color) !important;\n  box-shadow: var(--qqdocs-shadow-lg) !important;\n  border-radius: var(--qqdocs-radius-lg) var(--qqdocs-radius-lg) 0 0 !important;\n}\n\n#reply-control .composer-fields {\n  border-bottom: 1px solid var(--qqdocs-border-color) !important;\n  padding: 8px 16px !important;\n}\n\n#reply-control .title-input input {\n  border: 1px solid var(--qqdocs-border-color) !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n  padding: 8px 12px !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n}\n#reply-control .title-input input:focus {\n  border-color: var(--qqdocs-brand-color) !important;\n  box-shadow: 0 0 0 2px var(--qqdocs-brand-focus) !important;\n}\n\n/* 编辑器工具栏 */\n.d-editor .d-editor-button-bar {\n  background: var(--qqdocs-bg-hover) !important;\n  border-bottom: 1px solid var(--qqdocs-border-color) !important;\n  padding: 4px 8px !important;\n  border-radius: var(--qqdocs-radius-md) var(--qqdocs-radius-md) 0 0 !important;\n}\n\n.d-editor .d-editor-button-bar button {\n  color: var(--qqdocs-text-secondary) !important;\n  border-radius: var(--qqdocs-radius-sm) !important;\n}\n.d-editor .d-editor-button-bar button:hover {\n  background: #e2e5eb !important;\n  color: var(--qqdocs-brand-color) !important;\n}\n\n/* 文本输入框 */\n.d-editor-textarea-wrapper {\n  background: #ffffff !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  border-radius: 0 0 var(--qqdocs-radius-md) var(--qqdocs-radius-md) !important;\n}\n\n.d-editor-textarea-wrapper textarea {\n  font-family: var(--qqdocs-font-family) !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 20px !important;\n  padding: 12px !important;\n}\n\n/* 提交按钮重构 (腾讯蓝主按钮) */\n#reply-control .submit-panel .btn-primary,\n.btn-primary.create {\n  background-color: var(--qqdocs-brand-color) !important;\n  color: #ffffff !important;\n  border: none !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n  padding: 6px 16px !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  box-shadow: 0 2px 4px rgba(0, 82, 217, 0.2) !important;\n  transition: all 0.15s ease !important;\n}\n\n#reply-control .submit-panel .btn-primary:hover,\n.btn-primary.create:hover {\n  background-color: var(--qqdocs-brand-hover) !important;\n  box-shadow: 0 4px 8px rgba(0, 82, 217, 0.3) !important;\n}\n\n#reply-control .submit-panel .btn-flat {\n  color: var(--qqdocs-text-secondary) !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n}\n\n/* --- modal-menu.css --- */\n/* 腾讯文档 - 菜单、浮层与弹窗样式 */\n\n/* 下拉菜单面板 */\n.menu-panel,\n.menu-panel.drop-down,\n.user-menu,\n.search-menu {\n  background: var(--qqdocs-bg-card) !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  border-radius: var(--qqdocs-radius-lg) !important;\n  box-shadow: var(--qqdocs-shadow-popover) !important;\n  padding: 8px !important;\n}\n\n/* 菜单项 */\n.menu-panel li a,\n.user-menu .panel-body-contents a,\n.search-menu .results a {\n  border-radius: var(--qqdocs-radius-md) !important;\n  color: var(--qqdocs-text-primary) !important;\n  padding: 8px 12px !important;\n  font-size: var(--font-size-body) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  transition: background 0.15s ease !important;\n}\n\n.menu-panel li a:hover,\n.user-menu .panel-body-contents a:hover,\n.search-menu .results a:hover {\n  background-color: var(--qqdocs-bg-hover) !important;\n  color: var(--qqdocs-brand-color) !important;\n}\n\n/* 弹窗模态框 (Discourse Modal) */\n.modal-inner-container {\n  background: var(--qqdocs-bg-card) !important;\n  border-radius: var(--qqdocs-radius-lg) !important;\n  box-shadow: var(--qqdocs-shadow-lg) !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  overflow: hidden !important;\n}\n\n.modal-header {\n  border-bottom: 1px solid var(--qqdocs-border-color) !important;\n  padding: 14px 20px !important;\n}\n\n.modal-header h3 {\n  font-size: 16px !important;\n  font-weight: 600 !important;\n  line-height: 24px !important;\n  color: var(--qqdocs-text-primary) !important;\n}\n\n.modal-footer {\n  border-top: 1px solid var(--qqdocs-border-color) !important;\n  padding: 12px 20px !important;\n}\n\n/* 按钮通用 */\n.btn-default {\n  background: var(--qqdocs-bg-hover) !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  color: var(--qqdocs-text-primary) !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n}\n.btn-default:hover {\n  background: #e8ebf0 !important;\n}\n";
+  const css = "\n/* --- variables.css --- */\n/* 腾讯文档 2026 官方 Design Token 变量 */\n:root {\n  --text-ultrastrong: rgba(0, 0, 0, 0.9);\n  --text-strong: rgba(0, 0, 0, 0.76);\n  --text-medium: rgba(0, 0, 0, 0.56);\n  --text-weak: rgba(0, 0, 0, 0.26);\n  --text-link: #175ceb;\n  --text-white: #fff;\n  --text-vip: #e59837;\n\n  --accent-default: #1e6fff;\n  --accent-hover: #175ceb;\n  --accent-pressed: #134ae0;\n  --accent-disabled: #c2d8ff;\n\n  --bg-lv1-default: #fff;\n  --bg-lv2-default: #fff;\n  --bg-lv3-default: #fff;\n  --bg-lv4-default: #fff;\n  --bg-lv3-medium: #f3f5f7;\n\n  --border-weak: rgba(0, 0, 0, 0.04);\n  --border-medium: rgba(0, 0, 0, 0.08);\n  --border-strong: rgba(0, 0, 0, 0.12);\n\n  --feedback-hover: rgba(51, 77, 102, 0.06);\n  --feedback-active: rgba(51, 77, 102, 0.08);\n\n  --sidebar-width: 244px;\n  /* 腾讯文档桌面端实测：顶部栏高 60px，左侧栏宽 244px。 */\n  --topbar-height: 60px;\n\n  /* 2026-08-27 从腾讯文档 desktop 实际 computed style 提取。 */\n  --font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Noto Sans\", Ubuntu, Cantarell, \"Helvetica Neue\", apple-system, Helvetica, Arial, \"PingFang SC\", \"Microsoft YaHei\", \"Source Han Sans SC\", \"Noto Sans CJK SC\", \"WenQuanYi Micro Hei\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", TdocsUncommon;\n  --font-family-numeric: Bahnschrift, \"DIN Alternate\", var(--font-family);\n  --font-size-caption: 12px;\n  --font-size-body: 14px;\n  --font-size-tab: 16px;\n  --line-height-caption: 16px;\n  --line-height-body: 20px;\n  --line-height-title: 24px;\n  --font-weight-regular: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n\n  /* 兼容 composer/modal 中的旧变量名。 */\n  --qqdocs-font-family: var(--font-family);\n  --qqdocs-text-primary: var(--text-ultrastrong);\n  --qqdocs-text-secondary: var(--text-strong);\n  --qqdocs-brand-color: var(--accent-default);\n  --qqdocs-brand-hover: var(--accent-hover);\n  --qqdocs-bg-hover: var(--bg-lv3-medium);\n}\n\n/* --- global.css --- */\n/* 全局基础重置与工作台布局 (彻底解决 #main-outlet-wrapper 居中与重复偏移) */\n\nhtml, body {\n  background-color: #ffffff !important;\n  color: var(--text-ultrastrong) !important;\n  font-family: var(--font-family) !important;\n  font-size: 16px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: normal !important;\n  letter-spacing: normal !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  overflow-x: hidden !important;\n  width: 100vw !important;\n}\n\nbutton,\ninput,\ntextarea,\nselect {\n  font-family: var(--font-family) !important;\n  font-style: normal !important;\n  letter-spacing: normal !important;\n}\n\n/* 覆盖 Discourse 自带字体变量，确保伪装界面的所有文字都落到腾讯文档字体栈。 */\n.d-header,\n.d-header *,\n.desktop-layout-sidebar-pc,\n.desktop-layout-sidebar-pc *,\n#main-outlet,\n#main-outlet *,\n#reply-control,\n#reply-control *,\n.menu-panel,\n.menu-panel *,\n.modal-inner-container,\n.modal-inner-container * {\n  font-family: var(--font-family) !important;\n  letter-spacing: normal !important;\n}\n\n/* 正文中的代码仍保持语义正确的等宽字体。 */\n#main-outlet code,\n#main-outlet pre,\n#main-outlet kbd,\n#main-outlet samp {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", monospace !important;\n}\n\n/* Discourse 刷新遮罩：仅移除遮罩中的巨大站点 Logo，保留加载点与页面启动流程。 */\n#d-splash .splash-logo-container {\n  display: none !important;\n  background-image: none !important;\n  animation: none !important;\n}\n\n/* 1. 彻底隐藏 Linux Do 原生的所有 Banner、Notice、公告、原生侧栏与导航条 */\n.welcome-banner,\n.custom-search-banner-wrap,\n.global-notice,\n.alert,\n.alert-info,\n.alert-update-topics,\n.above-main-container-outlet,\n.list-controls,\n.navigation-container,\n.navigation-controls,\n.nav-pills,\n.categories-admin-dropdown,\n.category-breadcrumb,\n.category-boxes,\n.top-notices,\n.community-rule,\n#site-text-logo,\n.sidebar-wrapper,\n#d-sidebar,\n.d-sidebar-wrapper,\n.topic-list-bottom,\n.nav-tabs,\n.select-kit,\n.loading-container {\n  display: none !important;\n}\n\n/* 2. 重置 Discourse 外层包装容器 #main-outlet-wrapper (去除原版的 max-width: 1110px 和 margin: 0 auto) */\n#main-outlet-wrapper,\n#main-outlet-wrapper.wrap {\n  display: block !important;\n  margin: var(--topbar-height) 0 0 var(--sidebar-width) !important;\n  padding: 0 !important;\n  width: calc(100vw - var(--sidebar-width)) !important;\n  max-width: calc(100vw - var(--sidebar-width)) !important;\n  box-sizing: border-box !important;\n  min-height: calc(100vh - var(--topbar-height)) !important;\n  grid-template-columns: 1fr !important;\n}\n\n/* 3. #main-outlet 与主容器直接贴紧左侧栏，消除任何多余空白 */\n#main-outlet {\n  margin: 0 !important;\n  width: 100% !important;\n  max-width: 100% !important;\n  padding: 16px 28px !important;\n  box-sizing: border-box !important;\n  background: #ffffff !important;\n  display: block !important;\n}\n\n#main-container,\n#main-container.container,\n#main-outlet > .container,\n#main-outlet > .container.list-container,\n#main-outlet > .ember-view,\n.topic-list-container {\n  width: 100% !important;\n  max-width: 100% !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  box-sizing: border-box !important;\n  display: block !important;\n}\n\n/* 4. 滚动条轻量化 */\n::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n}\n::-webkit-scrollbar-track {\n  background: transparent;\n}\n::-webkit-scrollbar-thumb {\n  background: rgba(0, 0, 0, 0.12);\n  border-radius: 3px;\n}\n::-webkit-scrollbar-thumb:hover {\n  background: rgba(0, 0, 0, 0.22);\n}\n\n/* 5. 浮动模式切换小按钮 (Alt+Q) */\n.qqdocs-toggle-badge {\n  position: fixed;\n  right: 16px;\n  bottom: 16px;\n  z-index: 999999;\n  background: #ffffff;\n  border: 1px solid var(--border-medium);\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);\n  padding: 5px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: var(--font-weight-regular);\n  line-height: var(--line-height-caption);\n  color: var(--text-medium);\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  cursor: pointer;\n  user-select: none;\n  transition: all 0.2s ease;\n}\n.qqdocs-toggle-badge:hover {\n  color: var(--accent-default);\n  border-color: var(--accent-default);\n}\n\n/* --- header.css --- */\n/* 腾讯文档官方原生 Header 样式 */\n.d-header {\n  background: var(--bg-lv3-medium) !important;\n  border-bottom: 0 !important;\n  box-shadow: none !important;\n  height: var(--topbar-height) !important;\n  padding: 0 !important;\n  position: fixed !important;\n  top: 0 !important;\n  left: 0 !important;\n  right: 0 !important;\n  transform: none !important;\n  z-index: 1100 !important;\n  width: 100vw !important;\n  max-width: 100vw !important;\n  box-sizing: border-box !important;\n}\n\n.d-header .wrap {\n  max-width: 100% !important;\n  width: 100% !important;\n  height: 100% !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n}\n\n.d-header .contents {\n  height: 100% !important;\n  display: flex !important;\n  align-items: center !important;\n  width: 100% !important;\n  justify-content: flex-start !important;\n  flex-flow: row nowrap !important;\n  min-width: 0 !important;\n  position: relative !important;\n}\n\n/* Discourse 2026 的 Logo outlet 本身也是 flex item，必须固定为侧栏宽度。 */\n.d-header .home-logo-wrapper-outlet {\n  display: flex !important;\n  align-items: center !important;\n  width: var(--sidebar-width) !important;\n  min-width: var(--sidebar-width) !important;\n  height: 100% !important;\n  flex: 0 0 var(--sidebar-width) !important;\n  overflow: visible !important;\n  order: 0 !important;\n}\n\n/* 彻底隐藏原论坛左侧边栏折叠按钮、Logo与右侧原生各种按钮 */\n.header-sidebar-toggle,\n.btn-sidebar-toggle,\n.d-header .title a img,\n.d-header .title a .title-text,\n.d-header-icons .hamburger-dropdown,\n.d-header-icons .language-switcher,\n.d-header-icons .search-dropdown,\n.d-header-icons .chat-header-icon,\n.d-header-icons .header-dropdown-toggle:not(#current-user):not(.desktop-top-bar-right) {\n  display: none !important;\n}\n\n/* 官方左侧 Logo 容器 */\n.d-header .title {\n  display: flex !important;\n  align-items: center !important;\n  width: var(--sidebar-width) !important;\n  min-width: var(--sidebar-width) !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  flex-shrink: 0 !important;\n  position: static !important;\n  overflow: visible !important;\n  box-sizing: border-box !important;\n  order: 0 !important;\n}\n\n.desktop-top-bar-left {\n  display: flex !important;\n  align-items: center !important;\n  width: 100% !important;\n}\n\n.desktop-logo-pc {\n  display: inline-flex !important;\n  align-items: center !important;\n  text-decoration: none !important;\n  width: 100% !important;\n  height: 26px !important;\n  padding-left: 32px !important;\n  box-sizing: border-box !important;\n  flex-shrink: 0 !important;\n}\n.desktop-logo-pc svg {\n  display: block !important;\n  width: 195px !important;\n  height: 26px !important;\n  max-width: 195px !important;\n  flex: 0 0 195px !important;\n}\n\n/* 搜索框 (DUI 官方规范) */\n.d-header .desktop-search-input-pc {\n  position: relative !important;\n  display: flex !important;\n  align-items: center !important;\n  background: #ffffff !important;\n  border: 1px solid var(--border-medium) !important;\n  border-radius: 8px !important;\n  height: 38px !important;\n  width: clamp(220px, calc(100vw - var(--sidebar-width) - 558px), 960px) !important;\n  max-width: 960px !important;\n  min-width: 220px !important;\n  padding: 0 14px !important;\n  box-sizing: border-box !important;\n  transition: all 0.2s ease !important;\n  margin: 0 !important;\n  flex: 0 1 clamp(220px, calc(100vw - var(--sidebar-width) - 558px), 960px) !important;\n  order: 1 !important;\n  overflow: hidden !important;\n}\n.d-header .desktop-search-input-pc:focus-within {\n  background: #ffffff !important;\n  border: 1px solid var(--accent-default) !important;\n  box-shadow: 0 0 0 2px rgba(30, 111, 255, 0.15) !important;\n}\n.d-header .desktop-search-input-pc input {\n  display: block !important;\n  flex: 1 1 auto !important;\n  min-width: 0 !important;\n  height: 36px !important;\n  border: none !important;\n  outline: none !important;\n  background: transparent !important;\n  box-shadow: none !important;\n  appearance: none !important;\n  -webkit-appearance: none !important;\n  font-size: 12px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 36px !important;\n  color: var(--text-ultrastrong) !important;\n  width: 100% !important;\n  margin: 0 !important;\n  padding: 0 0 0 6px !important;\n  box-sizing: border-box !important;\n}\n.d-header .desktop-search-input-pc input::placeholder {\n  color: var(--text-weak) !important;\n  line-height: 36px !important;\n  opacity: 1 !important;\n}\n\n/* 接管原生 panel (右侧按钮组容器) */\n.d-header .panel {\n  display: flex !important;\n  align-items: center !important;\n  margin-left: auto !important;\n  float: none !important;\n  height: 100% !important;\n  min-width: 0 !important;\n  padding: 0 16px 0 24px !important;\n  box-sizing: border-box !important;\n  flex: 0 0 auto !important;\n  order: 2 !important;\n}\n\n/* 顶部右侧功能按钮组 */\n.d-header-icons {\n  display: flex !important;\n  align-items: center !important;\n}\n\n.desktop-top-bar-right {\n  display: flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n}\n\n.desktop-top-bar-button {\n  background: transparent !important;\n  border: none !important;\n  outline: none !important;\n  cursor: pointer !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 4px !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-ultrastrong) !important;\n  padding: 4px 8px !important;\n  border-radius: 4px !important;\n  transition: background-color 0.15s ease !important;\n  user-select: none !important;\n  text-decoration: none !important;\n}\n.desktop-top-bar-button:hover {\n  background-color: var(--feedback-hover) !important;\n  color: var(--text-ultrastrong) !important;\n}\n\n.desktop-vip-center-button {\n  color: var(--text-vip) !important;\n  font-weight: 500 !important;\n}\n.desktop-vip-center-button:hover {\n  color: #c97f26 !important;\n}\n\n.desktop-notification-badge {\n  background: #f54a45 !important;\n  color: #fff !important;\n  font-size: 12px !important;\n  font-weight: var(--font-weight-medium) !important;\n  padding: 0 4px !important;\n  height: 14px !important;\n  line-height: 14px !important;\n  border-radius: 7px !important;\n  margin-left: 2px !important;\n}\n\n/* 窄屏时先收起文字型次要入口，始终给品牌和搜索框保留独立空间。 */\n@media (max-width: 1180px) {\n  .desktop-top-bar-button span:not(.desktop-notification-badge) {\n    display: none !important;\n  }\n\n  .desktop-top-bar-right {\n    gap: 2px !important;\n  }\n\n  .d-header .panel {\n    padding-left: 12px !important;\n  }\n}\n\n@media (max-width: 760px) {\n  .d-header .title {\n    width: 72px !important;\n    min-width: 72px !important;\n  }\n\n  .desktop-logo-pc {\n    padding-left: 20px !important;\n  }\n\n  .desktop-logo-pc svg {\n    width: 28px !important;\n    max-width: 28px !important;\n    flex-basis: 28px !important;\n  }\n\n  .d-header .desktop-search-input-pc {\n    min-width: 120px !important;\n    width: auto !important;\n    flex: 1 1 auto !important;\n  }\n}\n\n/* 用户头像 */\n.d-header-icons #current-user .avatar {\n  width: 28px !important;\n  height: 28px !important;\n  border-radius: 50% !important;\n  border: 1px solid var(--border-weak) !important;\n}\n\n/* --- sidebar.css --- */\n/* 腾讯文档官方原生 Sidebar 样式 (Fixed 固定左侧) */\n.desktop-layout-sidebar-pc {\n  position: fixed !important;\n  left: 0 !important;\n  top: var(--topbar-height) !important;\n  width: var(--sidebar-width) !important;\n  min-width: var(--sidebar-width) !important;\n  max-width: var(--sidebar-width) !important;\n  background: var(--bg-lv3-medium) !important;\n  border-right: 0 !important;\n  padding: 16px 12px !important;\n  display: flex !important;\n  flex-direction: column !important;\n  height: calc(100vh - var(--topbar-height)) !important;\n  box-sizing: border-box !important;\n  user-select: none !important;\n  z-index: 1000 !important;\n}\n\n/* 顶部操作按钮 */\n.desktop-create-button-pc {\n  background-color: var(--accent-default) !important;\n  color: #ffffff !important;\n  height: 36px !important;\n  border-radius: 4px !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 6px !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 16px !important;\n  cursor: pointer !important;\n  border: none !important;\n  width: 100% !important;\n  margin-bottom: 8px !important;\n  transition: background-color 0.15s ease !important;\n  text-decoration: none !important;\n}\n.desktop-create-button-pc:hover {\n  background-color: var(--accent-hover) !important;\n}\n\n.desktop-upload-button-pc {\n  background-color: #ffffff !important;\n  color: var(--text-ultrastrong) !important;\n  border: 1px solid var(--border-medium) !important;\n  height: 32px !important;\n  border-radius: 4px !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 6px !important;\n  font-size: var(--font-size-body) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  cursor: pointer !important;\n  width: 100% !important;\n  margin-bottom: 16px !important;\n  transition: all 0.15s ease !important;\n  text-decoration: none !important;\n}\n.desktop-upload-button-pc:hover {\n  background-color: var(--feedback-hover) !important;\n  border-color: var(--border-strong) !important;\n}\n\n/* 导航链接 */\n.desktop-sidebar-nav-list {\n  display: flex !important;\n  flex-direction: column !important;\n  gap: 2px !important;\n  flex: 1 !important;\n}\n\n.desktop-node-link-router {\n  display: flex !important;\n  align-items: center !important;\n  gap: 10px !important;\n  padding: 8px 12px !important;\n  border-radius: 4px !important;\n  font-size: var(--font-size-body) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  color: var(--text-ultrastrong) !important;\n  text-decoration: none !important;\n  cursor: pointer !important;\n  transition: all 0.15s ease !important;\n}\n.desktop-node-link-router:hover {\n  background-color: var(--feedback-hover) !important;\n  color: var(--text-ultrastrong) !important;\n}\n.desktop-node-link-router.desktop-link-active {\n  background-color: var(--bg-lv3-medium) !important;\n  color: var(--text-ultrastrong) !important;\n  font-weight: 600 !important;\n}\n\n/* 企业版卡片 */\n.desktop-enterprise-edition-entry {\n  margin-top: auto !important;\n  margin-bottom: 12px !important;\n}\n.desktop-promo-card {\n  background: linear-gradient(180deg, #f0f5ff 0%, #f7f9fc 100%) !important;\n  border: 1px solid #e1eaff !important;\n  border-radius: 6px !important;\n  padding: 12px !important;\n}\n.desktop-promo-header {\n  display: flex !important;\n  align-items: center !important;\n  gap: 6px !important;\n  margin-bottom: 4px !important;\n}\n.desktop-promo-title {\n  font-size: var(--font-size-body) !important;\n  font-weight: 600 !important;\n  line-height: var(--line-height-body) !important;\n  color: var(--text-strong) !important;\n}\n.desktop-promo-subtitle {\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-weak) !important;\n  margin-bottom: 8px !important;\n}\n.desktop-promo-button {\n  background: var(--accent-default) !important;\n  color: #fff !important;\n  font-size: var(--font-size-body) !important;\n  line-height: var(--line-height-body) !important;\n  padding: 4px 0 !important;\n  text-align: center !important;\n  border-radius: 12px !important;\n  cursor: pointer !important;\n  font-weight: var(--font-weight-regular) !important;\n}\n\n/* 空间容量进度条 */\n.desktop-storage-panel {\n  padding: 6px 2px !important;\n  font-family: var(--font-family-numeric) !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-medium) !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n}\n.desktop-storage-panel a {\n  color: var(--text-medium) !important;\n  text-decoration: none !important;\n}\n.desktop-storage-panel a:hover {\n  color: var(--accent-default) !important;\n}\n\n/* --- topic-list.css --- */\n/* 腾讯文档官方原生列表页样式 (深度适配 Discourse 原生 Table 结构) */\n\n.list-container,\n.topic-list-container,\n#main-container,\n#main-outlet .container.list-container,\n#main-outlet > .ember-view {\n  width: 100% !important;\n  max-width: 100% !important;\n  background: #ffffff !important;\n  border: none !important;\n  box-shadow: none !important;\n  box-sizing: border-box !important;\n  padding: 0 !important;\n  margin: 0 !important;\n}\n\n/* 顶部 Tab 切换头 (最近 / 空间 / 收藏) */\n.desktop-home-page-tab-header-pc {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n  border-bottom: 1px solid var(--border-weak) !important;\n  padding-bottom: 8px !important;\n  margin-bottom: 12px !important;\n  width: 100% !important;\n}\n\n.desktop-tab-group {\n  display: flex !important;\n  align-items: center !important;\n  gap: 24px !important;\n}\n\n.desktop-tab-link {\n  font-size: var(--font-size-tab) !important;\n  line-height: 48px !important;\n  color: var(--text-medium) !important;\n  cursor: pointer !important;\n  padding-bottom: 0 !important;\n  position: relative !important;\n  font-weight: var(--font-weight-regular) !important;\n  text-decoration: none !important;\n}\n.desktop-tab-link:hover {\n  color: var(--text-ultrastrong) !important;\n}\n.desktop-tab-link.desktop-link-active {\n  color: var(--text-ultrastrong) !important;\n  font-weight: 600 !important;\n}\n.desktop-tab-link.desktop-link-active::after {\n  content: '';\n  position: absolute;\n  bottom: -9px;\n  left: 0;\n  width: 100%;\n  height: 2px;\n  background-color: var(--text-ultrastrong);\n}\n\n.desktop-page-header-extra-pc {\n  display: flex !important;\n  align-items: center !important;\n  gap: 16px !important;\n}\n\n.desktop-header-action-btn {\n  display: flex !important;\n  align-items: center !important;\n  gap: 4px !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-semibold) !important;\n  line-height: var(--line-height-caption) !important;\n  color: var(--text-ultrastrong) !important;\n  cursor: pointer !important;\n  background: transparent !important;\n  border: none !important;\n}\n.desktop-header-action-btn:hover {\n  color: var(--text-ultrastrong) !important;\n}\n\n/* 表格主体 */\n.topic-list {\n  width: 100% !important;\n  border-collapse: collapse !important;\n  table-layout: fixed !important;\n  margin: 0 !important;\n}\n\n/* 表头重构 */\n.topic-list thead {\n  display: table-header-group !important;\n}\n\n.topic-list thead tr {\n  border-bottom: 1px solid var(--border-weak) !important;\n}\n\n.topic-list th {\n  color: var(--text-strong) !important;\n  font-size: var(--font-size-caption) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  text-align: left !important;\n  padding: 10px 8px !important;\n  background: transparent !important;\n  border: none !important;\n}\n\n/* 列宽分配 (与腾讯文档完全一致) */\n.topic-list th.default,\n.topic-list th.topic-list-data:nth-child(1),\n.topic-list td.main-link {\n  width: 50% !important;\n}\n.topic-list th.posters,\n.topic-list td.posters {\n  width: 13% !important;\n}\n.topic-list th.posts,\n.topic-list td.posts {\n  width: 12% !important;\n}\n.topic-list th.views,\n.topic-list td.views {\n  width: 13% !important;\n}\n.topic-list th.activity,\n.topic-list td.activity {\n  width: 12% !important;\n  text-align: right !important;\n}\n\n/* 行样式 */\n.topic-list-item {\n  border-bottom: 1px solid #f7f8fa !important;\n  /* 行高调为 56px */\n  height: 56px !important;\n  transition: background-color 0.1s ease !important;\n}\n.topic-list-item:hover {\n  background-color: #f7f8fa !important;\n}\n\n.topic-list-item .main-link {\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  white-space: nowrap !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n}\n\n.topic-list-item .link-top-line {\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  width: 100% !important;\n  overflow: hidden !important;\n}\n\n.topic-list-item .title {\n  color: var(--text-ultrastrong) !important;\n  font-size: 14px !important;\n  font-weight: 400 !important;\n  line-height: var(--line-height-title) !important;\n  text-decoration: none !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  white-space: nowrap !important;\n  display: inline !important;\n}\n.topic-list-item .title:hover {\n  color: var(--accent-default) !important;\n}\n\n/* 隐藏未读蓝点、标题下方的论坛分类条与摘要 */\n.topic-list-item .link-bottom-line,\n.topic-list-item .topic-statuses,\n.topic-list-item .topic-excerpt,\n.topic-list-item .unread-indicator,\n.topic-list-item .badge-notification.unread-posts {\n  display: none !important;\n}\n\n/* 腾讯文档单选圆圈双保险隐藏（如果有旧DOM） */\n.qqdocs-select-circle {\n  display: none !important;\n}\n\n/* 图标容器 */\n.qqdocs-row-icon-wrap {\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  margin-right: 8px !important;\n  flex-shrink: 0 !important;\n  vertical-align: middle !important;\n}\n\n.qqdocs-doc-svg {\n  width: 20px !important;\n  height: 20px !important;\n  min-width: 20px !important;\n  min-height: 20px !important;\n  flex-shrink: 0 !important;\n  display: inline-block !important;\n  vertical-align: middle !important;\n}\n\n/* 所有者列 */\n.topic-list-item .posters {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  white-space: nowrap !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n}\n.topic-list-item .posters img.avatar,\n.topic-list-item .posters a:not(:first-child) {\n  display: none !important;\n}\n\n/* 位置列 */\n.topic-list-item .posts {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  white-space: nowrap !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  text-align: left !important;\n}\n\n/* 最近查看列 */\n.topic-list-item .views {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n  text-align: left !important;\n}\n\n/* 文档大小列 */\n.topic-list-item .activity {\n  font-size: 12px !important;\n  color: var(--text-strong) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-caption) !important;\n  text-align: right !important;\n  padding: 0 8px !important;\n  vertical-align: middle !important;\n}\n\n/* --- topic-detail.css --- */\n/* Tencent Docs document shell for topic detail pages. */\r\nbody.qqdocs-topic-detail {\r\n  --qqdocs-editor-top: 150px;\r\n  background: #f3f5f7 !important;\r\n}\r\n\r\n/* A topic has its own document chrome; the forum chrome is not shown here. */\r\nbody.qqdocs-topic-detail .d-header,\r\nbody.qqdocs-topic-detail .desktop-layout-sidebar-pc {\r\n  display: none !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .qqdocs-doc-toolbar {\r\n  display: none !important;\r\n  width: 0 !important;\r\n  height: 0 !important;\r\n  min-height: 0 !important;\r\n  margin: 0 !important;\r\n  padding: 0 !important;\r\n  border: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail,\r\nbody.qqdocs-topic-detail #main,\r\nbody.qqdocs-topic-detail #main-outlet-wrapper,\r\nbody.qqdocs-topic-detail #main-outlet,\r\nbody.qqdocs-topic-detail .container.posts {\r\n  background: #f3f5f7 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail #main-outlet-wrapper,\r\nbody.qqdocs-topic-detail #main-outlet-wrapper.wrap {\r\n  width: 100vw !important;\r\n  max-width: 100vw !important;\r\n  min-height: 100vh !important;\r\n  margin: 0 !important;\r\n  padding: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail #main-outlet {\n  width: 100% !important;\n  max-width: none !important;\n  min-height: 100vh !important;\n  margin: 0 !important;\n  padding: calc(var(--qqdocs-editor-top) + 12px) 32px 72px !important;\n  box-sizing: border-box !important;\n}\n\n/* Discourse mounts the topic route in a generated .regular.ember-view wrapper.\n   Keep that full-width wrapper on the editor canvas instead of its white default. */\nbody.qqdocs-topic-detail #main-outlet > .regular.ember-view {\n  background: #f3f5f7 !important;\n}\n\nbody.qqdocs-topic-detail .container.posts {\n  display: block !important;\r\n  width: 100% !important;\r\n  max-width: none !important;\r\n  margin: 0 !important;\r\n}\r\n\r\n/* Three non-interactive rows: titlebar, menu tabs, and the ribbon. */\r\n.qqdocs-editor-shell {\r\n  position: fixed !important;\r\n  inset: 0 0 auto 0 !important;\r\n  z-index: 1400 !important;\r\n  height: var(--qqdocs-editor-top) !important;\r\n  overflow: hidden !important;\r\n  background: #f3f5f7 !important;\r\n  color: #1f2329 !important;\r\n  border-bottom: 1px solid #dfe2e7 !important;\r\n  box-sizing: border-box !important;\r\n  font-family: var(--font-family) !important;\r\n  pointer-events: none !important;\r\n  user-select: none !important;\r\n}\r\n\r\n.qqdocs-editor-titlebar {\r\n  height: 40px !important;\r\n  padding: 0 12px !important;\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  justify-content: space-between !important;\r\n  box-sizing: border-box !important;\r\n  font-size: 13px !important;\r\n}\r\n\r\n.qqdocs-editor-title-left,\r\n.qqdocs-editor-title-actions {\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  min-width: 0 !important;\r\n}\r\n\r\n.qqdocs-editor-title-left {\n  height: 40px !important;\n  margin-right: 16px !important;\n  flex: 1 1 auto !important;\n  overflow: hidden !important;\n}\n\r\n.qqdocs-editor-title-left > .qqdocs-editor-home {\r\n  width: 28px !important;\r\n  height: 28px !important;\r\n  margin-right: 4px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 28px !important;\r\n}\r\n\r\n.qqdocs-editor-title-left > .qqdocs-editor-plus {\r\n  width: 24px !important;\r\n  height: 24px !important;\r\n  margin-right: 8px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 24px !important;\r\n}\r\n\r\n.qqdocs-editor-divider {\r\n  width: 1px !important;\r\n  height: 16px !important;\r\n  margin-right: 8px !important;\r\n  display: inline-block !important;\r\n  flex: 0 0 1px !important;\r\n  background: #dfe2e7 !important;\r\n}\r\n\r\n.qqdocs-editor-title-text {\n  min-width: 0 !important;\n  flex: 0 1 auto !important;\n  max-width: min(560px, 42vw) !important;\n  overflow: hidden !important;\r\n  text-overflow: ellipsis !important;\r\n  white-space: nowrap !important;\r\n  color: #1f2329 !important;\r\n  font-size: 16px !important;\r\n  font-weight: 600 !important;\r\n  line-height: 28px !important;\r\n}\r\n\r\n.qqdocs-editor-readonly {\r\n  height: 24px !important;\r\n  margin-left: 12px !important;\r\n  padding: 0 7px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  gap: 4px !important;\r\n  flex: 0 0 auto !important;\r\n  background: #fff !important;\r\n  border: 1px solid #d8dce3 !important;\r\n  border-radius: 3px !important;\r\n  box-sizing: border-box !important;\r\n  color: #646a73 !important;\r\n  font-size: 12px !important;\r\n  line-height: 22px !important;\r\n}\r\n\r\n.qqdocs-editor-star,\r\n.qqdocs-editor-folder {\r\n  width: 24px !important;\r\n  height: 24px !important;\r\n  margin-left: 4px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 24px !important;\r\n}\r\n\r\n.qqdocs-editor-title-actions {\r\n  height: 40px !important;\r\n  gap: 16px !important;\r\n  flex: 0 0 auto !important;\r\n  color: #454d5a !important;\r\n}\r\n\r\n.qqdocs-editor-action,\r\n.qqdocs-editor-collaborator {\r\n  width: 24px !important;\r\n  height: 24px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  position: relative !important;\r\n  flex: 0 0 24px !important;\r\n}\r\n\r\n.qqdocs-editor-presentation {\r\n  width: 28px !important;\r\n  height: 28px !important;\r\n  flex-basis: 28px !important;\r\n}\r\n\r\n.qqdocs-editor-collaborator sup {\r\n  position: absolute !important;\r\n  top: -4px !important;\r\n  right: -3px !important;\r\n  color: #454d5a !important;\r\n  font-size: 11px !important;\r\n  font-weight: 400 !important;\r\n  line-height: 12px !important;\r\n}\r\n\r\n.qqdocs-editor-share {\r\n  width: 56px !important;\r\n  height: 28px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 56px !important;\r\n  background: #1e6fff !important;\r\n  border-radius: 4px !important;\r\n  box-sizing: border-box !important;\r\n  color: #fff !important;\r\n  font-size: 13px !important;\r\n  line-height: 28px !important;\r\n}\r\n\r\n.qqdocs-editor-account {\r\n  width: 28px !important;\r\n  height: 28px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  position: relative !important;\r\n  flex: 0 0 28px !important;\r\n  background: #fff !important;\r\n  border: 1px solid #e5e7eb !important;\r\n  border-radius: 50% !important;\r\n  box-sizing: border-box !important;\r\n}\r\n\r\n.qqdocs-editor-account > .qqdocs-chrome-icon:first-child { color: #454d5a !important; }\r\n\r\n.qqdocs-editor-account > .qqdocs-chrome-icon:last-child {\r\n  position: absolute !important;\r\n  right: -2px !important;\r\n  bottom: -2px !important;\r\n}\r\n\r\n.qqdocs-editor-tabs {\r\n  height: 40px !important;\r\n  padding: 0 9px !important;\r\n  display: flex !important;\r\n  align-items: flex-end !important;\r\n  gap: 26px !important;\r\n  box-sizing: border-box !important;\r\n  color: #3c424a !important;\r\n  font-size: 12px !important;\r\n  line-height: 32px !important;\r\n}\r\n\r\n.qqdocs-editor-tabs > span {\r\n  height: 32px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  position: relative !important;\r\n  white-space: nowrap !important;\r\n}\r\n\r\n.qqdocs-editor-tabs > span.is-active {\r\n  color: #1f2329 !important;\r\n  font-weight: 600 !important;\r\n}\r\n\r\n.qqdocs-editor-tabs > span.is-active::after {\r\n  content: \"\" !important;\r\n  position: absolute !important;\r\n  left: 0 !important;\r\n  right: 0 !important;\r\n  bottom: 0 !important;\r\n  height: 2px !important;\r\n  background: #1e6fff !important;\r\n  border-radius: 2px !important;\r\n}\r\n\r\n.qqdocs-editor-ribbon {\r\n  height: 70px !important;\r\n  margin: 0 8px !important;\r\n  padding: 8px 10px !important;\r\n  display: flex !important;\r\n  align-items: stretch !important;\r\n  gap: 0 !important;\r\n  overflow: hidden !important;\r\n  background: #fff !important;\r\n  border: 1px solid #e1e4e8 !important;\r\n  border-radius: 8px 8px 0 0 !important;\r\n  box-shadow: 0 1px 5px rgba(31, 35, 41, 0.08) !important;\r\n  box-sizing: border-box !important;\r\n  color: #454d5a !important;\r\n}\r\n\r\n.qqdocs-ribbon-group {\r\n  min-width: 0 !important;\r\n  padding: 0 10px !important;\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  gap: 8px !important;\r\n  border-right: 1px solid #eceef1 !important;\r\n  box-sizing: border-box !important;\r\n  white-space: nowrap !important;\r\n}\r\n\r\n.qqdocs-ribbon-group > span {\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 auto !important;\r\n}\r\n\r\n.qqdocs-ribbon-history {\r\n  width: 82px !important;\r\n  padding: 0 5px !important;\r\n  flex-wrap: wrap !important;\r\n  align-content: center !important;\r\n  column-gap: 8px !important;\r\n  row-gap: 0 !important;\r\n}\r\n\r\n.qqdocs-ribbon-insert-group {\r\n  width: 62px !important;\r\n  padding: 0 7px !important;\r\n}\r\n\r\n.qqdocs-ribbon-labeled {\r\n  flex-direction: column !important;\r\n  gap: 1px !important;\r\n  color: #454d5a !important;\r\n  font-size: 11px !important;\r\n  line-height: 14px !important;\r\n}\r\n\r\n.qqdocs-ribbon-font {\r\n  width: 348px !important;\r\n  padding: 0 8px !important;\r\n  flex-wrap: wrap !important;\r\n  align-content: center !important;\r\n  gap: 4px 8px !important;\r\n}\r\n\r\n.qqdocs-ribbon-select,\r\n.qqdocs-ribbon-size {\r\n  height: 24px !important;\r\n  padding: 0 7px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: space-between !important;\r\n  gap: 7px !important;\r\n  background: #f5f6f7 !important;\r\n  border-radius: 3px !important;\r\n  box-sizing: border-box !important;\r\n  color: #454d5a !important;\r\n  font-size: 12px !important;\r\n  line-height: 24px !important;\r\n}\r\n\r\n.qqdocs-ribbon-select { width: 116px !important; }\r\n.qqdocs-ribbon-size { width: 56px !important; }\r\n\r\n.qqdocs-ribbon-paragraph {\r\n  width: 272px !important;\r\n  padding: 0 8px !important;\r\n  flex-wrap: wrap !important;\r\n  align-content: center !important;\r\n  gap: 4px 8px !important;\r\n}\r\n\r\n.qqdocs-ribbon-styles {\r\n  width: 408px !important;\r\n  padding: 0 8px !important;\r\n  gap: 4px !important;\r\n}\r\n\r\n.qqdocs-ribbon-styles > span {\r\n  width: 61px !important;\r\n  height: 36px !important;\r\n  padding: 0 5px !important;\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  background: #f7f8fa !important;\r\n  border-radius: 3px !important;\r\n  box-sizing: border-box !important;\r\n  color: #646a73 !important;\r\n  font-size: 12px !important;\r\n}\r\n\r\n.qqdocs-ribbon-styles > span.is-selected {\r\n  background: #fff !important;\r\n  border: 1px solid #7db0ff !important;\r\n  color: #1f2329 !important;\r\n}\r\n\r\n.qqdocs-ribbon-tools {\r\n  width: 390px !important;\r\n  padding: 0 8px !important;\r\n  gap: 12px !important;\r\n  color: #454d5a !important;\r\n  font-size: 12px !important;\r\n}\r\n\r\n.qqdocs-ribbon-tools > span { gap: 3px !important; }\r\n\r\n.qqdocs-ribbon-search {\r\n  min-width: 64px !important;\r\n  margin-left: auto !important;\r\n  padding: 0 8px 0 14px !important;\r\n  display: flex !important;\r\n  align-items: center !important;\r\n  justify-content: flex-end !important;\r\n  gap: 8px !important;\r\n  color: #646a73 !important;\r\n}\r\n\r\n/* All icon wrappers are inert inline SVGs captured from the reference shell. */\r\n.qqdocs-chrome-icon {\r\n  display: inline-flex !important;\r\n  align-items: center !important;\r\n  justify-content: center !important;\r\n  flex: 0 0 auto !important;\r\n  color: currentColor !important;\r\n}\r\n\r\n.qqdocs-chrome-icon > svg {\r\n  width: 100% !important;\r\n  height: 100% !important;\r\n  display: block !important;\r\n  overflow: visible !important;\r\n}\r\n\r\n/* The native title stays in the DOM as a source for the shell, but is not part\n   of the document paper. This keeps the Discourse route reversible when the\n   disguise is toggled off. */\nbody.qqdocs-topic-detail #topic-title {\n  display: none !important;\n}\n\n/* The post stream is one continuous 794px document page. */\nbody.qqdocs-topic-detail .topic-area {\n  width: min(794px, calc(100% - 48px)) !important;\n  max-width: 794px !important;\n  margin-left: auto !important;\n  margin-right: auto !important;\n  min-height: calc(100vh - var(--qqdocs-editor-top) - 84px) !important;\n  box-sizing: border-box !important;\n  background: #fff !important;\n  padding: 46px 56px 70px !important;\n  border: 1px solid rgba(0, 0, 0, 0.09) !important;\n  border-radius: 2px !important;\n  box-shadow: 0 4px 16px rgba(31, 35, 41, 0.08) !important;\n}\n\r\nbody.qqdocs-topic-detail .posts-wrapper,\r\nbody.qqdocs-topic-detail .post-stream {\r\n  width: 100% !important;\r\n  max-width: none !important;\r\n  margin: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .topic-post,\r\nbody.qqdocs-topic-detail .topic-post:first-child,\r\nbody.qqdocs-topic-detail .topic-post:not(:first-child) {\r\n  width: 100% !important;\r\n  margin: 0 !important;\r\n  padding: 28px 0 !important;\r\n  box-sizing: border-box !important;\r\n  background: transparent !important;\r\n  border: 0 !important;\r\n  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;\r\n  border-radius: 0 !important;\r\n  box-shadow: none !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .topic-post:first-child { padding-top: 18px !important; }\r\nbody.qqdocs-topic-detail .topic-post:last-child { border-bottom: 0 !important; }\r\nbody.qqdocs-topic-detail .topic-post:not(:first-child)::before { content: none !important; }\r\n\r\nbody.qqdocs-topic-detail .topic-post > article,\r\nbody.qqdocs-topic-detail .post__row,\r\nbody.qqdocs-topic-detail .post__body,\r\nbody.qqdocs-topic-detail .post__contents {\r\n  width: 100% !important;\r\n  max-width: none !important;\r\n  box-sizing: border-box !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .post__row { display: block !important; }\r\n\r\nbody.qqdocs-topic-detail .topic-meta-data {\r\n  min-height: 28px !important;\r\n  margin: 0 0 16px !important;\r\n  padding: 0 0 10px !important;\r\n  border: 0 !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .cooked {\r\n  max-width: none !important;\r\n  color: rgba(0, 0, 0, 0.88) !important;\r\n  font-family: var(--font-family) !important;\r\n  font-size: 15px !important;\r\n  font-weight: var(--font-weight-regular) !important;\r\n  line-height: 28px !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .cooked p { margin: 0 0 14px !important; }\n\n/*\n * Post images are intentionally represented by an opaque, same-size surface\n * until the reader double-clicks them. The wrapper keeps an actual hit target\n * even while the image itself is visibility-hidden, so no source pixels can\n * leak through a blur or translucent veil.\n */\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle {\n  position: relative !important;\n  display: inline-block !important;\n  max-width: 100% !important;\n  vertical-align: baseline !important;\n  line-height: inherit !important;\n  overflow: hidden !important;\n  cursor: zoom-in !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > img,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > picture,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > picture > img {\n  max-width: 100% !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > img,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > picture,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > picture > img {\n  visibility: hidden !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay {\n  position: absolute !important;\n  inset: 0 !important;\n  z-index: 2 !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  min-width: 120px !important;\n  min-height: 48px !important;\n  box-sizing: border-box !important;\n  padding: 10px 18px !important;\n  border: 1px dashed rgba(30, 111, 255, 0.38) !important;\n  border-radius: 4px !important;\n  background: #f3f5f7 !important;\n  color: #646a73 !important;\n  font-family: var(--font-family) !important;\n  font-size: 13px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 20px !important;\n  text-align: center !important;\n  white-space: nowrap !important;\n  cursor: zoom-in !important;\n  user-select: none !important;\n  outline: none !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay:hover,\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay:focus-visible {\n  border-color: var(--accent-default) !important;\n  background: #eaf2ff !important;\n  color: var(--accent-default) !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--shown {\n  cursor: zoom-out !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--shown .qqdocs-image-toggle-overlay {\n  display: none !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay[hidden] {\n  display: none !important;\n}\n\n/*\n * Post emoji labels. The grid wrapper keeps the larger of the original emoji\n * and its label in the same inline box in both states, so hovering never\n * reflows the surrounding paragraph. The actual <img> remains in the DOM;\n * only visibility changes while the real label is a normal text node.\n */\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper {\n  position: relative !important;\n  display: inline-grid !important;\n  place-items: center !important;\n  vertical-align: middle !important;\n  line-height: 1 !important;\n  text-align: center !important;\n  cursor: default !important;\n  outline: none !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper > img,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper > picture,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper > picture > img {\n  grid-area: 1 / 1 !important;\n  display: block !important;\n  visibility: hidden !important;\n  opacity: 0 !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-label {\n  grid-area: 1 / 1 !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  box-sizing: border-box !important;\n  min-height: 20px !important;\n  padding: 1px 5px !important;\n  border: 1px solid #b7dfbd !important;\n  border-radius: 3px !important;\n  background: #e9f7eb !important;\n  color: #397342 !important;\n  font-family: var(--font-family) !important;\n  font-size: 12px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 18px !important;\n  white-space: nowrap !important;\n  user-select: none !important;\n  pointer-events: none !important;\n  visibility: visible !important;\n  opacity: 1 !important;\n  transition: opacity 0.08s ease !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:hover > img,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:focus-within > img,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:hover > picture,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:focus-within > picture,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:hover > picture > img,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:focus-within > picture > img {\n  visibility: visible !important;\n  opacity: 1 !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:hover > .qqdocs-emoji-label,\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:focus-within > .qqdocs-emoji-label {\n  visibility: hidden !important;\n  opacity: 0 !important;\n}\n\nbody.qqdocs-topic-detail.qqdocs-emoji-label-enabled .qqdocs-emoji-wrapper:focus-visible {\n  outline: 2px solid rgba(30, 111, 255, 0.5) !important;\n  outline-offset: 2px !important;\n  border-radius: 3px !important;\n}\n\n/* Hide forum identity avatars only; ordinary content images remain visible. */\nbody.qqdocs-topic-detail .topic-avatar,\nbody.qqdocs-topic-detail .topic-map__users-list,\r\nbody.qqdocs-topic-detail .d-header-icons #current-user .avatar,\r\nbody.qqdocs-topic-detail .post-avatar,\r\nbody.qqdocs-topic-detail .post-retort__reactions img.avatar,\r\nbody.qqdocs-topic-detail .who-liked img.avatar,\r\nbody.qqdocs-topic-detail .discourse-boosts img.avatar,\r\nbody.qqdocs-topic-detail .reply-to-tab img.avatar,\r\nbody.qqdocs-topic-detail .presence-avatars img.avatar,\r\nbody.qqdocs-topic-detail .presence-users img.avatar,\r\nbody.qqdocs-topic-detail .cooked .quote img.avatar,\r\nbody.qqdocs-topic-detail .cooked blockquote img.avatar,\r\nbody.qqdocs-topic-detail .user-card img.avatar,\r\nbody.qqdocs-topic-detail [role=\"dialog\"] img.avatar,\r\nbody.qqdocs-topic-detail .avatar-flair,\r\nbody.qqdocs-topic-detail .topic-map__users-list .poster {\r\n  display: none !important;\r\n}\r\n\r\nbody.qqdocs-topic-detail .topic-avatar + .post__body { margin-left: 0 !important; }\nbody.qqdocs-topic-detail .topic-navigation { display: none !important; }\n\n/* The same facts are rendered in the shell titlebar. Hide both native maps so\n   the avatar strip and the duplicate first-post map cannot overflow the page. */\nbody.qqdocs-topic-detail .topic-map.--bottom,\nbody.qqdocs-topic-detail .post__topic-map.topic-map.--op {\n  display: none !important;\n}\n\n.qqdocs-topic-stats {\n  min-width: 0 !important;\n  max-width: min(280px, 25vw) !important;\n  margin-left: 12px !important;\n  padding-left: 10px !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  flex: 0 1 auto !important;\n  overflow: hidden !important;\n  border-left: 1px solid #dfe2e7 !important;\n  color: #81868f !important;\n  font-size: 11px !important;\n  line-height: 18px !important;\n  white-space: nowrap !important;\n}\n\n.qqdocs-topic-stats[hidden] { display: none !important; }\n\n.qqdocs-topic-stat {\n  min-width: 0 !important;\n  display: inline-flex !important;\n  align-items: baseline !important;\n  gap: 3px !important;\n  flex: 0 1 auto !important;\n  overflow: hidden !important;\n}\n\n.qqdocs-topic-stat-value {\n  min-width: 0 !important;\n  max-width: 8ch !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  color: #454d5a !important;\n  font-size: 12px !important;\n  font-weight: 600 !important;\n  line-height: 18px !important;\n}\n\n.qqdocs-topic-stat-label {\n  min-width: 0 !important;\n  max-width: 4em !important;\n  overflow: hidden !important;\n  text-overflow: ellipsis !important;\n  color: #81868f !important;\n  font-size: 11px !important;\n  font-weight: 400 !important;\n}\n\r\nbody.qqdocs-topic-detail nav.post-controls .actions button {\r\n  padding: 4px 8px !important;\r\n  background: transparent !important;\r\n  border-radius: 4px !important;\r\n  color: var(--text-medium) !important;\r\n  font-size: 12px !important;\r\n}\r\n\r\n@media (max-width: 1100px) {\n  .qqdocs-ribbon-styles > span:nth-child(n+5),\n  .qqdocs-ribbon-tools { display: none !important; }\n  .qqdocs-ribbon-font { width: 320px !important; }\n  .qqdocs-ribbon-paragraph { width: 272px !important; }\n\n  .qqdocs-editor-title-left { margin-right: 8px !important; }\n  .qqdocs-editor-title-actions { gap: 8px !important; }\n  .qqdocs-editor-title-text { max-width: min(360px, 32vw) !important; }\n  .qqdocs-topic-stats {\n    max-width: min(230px, 24vw) !important;\n    margin-left: 8px !important;\n    padding-left: 8px !important;\n    gap: 6px !important;\n  }\n}\n\r\n@media (max-width: 760px) {\r\n  body.qqdocs-topic-detail #main-outlet {\r\n    padding-right: 12px !important;\r\n    padding-left: 12px !important;\r\n  }\r\n\r\n  .qqdocs-editor-title-actions > span:not(.qqdocs-editor-share),\r\n  .qqdocs-editor-readonly,\r\n  .qqdocs-editor-star,\r\n  .qqdocs-editor-folder,\r\n  .qqdocs-ribbon-styles { display: none !important; }\r\n\r\n  .qqdocs-editor-title-left { margin-right: 0 !important; }\n  .qqdocs-editor-title-text {\n    min-width: 0 !important;\n    max-width: min(44vw, 220px) !important;\n  }\n  .qqdocs-topic-stats {\n    max-width: min(36vw, 190px) !important;\n    margin-left: 6px !important;\n    padding-left: 6px !important;\n    gap: 5px !important;\n  }\n  .qqdocs-topic-stat { gap: 2px !important; }\n  .qqdocs-editor-tabs { gap: 14px !important; }\n  .qqdocs-editor-ribbon { margin-left: 4px !important; margin-right: 4px !important; }\r\n  .qqdocs-ribbon-font { width: 240px !important; }\r\n  .qqdocs-ribbon-paragraph { width: 180px !important; }\r\n\r\n  body.qqdocs-topic-detail .topic-area {\n    width: 100% !important;\n    max-width: none !important;\n  }\n\n  body.qqdocs-topic-detail .topic-area { padding: 46px 24px 48px !important; }\n}\n\n@media (max-width: 500px) {\n  .qqdocs-editor-plus { display: none !important; }\n  .qqdocs-editor-title-text { max-width: 26vw !important; }\n  .qqdocs-topic-stats { max-width: 32vw !important; gap: 4px !important; }\n  .qqdocs-topic-stat-label { display: none !important; }\n}\n\n/* --- composer.css --- */\n/* 腾讯文档 - 发帖与回复弹窗伪装 */\n#reply-control {\n  background: var(--qqdocs-bg-card) !important;\n  border-top: 1px solid var(--qqdocs-border-color) !important;\n  box-shadow: var(--qqdocs-shadow-lg) !important;\n  border-radius: var(--qqdocs-radius-lg) var(--qqdocs-radius-lg) 0 0 !important;\n}\n\n#reply-control .composer-fields {\n  border-bottom: 1px solid var(--qqdocs-border-color) !important;\n  padding: 8px 16px !important;\n}\n\n#reply-control .title-input input {\n  border: 1px solid var(--qqdocs-border-color) !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n  padding: 8px 12px !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n}\n#reply-control .title-input input:focus {\n  border-color: var(--qqdocs-brand-color) !important;\n  box-shadow: 0 0 0 2px var(--qqdocs-brand-focus) !important;\n}\n\n/* 编辑器工具栏 */\n.d-editor .d-editor-button-bar {\n  background: var(--qqdocs-bg-hover) !important;\n  border-bottom: 1px solid var(--qqdocs-border-color) !important;\n  padding: 4px 8px !important;\n  border-radius: var(--qqdocs-radius-md) var(--qqdocs-radius-md) 0 0 !important;\n}\n\n.d-editor .d-editor-button-bar button {\n  color: var(--qqdocs-text-secondary) !important;\n  border-radius: var(--qqdocs-radius-sm) !important;\n}\n.d-editor .d-editor-button-bar button:hover {\n  background: #e2e5eb !important;\n  color: var(--qqdocs-brand-color) !important;\n}\n\n/* 文本输入框 */\n.d-editor-textarea-wrapper {\n  background: #ffffff !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  border-radius: 0 0 var(--qqdocs-radius-md) var(--qqdocs-radius-md) !important;\n}\n\n.d-editor-textarea-wrapper textarea {\n  font-family: var(--qqdocs-font-family) !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: 20px !important;\n  padding: 12px !important;\n}\n\n/* 提交按钮重构 (腾讯蓝主按钮) */\n#reply-control .submit-panel .btn-primary,\n.btn-primary.create {\n  background-color: var(--qqdocs-brand-color) !important;\n  color: #ffffff !important;\n  border: none !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n  padding: 6px 16px !important;\n  font-size: 14px !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  box-shadow: 0 2px 4px rgba(0, 82, 217, 0.2) !important;\n  transition: all 0.15s ease !important;\n}\n\n#reply-control .submit-panel .btn-primary:hover,\n.btn-primary.create:hover {\n  background-color: var(--qqdocs-brand-hover) !important;\n  box-shadow: 0 4px 8px rgba(0, 82, 217, 0.3) !important;\n}\n\n#reply-control .submit-panel .btn-flat {\n  color: var(--qqdocs-text-secondary) !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n}\n\n/* --- modal-menu.css --- */\n/* 腾讯文档 - 菜单、浮层与弹窗样式 */\n\n/* 下拉菜单面板 */\n.menu-panel,\n.menu-panel.drop-down,\n.user-menu,\n.search-menu {\n  background: var(--qqdocs-bg-card) !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  border-radius: var(--qqdocs-radius-lg) !important;\n  box-shadow: var(--qqdocs-shadow-popover) !important;\n  padding: 8px !important;\n}\n\n/* 菜单项 */\n.menu-panel li a,\n.user-menu .panel-body-contents a,\n.search-menu .results a {\n  border-radius: var(--qqdocs-radius-md) !important;\n  color: var(--qqdocs-text-primary) !important;\n  padding: 8px 12px !important;\n  font-size: var(--font-size-body) !important;\n  font-weight: var(--font-weight-regular) !important;\n  line-height: var(--line-height-body) !important;\n  transition: background 0.15s ease !important;\n}\n\n.menu-panel li a:hover,\n.user-menu .panel-body-contents a:hover,\n.search-menu .results a:hover {\n  background-color: var(--qqdocs-bg-hover) !important;\n  color: var(--qqdocs-brand-color) !important;\n}\n\n/* 弹窗模态框 (Discourse Modal) */\n.modal-inner-container {\n  background: var(--qqdocs-bg-card) !important;\n  border-radius: var(--qqdocs-radius-lg) !important;\n  box-shadow: var(--qqdocs-shadow-lg) !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  overflow: hidden !important;\n}\n\n.modal-header {\n  border-bottom: 1px solid var(--qqdocs-border-color) !important;\n  padding: 14px 20px !important;\n}\n\n.modal-header h3 {\n  font-size: 16px !important;\n  font-weight: 600 !important;\n  line-height: 24px !important;\n  color: var(--qqdocs-text-primary) !important;\n}\n\n.modal-footer {\n  border-top: 1px solid var(--qqdocs-border-color) !important;\n  padding: 12px 20px !important;\n}\n\n/* 按钮通用 */\n.btn-default {\n  background: var(--qqdocs-bg-hover) !important;\n  border: 1px solid var(--qqdocs-border-color) !important;\n  color: var(--qqdocs-text-primary) !important;\n  border-radius: var(--qqdocs-radius-md) !important;\n}\n.btn-default:hover {\n  background: #e8ebf0 !important;\n}\n";
   let styleEl = null;
 
   if (typeof GM_addStyle !== 'undefined') {
@@ -151,6 +151,479 @@ const DisguiseEngine = (function () {
   const POST_IMAGE_TOGGLE_OVERLAY = 'qqdocs-image-toggle-overlay';
   const POST_IMAGE_BOUND_ATTRIBUTE = 'data-qqdocs-image-toggle-bound';
   const POST_IMAGE_WRAPPER_ATTRIBUTE = 'data-qqdocs-image-toggle-wrapper';
+
+  const POST_EMOJI_SELECTOR = [
+    '.post-stream .cooked img.emoji',
+    '.post-stream .cooked img.emoticon',
+    '.post-stream .cooked img[data-emoji]',
+    '.post-stream .cooked img[data-emoticon]',
+    '.post-stream .cooked [data-emoji] > img',
+    '.post-stream .cooked [data-emoticon] > img',
+    '.post-stream .cooked [data-emoji-image]'
+  ].join(', ');
+  const POST_EMOJI_WRAPPER = 'qqdocs-emoji-wrapper';
+  const POST_EMOJI_LABEL = 'qqdocs-emoji-label';
+  const POST_EMOJI_BOUND_ATTRIBUTE = 'data-qqdocs-emoji-bound';
+  const POST_EMOJI_WRAPPER_ATTRIBUTE = 'data-qqdocs-emoji-wrapper';
+  const POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE = 'data-qqdocs-emoji-aria-hidden-added';
+
+  // The map intentionally contains common Discourse/Unicode aliases only. A
+  // site-specific shortcode remains readable through the shortcode fallback.
+  const COMMON_EMOJI_DESCRIPTIONS = Object.freeze({
+    // Faces and emotions
+    grinning: '咧嘴笑',
+    grinning_face: '咧嘴笑',
+    grin: '露齿笑',
+    smile: '微笑',
+    smiling_face: '微笑',
+    blush: '害羞',
+    smiling_face_with_smiling_eyes: '害羞',
+    innocent: '天真',
+    smiling_face_with_halo: '天真',
+    slight_smile: '淡淡微笑',
+    slightly_smiling_face: '淡淡微笑',
+    upside_down_face: '颠倒脸',
+    rofl: '大笑',
+    rolling_on_the_floor_laughing: '大笑',
+    joy: '喜极而泣',
+    face_with_tears_of_joy: '喜极而泣',
+    laugh: '笑',
+    laughing: '大笑',
+    grinning_face_with_smiling_eyes: '大笑',
+    satisfied: '满意',
+    beaming_face_with_smiling_eyes: '满意',
+    sweat_smile: '汗笑',
+    grinning_face_with_sweat: '汗笑',
+    wink: '眨眼',
+    winking_face: '眨眼',
+    yum: '好吃',
+    face_savoring_food: '好吃',
+    stuck_out_tongue: '吐舌',
+    face_with_tongue: '吐舌',
+    stuck_out_tongue_winking_eye: '眨眼吐舌',
+    winking_face_with_tongue: '眨眼吐舌',
+    stuck_out_tongue_closed_eyes: '闭眼吐舌',
+    squinting_face_with_tongue: '闭眼吐舌',
+    money_mouth_face: '财迷',
+    hugs: '拥抱',
+    hugging: '拥抱',
+    smiling_face_with_open_hands: '拥抱',
+    hugging_face: '拥抱',
+    kissing_heart: '飞吻',
+    face_blowing_a_kiss: '飞吻',
+    kissing: '亲吻',
+    kissing_face: '亲吻',
+    kissing_smiling_eyes: '微笑亲吻',
+    kissing_face_with_smiling_eyes: '微笑亲吻',
+    kissing_closed_eyes: '闭眼亲吻',
+    kissing_face_with_closed_eyes: '闭眼亲吻',
+    heart_eyes: '花痴',
+    smiling_face_with_heart_eyes: '花痴',
+    star_struck: '星星眼',
+    zany_face: '滑稽',
+    crazy_face: '疯狂',
+    woozy_face: '迷糊',
+    sweat: '冷汗',
+    downcast_face_with_sweat: '冷汗',
+    thinking: '思考',
+    thinking_face: '思考',
+    neutral_face: '面无表情',
+    expressionless: '无表情',
+    unamused: '不满',
+    pensive: '沉思',
+    confused: '困惑',
+    relieved: '如释重负',
+    relieved_face: '如释重负',
+    relaxed: '放松',
+    smirk: '得意',
+    smirking_face: '得意',
+    no_mouth: '无语',
+    face_without_mouth: '无语',
+    zipper_mouth_face: '闭嘴',
+    shushing_face: '嘘',
+    lying_face: '说谎',
+    rolling_eyes: '翻白眼',
+    face_with_rolling_eyes: '翻白眼',
+    grimacing: '龇牙',
+    grimacing_face: '龇牙',
+    frowning: '皱眉',
+    frowning_face: '皱眉',
+    worried: '担心',
+    worried_face: '担心',
+    angry: '生气',
+    angry_face: '生气',
+    rage: '暴怒',
+    enraged_face: '暴怒',
+    disappointed: '失望',
+    disappointed_face: '失望',
+    cry: '哭泣',
+    crying_face: '哭泣',
+    sob: '痛哭',
+    loudly_crying_face: '痛哭',
+    fearful: '害怕',
+    fearful_face: '害怕',
+    scared: '害怕',
+    scream: '尖叫',
+    face_screaming_in_fear: '尖叫',
+    astonished: '惊讶',
+    astonished_face: '惊讶',
+    flushed: '脸红',
+    weary: '疲惫',
+    weary_face: '疲惫',
+    tired_face: '疲倦',
+    sleepy: '困倦',
+    sleepy_face: '困倦',
+    sleeping: '睡觉',
+    sleeping_face: '睡觉',
+    drooling_face: '流口水',
+    dizzy_face: '晕眩',
+    nauseated_face: '恶心',
+    vomiting_face: '呕吐',
+    face_vomiting: '呕吐',
+    sneezing_face: '打喷嚏',
+    mask: '生病',
+    face_with_medical_mask: '生病',
+    thermometer_face: '发烧',
+    face_with_thermometer: '发烧',
+    exploding_head: '爆炸头',
+    cowboy_hat_face: '牛仔帽',
+    clown_face: '小丑',
+    imp: '小恶魔',
+    smiling_imp: '恶魔',
+    smiling_face_with_horns: '恶魔',
+    angry_face_with_horns: '小恶魔',
+    skull: '骷髅',
+    skull_and_crossbones: '骷髅头',
+    ghost: '幽灵',
+    alien: '外星人',
+    robot: '机器人',
+    poop: '便便',
+    hankey: '便便',
+    shit: '便便',
+    // Hands, gestures, and body parts
+    wave: '挥手',
+    raised_back_of_hand: '举手背',
+    raised_hand: '举手',
+    hand: '举手',
+    raised_hand_with_fingers_splayed: '举手',
+    open_hands: '张开双手',
+    palms_up_together: '双手向上',
+    point_up: '指向上方',
+    index_pointing_up: '指向上方',
+    point_up_2: '指向上方',
+    backhand_index_pointing_up: '指向上方',
+    point_down: '指向下方',
+    backhand_index_pointing_down: '指向下方',
+    point_left: '指向左方',
+    backhand_index_pointing_left: '指向左方',
+    point_right: '指向右方',
+    backhand_index_pointing_right: '指向右方',
+    thumbsup: '点赞',
+    '+1': '点赞',
+    thumbs_up: '点赞',
+    thumbsdown: '点踩',
+    '-1': '点踩',
+    thumbs_down: '点踩',
+    ok_hand: '好的手势',
+    pinched_fingers: '捏指',
+    pinching_hand: '捏合',
+    v: '胜利手势',
+    victory_hand: '胜利手势',
+    crossed_fingers: '祈求好运',
+    fingers_crossed: '祈求好运',
+    love_you_gesture: '我爱你手势',
+    metal: '摇滚手势',
+    sign_of_the_horns: '摇滚手势',
+    call_me_hand: '打电话手势',
+    handshake: '握手',
+    clap: '鼓掌',
+    clapping_hands: '鼓掌',
+    pray: '祈祷',
+    folded_hands: '祈祷',
+    muscle: '肌肉',
+    flexed_biceps: '展示肌肉',
+    fist: '拳头',
+    punch: '出拳',
+    facepunch: '出拳',
+    oncoming_fist: '出拳',
+    raised_fist: '举拳',
+    left_facing_fist: '左拳',
+    right_facing_fist: '右拳',
+    writing_hand: '写字',
+    nail_care: '美甲',
+    ear: '耳朵',
+    eyes: '双眼',
+    eye: '眼睛',
+    lips: '嘴唇',
+    tongue: '舌头',
+    nose: '鼻子',
+    brain: '大脑',
+    // Hearts, symbols, and celebration
+    heart: '红心',
+    red_heart: '红心',
+    orange_heart: '橙心',
+    yellow_heart: '黄心',
+    green_heart: '绿心',
+    blue_heart: '蓝心',
+    purple_heart: '紫心',
+    black_heart: '黑心',
+    white_heart: '白心',
+    brown_heart: '棕心',
+    broken_heart: '心碎',
+    sparkling_heart: '闪耀的心',
+    growing_heart: '成长的心',
+    heartpulse: '心跳',
+    heartbeat: '心跳',
+    beating_heart: '心跳',
+    revolving_hearts: '旋转的心',
+    two_hearts: '两颗心',
+    couple_with_heart: '情侣心',
+    gift_heart: '爱心礼物',
+    cupid: '丘比特',
+    fire: '火焰',
+    sparkles: '闪光',
+    star: '星星',
+    star2: '发光星星',
+    glowing_star: '发光星星',
+    dizzy: '头晕',
+    boom: '爆炸',
+    collision: '碰撞',
+    anger: '怒气',
+    sweat_drops: '汗滴',
+    sweat_droplets: '汗滴',
+    dash: '飞奔',
+    dashing_away: '飞奔',
+    100: '满分',
+    hundred_points: '满分',
+    exclamation: '感叹号',
+    red_exclamation_mark: '感叹号',
+    question: '问号',
+    red_question_mark: '问号',
+    grey_exclamation: '灰色感叹号',
+    white_exclamation_mark: '灰色感叹号',
+    grey_question: '灰色问号',
+    white_question_mark: '灰色问号',
+    warning: '警告',
+    white_check_mark: '白色对勾',
+    check_mark_button: '白色对勾',
+    heavy_check_mark: '粗体对勾',
+    check_mark: '粗体对勾',
+    x: '叉号',
+    cross_mark: '叉号',
+    heavy_multiplication_x: '粗体叉号',
+    bangbang: '双感叹号',
+    interrobang: '问叹号',
+    tada: '庆祝',
+    party_popper: '庆祝',
+    confetti_ball: '彩纸球',
+    balloon: '气球',
+    gift: '礼物',
+    birthday: '生日',
+    trophy: '奖杯',
+    medal_sports: '奖牌',
+    sports_medal: '奖牌',
+    crown: '王冠',
+    gem: '宝石',
+    gem_stone: '宝石',
+    rainbow: '彩虹',
+    // Food, drink, and everyday objects
+    apple: '苹果',
+    green_apple: '青苹果',
+    pear: '梨',
+    tangerine: '橘子',
+    orange: '橘子',
+    lemon: '柠檬',
+    banana: '香蕉',
+    watermelon: '西瓜',
+    grapes: '葡萄',
+    strawberry: '草莓',
+    peach: '桃子',
+    cherries: '樱桃',
+    pineapple: '菠萝',
+    tomato: '番茄',
+    corn: '玉米',
+    ear_of_corn: '玉米',
+    mushroom: '蘑菇',
+    pizza: '披萨',
+    hamburger: '汉堡',
+    fries: '薯条',
+    french_fries: '薯条',
+    hotdog: '热狗',
+    ramen: '拉面',
+    steaming_bowl: '拉面',
+    rice: '米饭',
+    cooked_rice: '米饭',
+    curry: '咖喱饭',
+    curry_rice: '咖喱饭',
+    sushi: '寿司',
+    cake: '蛋糕',
+    shortcake: '蛋糕',
+    birthday_cake: '生日蛋糕',
+    cookie: '饼干',
+    chocolate_bar: '巧克力',
+    candy: '糖果',
+    lollipop: '棒棒糖',
+    icecream: '冰淇淋',
+    ice_cream: '冰淇淋',
+    coffee: '咖啡',
+    tea: '茶',
+    teacup_without_handle: '茶',
+    beer: '啤酒',
+    beers: '碰杯',
+    clinking_beer_mugs: '碰杯',
+    cocktail: '鸡尾酒',
+    tropical_drink: '鸡尾酒',
+    wine_glass: '红酒',
+    champagne: '香槟',
+    bottle_with_popping_cork: '香槟',
+    fork_and_knife: '刀叉',
+    plate_with_cutlery: '餐盘',
+    bulb: '灯泡',
+    light_bulb: '灯泡',
+    flashlight: '手电筒',
+    book: '书',
+    books: '书籍',
+    memo: '备忘录',
+    pencil2: '铅笔',
+    pencil: '铅笔',
+    pen: '钢笔',
+    notebook: '笔记本',
+    bookmark: '书签',
+    pushpin: '图钉',
+    paperclip: '回形针',
+    scissors: '剪刀',
+    lock: '锁',
+    unlock: '开锁',
+    key: '钥匙',
+    hammer: '锤子',
+    wrench: '扳手',
+    gear: '齿轮',
+    link: '链接',
+    package: '包裹',
+    moneybag: '钱袋',
+    money_bag: '钱袋',
+    dollar: '美元',
+    dollar_banknote: '美元',
+    yen: '日元',
+    yen_banknote: '日元',
+    euro: '欧元',
+    euro_banknote: '欧元',
+    pound: '英镑',
+    pound_banknote: '英镑',
+    chart_with_upwards_trend: '上涨趋势',
+    chart_increasing: '上涨趋势',
+    calendar: '日历',
+    computer: '电脑',
+    laptop: '电脑',
+    keyboard: '键盘',
+    printer: '打印机',
+    iphone: '手机',
+    mobile_phone: '手机',
+    calling: '电话',
+    telephone_receiver: '电话',
+    // Animals and nature
+    dog: '狗',
+    dog_face: '狗',
+    cat: '猫',
+    cat_face: '猫',
+    mouse: '老鼠',
+    mouse_face: '老鼠',
+    hamster: '仓鼠',
+    rabbit: '兔子',
+    rabbit_face: '兔子',
+    fox_face: '狐狸',
+    fox: '狐狸',
+    bear: '熊',
+    panda_face: '熊猫',
+    panda: '熊猫',
+    koala: '考拉',
+    tiger: '老虎',
+    tiger_face: '老虎',
+    lion: '狮子',
+    cow: '奶牛',
+    cow_face: '奶牛',
+    pig: '猪',
+    pig_face: '猪',
+    frog: '青蛙',
+    monkey_face: '猴子',
+    monkey: '猴子',
+    see_no_evil: '捂眼猴',
+    hear_no_evil: '捂耳猴',
+    speak_no_evil: '捂嘴猴',
+    chicken: '小鸡',
+    penguin: '企鹅',
+    bird: '鸟',
+    baby_chick: '小鸡宝宝',
+    unicorn: '独角兽',
+    bee: '蜜蜂',
+    honeybee: '蜜蜂',
+    bug: '虫子',
+    butterfly: '蝴蝶',
+    snail: '蜗牛',
+    turtle: '乌龟',
+    octopus: '章鱼',
+    fish: '鱼',
+    whale: '鲸鱼',
+    dolphin: '海豚',
+    shark: '鲨鱼',
+    sun_with_face: '太阳脸',
+    sun: '太阳',
+    crescent_moon: '弯月',
+    full_moon: '满月',
+    cloud: '云',
+    umbrella: '雨伞',
+    snowflake: '雪花',
+    zap: '闪电',
+    high_voltage: '闪电',
+    // Places and transport
+    rocket: '火箭',
+    airplane: '飞机',
+    car: '汽车',
+    automobile: '汽车',
+    taxi: '出租车',
+    bus: '公交车',
+    train: '火车',
+    locomotive: '火车',
+    bicycle: '自行车',
+    ship: '轮船',
+    anchor: '锚',
+    house: '房子',
+    office: '办公楼',
+    office_building: '办公楼',
+    hospital: '医院',
+    school: '学校',
+    tent: '帐篷',
+    church: '教堂',
+    fountain: '喷泉',
+    map: '地图',
+    world_map: '地图',
+    globe_with_meridians: '地球',
+    globe_showing_europe_africa: '地球',
+    // Activities and clothing
+    soccer: '足球',
+    soccer_ball: '足球',
+    basketball: '篮球',
+    football: '橄榄球',
+    american_football: '橄榄球',
+    baseball: '棒球',
+    tennis: '网球',
+    medal_military: '军功章',
+    military_medal: '军功章',
+    performing_arts: '表演艺术',
+    art: '艺术',
+    artist_palette: '艺术',
+    microphone: '麦克风',
+    guitar: '吉他',
+    headphones: '耳机',
+    t_shirt: 'T恤',
+    jeans: '牛仔裤',
+    shoe: '鞋子',
+    running_shoe: '鞋子',
+    watch: '手表',
+    eyeglasses: '眼镜',
+    sunglasses: '墨镜',
+    umbrella_on_ground: '收起的雨伞'
+  });
 
   const POST_IMAGE_EXCLUDED_ANCESTORS = [
     '.avatar',
@@ -348,6 +821,198 @@ const DisguiseEngine = (function () {
       if (!toggle.classList.contains(POST_IMAGE_TOGGLE_HIDDEN) && !toggle.classList.contains(POST_IMAGE_TOGGLE_SHOWN)) {
         setPostImageToggleState(toggle, false);
       }
+    });
+  }
+
+  function isPostEmoji(image) {
+    if (!image || image.tagName !== 'IMG') return false;
+
+    const cooked = image.closest('.cooked');
+    if (!cooked || !cooked.closest('.post-stream')) return false;
+
+    // Discourse currently uses img.emoji; the data-* variants cover older
+    // renderers and custom emoji markup without broadening this to ordinary
+    // content images.
+    if (image.matches('img.emoji, img.emoticon, img[data-emoji], img[data-emoticon], img[data-emoji-image]')) {
+      return true;
+    }
+
+    return Boolean(image.closest('[data-emoji], [data-emoticon]'));
+  }
+
+  function normalizeEmojiAttribute(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function extractEmojiShortcode(value) {
+    const normalized = normalizeEmojiAttribute(value);
+    if (!normalized || /^(?:emoji|emoticon|表情|表情包)$/i.test(normalized)) return '';
+
+    const colonMatch = normalized.match(/:([A-Za-z0-9][A-Za-z0-9_+.-]*):/);
+    if (colonMatch) return colonMatch[1];
+
+    // Some older Discourse renderers put the shortcode in title/data-name
+    // without colons. Keep this deliberately narrow to avoid using alt text
+    // such as a sentence as a shortcode.
+    const bareMatch = normalized.match(/^([A-Za-z0-9][A-Za-z0-9_+.-]*)$/);
+    return bareMatch ? bareMatch[1] : '';
+  }
+
+  function extractReasonableEmojiName(value) {
+    const normalized = normalizeEmojiAttribute(value);
+    if (!normalized || /^(?:emoji|emoticon|表情|表情包)$/i.test(normalized)) return '';
+    if (/^:[^:\s]+:$/.test(normalized)) return '';
+
+    // A few renderers expose a localized accessible name instead of a
+    // shortcode. Accept short human-readable names, but never use a raw
+    // Unicode glyph or a long sentence as the label.
+    if (/^[\u3400-\u9fff\u3040-\u30ffA-Za-z0-9][\u3400-\u9fff\u3040-\u30ffA-Za-z0-9 _+.-]{0,39}$/.test(normalized)) {
+      return normalized;
+    }
+    return '';
+  }
+
+  function getEmojiDescription(image) {
+    const metadataValues = [
+      image?.getAttribute('alt'),
+      image?.getAttribute('title'),
+      image?.getAttribute('data-emoji'),
+      image?.getAttribute('data-emoji-name'),
+      image?.getAttribute('data-emoji-shortcode'),
+      image?.getAttribute('data-name'),
+      image?.getAttribute('aria-label')
+    ];
+
+    // alt is the canonical Discourse source; title and data-* values are
+    // fallbacks for custom/older emoji renderers.
+    for (const value of metadataValues) {
+      const shortcode = extractEmojiShortcode(value);
+      if (shortcode) return COMMON_EMOJI_DESCRIPTIONS[shortcode.toLowerCase()] || shortcode;
+    }
+
+    for (const value of metadataValues) {
+      const localizedName = extractReasonableEmojiName(value);
+      if (localizedName) return localizedName;
+    }
+
+    // If attributes are missing, the emoji asset filename is normally its
+    // shortcode (e.g. /emoji/twitter/rofl.png). This is still scoped to an
+    // already identified emoji image, so ordinary content assets are ignored.
+    const source = normalizeEmojiAttribute(
+      image?.getAttribute('data-src') || image?.getAttribute('src') || image?.currentSrc
+    );
+    const filenameMatch = source.match(/\/([^/?#]+?)(?:\.[a-z0-9]+)?(?:[?#].*)?$/i);
+    const filename = filenameMatch ? filenameMatch[1] : '';
+    const shortcode = extractEmojiShortcode(filename);
+    if (shortcode) return COMMON_EMOJI_DESCRIPTIONS[shortcode.toLowerCase()] || shortcode;
+
+    return '表情';
+  }
+
+  function getPostEmojiMedia(wrapper) {
+    if (!wrapper) return null;
+    return Array.from(wrapper.children).find((child) => child.tagName === 'IMG' || child.tagName === 'PICTURE') || null;
+  }
+
+  function getPostEmojiImage(wrapper) {
+    const media = getPostEmojiMedia(wrapper);
+    if (!media) return null;
+    return media.tagName === 'IMG' ? media : media.querySelector('img');
+  }
+
+  function updatePostEmojiLabel(wrapper, image) {
+    if (!wrapper || !image) return;
+    const description = getEmojiDescription(image);
+    const labelText = `[emoji:${description}]`;
+    const label = wrapper.querySelector(`.${POST_EMOJI_LABEL}`);
+
+    wrapper.setAttribute('aria-label', labelText);
+    wrapper.setAttribute('title', labelText);
+    wrapper.dataset.qqdocsEmojiDescription = description;
+    if (label) {
+      label.textContent = labelText;
+      label.setAttribute('aria-label', labelText);
+    }
+  }
+
+  function createPostEmojiLabel(image) {
+    if (!isPostEmoji(image) || image.hasAttribute(POST_EMOJI_BOUND_ATTRIBUTE)) return;
+
+    const media = image.parentElement?.tagName === 'PICTURE' ? image.parentElement : image;
+    const parent = media.parentNode;
+    if (!parent || parent.closest(`.${POST_EMOJI_WRAPPER}`)) return;
+
+    const wrapper = document.createElement('span');
+    wrapper.className = POST_EMOJI_WRAPPER;
+    wrapper.setAttribute(POST_EMOJI_WRAPPER_ATTRIBUTE, 'true');
+    wrapper.setAttribute('role', 'img');
+    wrapper.tabIndex = 0;
+
+    const label = document.createElement('span');
+    label.className = POST_EMOJI_LABEL;
+    label.setAttribute('aria-hidden', 'true');
+
+    parent.insertBefore(wrapper, media);
+    wrapper.append(media, label);
+
+    // Keep the original alt/title untouched. The wrapper provides one stable
+    // accessible name while the child image remains the original DOM node.
+    if (!image.hasAttribute('aria-hidden')) {
+      image.setAttribute('aria-hidden', 'true');
+      image.setAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE, 'true');
+    }
+    image.setAttribute(POST_EMOJI_BOUND_ATTRIBUTE, 'true');
+    updatePostEmojiLabel(wrapper, image);
+  }
+
+  function unwrapPostEmojiLabel(wrapper) {
+    if (!wrapper || !wrapper.hasAttribute(POST_EMOJI_WRAPPER_ATTRIBUTE)) return;
+    const media = getPostEmojiMedia(wrapper);
+    const image = getPostEmojiImage(wrapper);
+
+    if (media && wrapper.parentNode) wrapper.parentNode.insertBefore(media, wrapper);
+    if (image) {
+      image.removeAttribute(POST_EMOJI_BOUND_ATTRIBUTE);
+      if (image.getAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE) === 'true') {
+        image.removeAttribute('aria-hidden');
+        image.removeAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE);
+      }
+    }
+    wrapper.remove();
+  }
+
+  function cleanupPostEmojiLabels() {
+    document.querySelectorAll(`.${POST_EMOJI_WRAPPER}[${POST_EMOJI_WRAPPER_ATTRIBUTE}]`).forEach(unwrapPostEmojiLabel);
+    document.body?.classList.remove('qqdocs-emoji-label-enabled');
+  }
+
+  function syncPostEmojiLabels() {
+    const active = isDisguiseEnabled && isTopicDetailActive();
+    if (!active) {
+      cleanupPostEmojiLabels();
+      return;
+    }
+
+    document.body?.classList.add('qqdocs-emoji-label-enabled');
+
+    document.querySelectorAll(POST_EMOJI_SELECTOR).forEach((image) => {
+      if (image.hasAttribute(POST_EMOJI_BOUND_ATTRIBUTE) && !image.closest(`.${POST_EMOJI_WRAPPER}`)) {
+        image.removeAttribute(POST_EMOJI_BOUND_ATTRIBUTE);
+        if (image.getAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE) === 'true') {
+          image.removeAttribute('aria-hidden');
+          image.removeAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE);
+        }
+      }
+      createPostEmojiLabel(image);
+    });
+
+    document.querySelectorAll(`.${POST_EMOJI_WRAPPER}[${POST_EMOJI_WRAPPER_ATTRIBUTE}]`).forEach((wrapper) => {
+      const image = getPostEmojiImage(wrapper);
+      if (!image || !isPostEmoji(image)) {
+        unwrapPostEmojiLabel(wrapper);
+        return;
+      }
+      updatePostEmojiLabel(wrapper, image);
     });
   }
 
@@ -1020,6 +1685,7 @@ const DisguiseEngine = (function () {
     renderTopicList();
     renderTopicDetail();
     syncPostImageToggles();
+    syncPostEmojiLabels();
     mountToggleBadge();
   }
 
@@ -1092,9 +1758,11 @@ const DisguiseEngine = (function () {
       document.title = document.title;
       renderTopicDetail();
       syncPostImageToggles();
+      syncPostEmojiLabels();
     } else {
       document.title = 'LINUX DO';
       cleanupPostImageToggles();
+      cleanupPostEmojiLabels();
       renderTopicDetail();
     }
   }

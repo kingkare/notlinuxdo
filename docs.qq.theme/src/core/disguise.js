@@ -14,6 +14,479 @@ const DisguiseEngine = (function () {
   const POST_IMAGE_BOUND_ATTRIBUTE = 'data-qqdocs-image-toggle-bound';
   const POST_IMAGE_WRAPPER_ATTRIBUTE = 'data-qqdocs-image-toggle-wrapper';
 
+  const POST_EMOJI_SELECTOR = [
+    '.post-stream .cooked img.emoji',
+    '.post-stream .cooked img.emoticon',
+    '.post-stream .cooked img[data-emoji]',
+    '.post-stream .cooked img[data-emoticon]',
+    '.post-stream .cooked [data-emoji] > img',
+    '.post-stream .cooked [data-emoticon] > img',
+    '.post-stream .cooked [data-emoji-image]'
+  ].join(', ');
+  const POST_EMOJI_WRAPPER = 'qqdocs-emoji-wrapper';
+  const POST_EMOJI_LABEL = 'qqdocs-emoji-label';
+  const POST_EMOJI_BOUND_ATTRIBUTE = 'data-qqdocs-emoji-bound';
+  const POST_EMOJI_WRAPPER_ATTRIBUTE = 'data-qqdocs-emoji-wrapper';
+  const POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE = 'data-qqdocs-emoji-aria-hidden-added';
+
+  // The map intentionally contains common Discourse/Unicode aliases only. A
+  // site-specific shortcode remains readable through the shortcode fallback.
+  const COMMON_EMOJI_DESCRIPTIONS = Object.freeze({
+    // Faces and emotions
+    grinning: '咧嘴笑',
+    grinning_face: '咧嘴笑',
+    grin: '露齿笑',
+    smile: '微笑',
+    smiling_face: '微笑',
+    blush: '害羞',
+    smiling_face_with_smiling_eyes: '害羞',
+    innocent: '天真',
+    smiling_face_with_halo: '天真',
+    slight_smile: '淡淡微笑',
+    slightly_smiling_face: '淡淡微笑',
+    upside_down_face: '颠倒脸',
+    rofl: '大笑',
+    rolling_on_the_floor_laughing: '大笑',
+    joy: '喜极而泣',
+    face_with_tears_of_joy: '喜极而泣',
+    laugh: '笑',
+    laughing: '大笑',
+    grinning_face_with_smiling_eyes: '大笑',
+    satisfied: '满意',
+    beaming_face_with_smiling_eyes: '满意',
+    sweat_smile: '汗笑',
+    grinning_face_with_sweat: '汗笑',
+    wink: '眨眼',
+    winking_face: '眨眼',
+    yum: '好吃',
+    face_savoring_food: '好吃',
+    stuck_out_tongue: '吐舌',
+    face_with_tongue: '吐舌',
+    stuck_out_tongue_winking_eye: '眨眼吐舌',
+    winking_face_with_tongue: '眨眼吐舌',
+    stuck_out_tongue_closed_eyes: '闭眼吐舌',
+    squinting_face_with_tongue: '闭眼吐舌',
+    money_mouth_face: '财迷',
+    hugs: '拥抱',
+    hugging: '拥抱',
+    smiling_face_with_open_hands: '拥抱',
+    hugging_face: '拥抱',
+    kissing_heart: '飞吻',
+    face_blowing_a_kiss: '飞吻',
+    kissing: '亲吻',
+    kissing_face: '亲吻',
+    kissing_smiling_eyes: '微笑亲吻',
+    kissing_face_with_smiling_eyes: '微笑亲吻',
+    kissing_closed_eyes: '闭眼亲吻',
+    kissing_face_with_closed_eyes: '闭眼亲吻',
+    heart_eyes: '花痴',
+    smiling_face_with_heart_eyes: '花痴',
+    star_struck: '星星眼',
+    zany_face: '滑稽',
+    crazy_face: '疯狂',
+    woozy_face: '迷糊',
+    sweat: '冷汗',
+    downcast_face_with_sweat: '冷汗',
+    thinking: '思考',
+    thinking_face: '思考',
+    neutral_face: '面无表情',
+    expressionless: '无表情',
+    unamused: '不满',
+    pensive: '沉思',
+    confused: '困惑',
+    relieved: '如释重负',
+    relieved_face: '如释重负',
+    relaxed: '放松',
+    smirk: '得意',
+    smirking_face: '得意',
+    no_mouth: '无语',
+    face_without_mouth: '无语',
+    zipper_mouth_face: '闭嘴',
+    shushing_face: '嘘',
+    lying_face: '说谎',
+    rolling_eyes: '翻白眼',
+    face_with_rolling_eyes: '翻白眼',
+    grimacing: '龇牙',
+    grimacing_face: '龇牙',
+    frowning: '皱眉',
+    frowning_face: '皱眉',
+    worried: '担心',
+    worried_face: '担心',
+    angry: '生气',
+    angry_face: '生气',
+    rage: '暴怒',
+    enraged_face: '暴怒',
+    disappointed: '失望',
+    disappointed_face: '失望',
+    cry: '哭泣',
+    crying_face: '哭泣',
+    sob: '痛哭',
+    loudly_crying_face: '痛哭',
+    fearful: '害怕',
+    fearful_face: '害怕',
+    scared: '害怕',
+    scream: '尖叫',
+    face_screaming_in_fear: '尖叫',
+    astonished: '惊讶',
+    astonished_face: '惊讶',
+    flushed: '脸红',
+    weary: '疲惫',
+    weary_face: '疲惫',
+    tired_face: '疲倦',
+    sleepy: '困倦',
+    sleepy_face: '困倦',
+    sleeping: '睡觉',
+    sleeping_face: '睡觉',
+    drooling_face: '流口水',
+    dizzy_face: '晕眩',
+    nauseated_face: '恶心',
+    vomiting_face: '呕吐',
+    face_vomiting: '呕吐',
+    sneezing_face: '打喷嚏',
+    mask: '生病',
+    face_with_medical_mask: '生病',
+    thermometer_face: '发烧',
+    face_with_thermometer: '发烧',
+    exploding_head: '爆炸头',
+    cowboy_hat_face: '牛仔帽',
+    clown_face: '小丑',
+    imp: '小恶魔',
+    smiling_imp: '恶魔',
+    smiling_face_with_horns: '恶魔',
+    angry_face_with_horns: '小恶魔',
+    skull: '骷髅',
+    skull_and_crossbones: '骷髅头',
+    ghost: '幽灵',
+    alien: '外星人',
+    robot: '机器人',
+    poop: '便便',
+    hankey: '便便',
+    shit: '便便',
+    // Hands, gestures, and body parts
+    wave: '挥手',
+    raised_back_of_hand: '举手背',
+    raised_hand: '举手',
+    hand: '举手',
+    raised_hand_with_fingers_splayed: '举手',
+    open_hands: '张开双手',
+    palms_up_together: '双手向上',
+    point_up: '指向上方',
+    index_pointing_up: '指向上方',
+    point_up_2: '指向上方',
+    backhand_index_pointing_up: '指向上方',
+    point_down: '指向下方',
+    backhand_index_pointing_down: '指向下方',
+    point_left: '指向左方',
+    backhand_index_pointing_left: '指向左方',
+    point_right: '指向右方',
+    backhand_index_pointing_right: '指向右方',
+    thumbsup: '点赞',
+    '+1': '点赞',
+    thumbs_up: '点赞',
+    thumbsdown: '点踩',
+    '-1': '点踩',
+    thumbs_down: '点踩',
+    ok_hand: '好的手势',
+    pinched_fingers: '捏指',
+    pinching_hand: '捏合',
+    v: '胜利手势',
+    victory_hand: '胜利手势',
+    crossed_fingers: '祈求好运',
+    fingers_crossed: '祈求好运',
+    love_you_gesture: '我爱你手势',
+    metal: '摇滚手势',
+    sign_of_the_horns: '摇滚手势',
+    call_me_hand: '打电话手势',
+    handshake: '握手',
+    clap: '鼓掌',
+    clapping_hands: '鼓掌',
+    pray: '祈祷',
+    folded_hands: '祈祷',
+    muscle: '肌肉',
+    flexed_biceps: '展示肌肉',
+    fist: '拳头',
+    punch: '出拳',
+    facepunch: '出拳',
+    oncoming_fist: '出拳',
+    raised_fist: '举拳',
+    left_facing_fist: '左拳',
+    right_facing_fist: '右拳',
+    writing_hand: '写字',
+    nail_care: '美甲',
+    ear: '耳朵',
+    eyes: '双眼',
+    eye: '眼睛',
+    lips: '嘴唇',
+    tongue: '舌头',
+    nose: '鼻子',
+    brain: '大脑',
+    // Hearts, symbols, and celebration
+    heart: '红心',
+    red_heart: '红心',
+    orange_heart: '橙心',
+    yellow_heart: '黄心',
+    green_heart: '绿心',
+    blue_heart: '蓝心',
+    purple_heart: '紫心',
+    black_heart: '黑心',
+    white_heart: '白心',
+    brown_heart: '棕心',
+    broken_heart: '心碎',
+    sparkling_heart: '闪耀的心',
+    growing_heart: '成长的心',
+    heartpulse: '心跳',
+    heartbeat: '心跳',
+    beating_heart: '心跳',
+    revolving_hearts: '旋转的心',
+    two_hearts: '两颗心',
+    couple_with_heart: '情侣心',
+    gift_heart: '爱心礼物',
+    cupid: '丘比特',
+    fire: '火焰',
+    sparkles: '闪光',
+    star: '星星',
+    star2: '发光星星',
+    glowing_star: '发光星星',
+    dizzy: '头晕',
+    boom: '爆炸',
+    collision: '碰撞',
+    anger: '怒气',
+    sweat_drops: '汗滴',
+    sweat_droplets: '汗滴',
+    dash: '飞奔',
+    dashing_away: '飞奔',
+    100: '满分',
+    hundred_points: '满分',
+    exclamation: '感叹号',
+    red_exclamation_mark: '感叹号',
+    question: '问号',
+    red_question_mark: '问号',
+    grey_exclamation: '灰色感叹号',
+    white_exclamation_mark: '灰色感叹号',
+    grey_question: '灰色问号',
+    white_question_mark: '灰色问号',
+    warning: '警告',
+    white_check_mark: '白色对勾',
+    check_mark_button: '白色对勾',
+    heavy_check_mark: '粗体对勾',
+    check_mark: '粗体对勾',
+    x: '叉号',
+    cross_mark: '叉号',
+    heavy_multiplication_x: '粗体叉号',
+    bangbang: '双感叹号',
+    interrobang: '问叹号',
+    tada: '庆祝',
+    party_popper: '庆祝',
+    confetti_ball: '彩纸球',
+    balloon: '气球',
+    gift: '礼物',
+    birthday: '生日',
+    trophy: '奖杯',
+    medal_sports: '奖牌',
+    sports_medal: '奖牌',
+    crown: '王冠',
+    gem: '宝石',
+    gem_stone: '宝石',
+    rainbow: '彩虹',
+    // Food, drink, and everyday objects
+    apple: '苹果',
+    green_apple: '青苹果',
+    pear: '梨',
+    tangerine: '橘子',
+    orange: '橘子',
+    lemon: '柠檬',
+    banana: '香蕉',
+    watermelon: '西瓜',
+    grapes: '葡萄',
+    strawberry: '草莓',
+    peach: '桃子',
+    cherries: '樱桃',
+    pineapple: '菠萝',
+    tomato: '番茄',
+    corn: '玉米',
+    ear_of_corn: '玉米',
+    mushroom: '蘑菇',
+    pizza: '披萨',
+    hamburger: '汉堡',
+    fries: '薯条',
+    french_fries: '薯条',
+    hotdog: '热狗',
+    ramen: '拉面',
+    steaming_bowl: '拉面',
+    rice: '米饭',
+    cooked_rice: '米饭',
+    curry: '咖喱饭',
+    curry_rice: '咖喱饭',
+    sushi: '寿司',
+    cake: '蛋糕',
+    shortcake: '蛋糕',
+    birthday_cake: '生日蛋糕',
+    cookie: '饼干',
+    chocolate_bar: '巧克力',
+    candy: '糖果',
+    lollipop: '棒棒糖',
+    icecream: '冰淇淋',
+    ice_cream: '冰淇淋',
+    coffee: '咖啡',
+    tea: '茶',
+    teacup_without_handle: '茶',
+    beer: '啤酒',
+    beers: '碰杯',
+    clinking_beer_mugs: '碰杯',
+    cocktail: '鸡尾酒',
+    tropical_drink: '鸡尾酒',
+    wine_glass: '红酒',
+    champagne: '香槟',
+    bottle_with_popping_cork: '香槟',
+    fork_and_knife: '刀叉',
+    plate_with_cutlery: '餐盘',
+    bulb: '灯泡',
+    light_bulb: '灯泡',
+    flashlight: '手电筒',
+    book: '书',
+    books: '书籍',
+    memo: '备忘录',
+    pencil2: '铅笔',
+    pencil: '铅笔',
+    pen: '钢笔',
+    notebook: '笔记本',
+    bookmark: '书签',
+    pushpin: '图钉',
+    paperclip: '回形针',
+    scissors: '剪刀',
+    lock: '锁',
+    unlock: '开锁',
+    key: '钥匙',
+    hammer: '锤子',
+    wrench: '扳手',
+    gear: '齿轮',
+    link: '链接',
+    package: '包裹',
+    moneybag: '钱袋',
+    money_bag: '钱袋',
+    dollar: '美元',
+    dollar_banknote: '美元',
+    yen: '日元',
+    yen_banknote: '日元',
+    euro: '欧元',
+    euro_banknote: '欧元',
+    pound: '英镑',
+    pound_banknote: '英镑',
+    chart_with_upwards_trend: '上涨趋势',
+    chart_increasing: '上涨趋势',
+    calendar: '日历',
+    computer: '电脑',
+    laptop: '电脑',
+    keyboard: '键盘',
+    printer: '打印机',
+    iphone: '手机',
+    mobile_phone: '手机',
+    calling: '电话',
+    telephone_receiver: '电话',
+    // Animals and nature
+    dog: '狗',
+    dog_face: '狗',
+    cat: '猫',
+    cat_face: '猫',
+    mouse: '老鼠',
+    mouse_face: '老鼠',
+    hamster: '仓鼠',
+    rabbit: '兔子',
+    rabbit_face: '兔子',
+    fox_face: '狐狸',
+    fox: '狐狸',
+    bear: '熊',
+    panda_face: '熊猫',
+    panda: '熊猫',
+    koala: '考拉',
+    tiger: '老虎',
+    tiger_face: '老虎',
+    lion: '狮子',
+    cow: '奶牛',
+    cow_face: '奶牛',
+    pig: '猪',
+    pig_face: '猪',
+    frog: '青蛙',
+    monkey_face: '猴子',
+    monkey: '猴子',
+    see_no_evil: '捂眼猴',
+    hear_no_evil: '捂耳猴',
+    speak_no_evil: '捂嘴猴',
+    chicken: '小鸡',
+    penguin: '企鹅',
+    bird: '鸟',
+    baby_chick: '小鸡宝宝',
+    unicorn: '独角兽',
+    bee: '蜜蜂',
+    honeybee: '蜜蜂',
+    bug: '虫子',
+    butterfly: '蝴蝶',
+    snail: '蜗牛',
+    turtle: '乌龟',
+    octopus: '章鱼',
+    fish: '鱼',
+    whale: '鲸鱼',
+    dolphin: '海豚',
+    shark: '鲨鱼',
+    sun_with_face: '太阳脸',
+    sun: '太阳',
+    crescent_moon: '弯月',
+    full_moon: '满月',
+    cloud: '云',
+    umbrella: '雨伞',
+    snowflake: '雪花',
+    zap: '闪电',
+    high_voltage: '闪电',
+    // Places and transport
+    rocket: '火箭',
+    airplane: '飞机',
+    car: '汽车',
+    automobile: '汽车',
+    taxi: '出租车',
+    bus: '公交车',
+    train: '火车',
+    locomotive: '火车',
+    bicycle: '自行车',
+    ship: '轮船',
+    anchor: '锚',
+    house: '房子',
+    office: '办公楼',
+    office_building: '办公楼',
+    hospital: '医院',
+    school: '学校',
+    tent: '帐篷',
+    church: '教堂',
+    fountain: '喷泉',
+    map: '地图',
+    world_map: '地图',
+    globe_with_meridians: '地球',
+    globe_showing_europe_africa: '地球',
+    // Activities and clothing
+    soccer: '足球',
+    soccer_ball: '足球',
+    basketball: '篮球',
+    football: '橄榄球',
+    american_football: '橄榄球',
+    baseball: '棒球',
+    tennis: '网球',
+    medal_military: '军功章',
+    military_medal: '军功章',
+    performing_arts: '表演艺术',
+    art: '艺术',
+    artist_palette: '艺术',
+    microphone: '麦克风',
+    guitar: '吉他',
+    headphones: '耳机',
+    t_shirt: 'T恤',
+    jeans: '牛仔裤',
+    shoe: '鞋子',
+    running_shoe: '鞋子',
+    watch: '手表',
+    eyeglasses: '眼镜',
+    sunglasses: '墨镜',
+    umbrella_on_ground: '收起的雨伞'
+  });
+
   const POST_IMAGE_EXCLUDED_ANCESTORS = [
     '.avatar',
     '.avatar-flair',
@@ -210,6 +683,198 @@ const DisguiseEngine = (function () {
       if (!toggle.classList.contains(POST_IMAGE_TOGGLE_HIDDEN) && !toggle.classList.contains(POST_IMAGE_TOGGLE_SHOWN)) {
         setPostImageToggleState(toggle, false);
       }
+    });
+  }
+
+  function isPostEmoji(image) {
+    if (!image || image.tagName !== 'IMG') return false;
+
+    const cooked = image.closest('.cooked');
+    if (!cooked || !cooked.closest('.post-stream')) return false;
+
+    // Discourse currently uses img.emoji; the data-* variants cover older
+    // renderers and custom emoji markup without broadening this to ordinary
+    // content images.
+    if (image.matches('img.emoji, img.emoticon, img[data-emoji], img[data-emoticon], img[data-emoji-image]')) {
+      return true;
+    }
+
+    return Boolean(image.closest('[data-emoji], [data-emoticon]'));
+  }
+
+  function normalizeEmojiAttribute(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function extractEmojiShortcode(value) {
+    const normalized = normalizeEmojiAttribute(value);
+    if (!normalized || /^(?:emoji|emoticon|表情|表情包)$/i.test(normalized)) return '';
+
+    const colonMatch = normalized.match(/:([A-Za-z0-9][A-Za-z0-9_+.-]*):/);
+    if (colonMatch) return colonMatch[1];
+
+    // Some older Discourse renderers put the shortcode in title/data-name
+    // without colons. Keep this deliberately narrow to avoid using alt text
+    // such as a sentence as a shortcode.
+    const bareMatch = normalized.match(/^([A-Za-z0-9][A-Za-z0-9_+.-]*)$/);
+    return bareMatch ? bareMatch[1] : '';
+  }
+
+  function extractReasonableEmojiName(value) {
+    const normalized = normalizeEmojiAttribute(value);
+    if (!normalized || /^(?:emoji|emoticon|表情|表情包)$/i.test(normalized)) return '';
+    if (/^:[^:\s]+:$/.test(normalized)) return '';
+
+    // A few renderers expose a localized accessible name instead of a
+    // shortcode. Accept short human-readable names, but never use a raw
+    // Unicode glyph or a long sentence as the label.
+    if (/^[\u3400-\u9fff\u3040-\u30ffA-Za-z0-9][\u3400-\u9fff\u3040-\u30ffA-Za-z0-9 _+.-]{0,39}$/.test(normalized)) {
+      return normalized;
+    }
+    return '';
+  }
+
+  function getEmojiDescription(image) {
+    const metadataValues = [
+      image?.getAttribute('alt'),
+      image?.getAttribute('title'),
+      image?.getAttribute('data-emoji'),
+      image?.getAttribute('data-emoji-name'),
+      image?.getAttribute('data-emoji-shortcode'),
+      image?.getAttribute('data-name'),
+      image?.getAttribute('aria-label')
+    ];
+
+    // alt is the canonical Discourse source; title and data-* values are
+    // fallbacks for custom/older emoji renderers.
+    for (const value of metadataValues) {
+      const shortcode = extractEmojiShortcode(value);
+      if (shortcode) return COMMON_EMOJI_DESCRIPTIONS[shortcode.toLowerCase()] || shortcode;
+    }
+
+    for (const value of metadataValues) {
+      const localizedName = extractReasonableEmojiName(value);
+      if (localizedName) return localizedName;
+    }
+
+    // If attributes are missing, the emoji asset filename is normally its
+    // shortcode (e.g. /emoji/twitter/rofl.png). This is still scoped to an
+    // already identified emoji image, so ordinary content assets are ignored.
+    const source = normalizeEmojiAttribute(
+      image?.getAttribute('data-src') || image?.getAttribute('src') || image?.currentSrc
+    );
+    const filenameMatch = source.match(/\/([^/?#]+?)(?:\.[a-z0-9]+)?(?:[?#].*)?$/i);
+    const filename = filenameMatch ? filenameMatch[1] : '';
+    const shortcode = extractEmojiShortcode(filename);
+    if (shortcode) return COMMON_EMOJI_DESCRIPTIONS[shortcode.toLowerCase()] || shortcode;
+
+    return '表情';
+  }
+
+  function getPostEmojiMedia(wrapper) {
+    if (!wrapper) return null;
+    return Array.from(wrapper.children).find((child) => child.tagName === 'IMG' || child.tagName === 'PICTURE') || null;
+  }
+
+  function getPostEmojiImage(wrapper) {
+    const media = getPostEmojiMedia(wrapper);
+    if (!media) return null;
+    return media.tagName === 'IMG' ? media : media.querySelector('img');
+  }
+
+  function updatePostEmojiLabel(wrapper, image) {
+    if (!wrapper || !image) return;
+    const description = getEmojiDescription(image);
+    const labelText = `[emoji:${description}]`;
+    const label = wrapper.querySelector(`.${POST_EMOJI_LABEL}`);
+
+    wrapper.setAttribute('aria-label', labelText);
+    wrapper.setAttribute('title', labelText);
+    wrapper.dataset.qqdocsEmojiDescription = description;
+    if (label) {
+      label.textContent = labelText;
+      label.setAttribute('aria-label', labelText);
+    }
+  }
+
+  function createPostEmojiLabel(image) {
+    if (!isPostEmoji(image) || image.hasAttribute(POST_EMOJI_BOUND_ATTRIBUTE)) return;
+
+    const media = image.parentElement?.tagName === 'PICTURE' ? image.parentElement : image;
+    const parent = media.parentNode;
+    if (!parent || parent.closest(`.${POST_EMOJI_WRAPPER}`)) return;
+
+    const wrapper = document.createElement('span');
+    wrapper.className = POST_EMOJI_WRAPPER;
+    wrapper.setAttribute(POST_EMOJI_WRAPPER_ATTRIBUTE, 'true');
+    wrapper.setAttribute('role', 'img');
+    wrapper.tabIndex = 0;
+
+    const label = document.createElement('span');
+    label.className = POST_EMOJI_LABEL;
+    label.setAttribute('aria-hidden', 'true');
+
+    parent.insertBefore(wrapper, media);
+    wrapper.append(media, label);
+
+    // Keep the original alt/title untouched. The wrapper provides one stable
+    // accessible name while the child image remains the original DOM node.
+    if (!image.hasAttribute('aria-hidden')) {
+      image.setAttribute('aria-hidden', 'true');
+      image.setAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE, 'true');
+    }
+    image.setAttribute(POST_EMOJI_BOUND_ATTRIBUTE, 'true');
+    updatePostEmojiLabel(wrapper, image);
+  }
+
+  function unwrapPostEmojiLabel(wrapper) {
+    if (!wrapper || !wrapper.hasAttribute(POST_EMOJI_WRAPPER_ATTRIBUTE)) return;
+    const media = getPostEmojiMedia(wrapper);
+    const image = getPostEmojiImage(wrapper);
+
+    if (media && wrapper.parentNode) wrapper.parentNode.insertBefore(media, wrapper);
+    if (image) {
+      image.removeAttribute(POST_EMOJI_BOUND_ATTRIBUTE);
+      if (image.getAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE) === 'true') {
+        image.removeAttribute('aria-hidden');
+        image.removeAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE);
+      }
+    }
+    wrapper.remove();
+  }
+
+  function cleanupPostEmojiLabels() {
+    document.querySelectorAll(`.${POST_EMOJI_WRAPPER}[${POST_EMOJI_WRAPPER_ATTRIBUTE}]`).forEach(unwrapPostEmojiLabel);
+    document.body?.classList.remove('qqdocs-emoji-label-enabled');
+  }
+
+  function syncPostEmojiLabels() {
+    const active = isDisguiseEnabled && isTopicDetailActive();
+    if (!active) {
+      cleanupPostEmojiLabels();
+      return;
+    }
+
+    document.body?.classList.add('qqdocs-emoji-label-enabled');
+
+    document.querySelectorAll(POST_EMOJI_SELECTOR).forEach((image) => {
+      if (image.hasAttribute(POST_EMOJI_BOUND_ATTRIBUTE) && !image.closest(`.${POST_EMOJI_WRAPPER}`)) {
+        image.removeAttribute(POST_EMOJI_BOUND_ATTRIBUTE);
+        if (image.getAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE) === 'true') {
+          image.removeAttribute('aria-hidden');
+          image.removeAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE);
+        }
+      }
+      createPostEmojiLabel(image);
+    });
+
+    document.querySelectorAll(`.${POST_EMOJI_WRAPPER}[${POST_EMOJI_WRAPPER_ATTRIBUTE}]`).forEach((wrapper) => {
+      const image = getPostEmojiImage(wrapper);
+      if (!image || !isPostEmoji(image)) {
+        unwrapPostEmojiLabel(wrapper);
+        return;
+      }
+      updatePostEmojiLabel(wrapper, image);
     });
   }
 
@@ -882,6 +1547,7 @@ const DisguiseEngine = (function () {
     renderTopicList();
     renderTopicDetail();
     syncPostImageToggles();
+    syncPostEmojiLabels();
     mountToggleBadge();
   }
 
@@ -954,9 +1620,11 @@ const DisguiseEngine = (function () {
       document.title = document.title;
       renderTopicDetail();
       syncPostImageToggles();
+      syncPostEmojiLabels();
     } else {
       document.title = 'LINUX DO';
       cleanupPostImageToggles();
+      cleanupPostEmojiLabels();
       renderTopicDetail();
     }
   }
