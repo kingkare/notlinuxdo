@@ -59,12 +59,12 @@
 }
 
 /* 按钮通用 */
-.btn-default {
+.btn-default:not(#reply-control .btn-default) {
   background: var(--qqdocs-bg-hover) !important;
   border: 1px solid var(--qqdocs-border-color) !important;
   color: var(--qqdocs-text-primary) !important;
   border-radius: var(--qqdocs-radius-md) !important;
 }
-.btn-default:hover {
+.btn-default:not(#reply-control .btn-default):hover {
   background: #e8ebf0 !important;
 }

@@ -14,10 +14,10 @@ html, body {
   width: 100vw !important;
 }
 
-button,
-input,
-textarea,
-select {
+button:not(#reply-control button),
+input:not(#reply-control input),
+textarea:not(#reply-control textarea),
+select:not(#reply-control select) {
   font-family: var(--font-family) !important;
   font-style: normal !important;
   letter-spacing: normal !important;
@@ -30,8 +30,6 @@ select {
 .desktop-layout-sidebar-pc *,
 #main-outlet,
 #main-outlet *,
-#reply-control,
-#reply-control *,
 .menu-panel,
 .menu-panel *,
 .modal-inner-container,
@@ -78,7 +76,7 @@ select {
 .d-sidebar-wrapper,
 .topic-list-bottom,
 .nav-tabs,
-.select-kit,
+.select-kit:not(#reply-control .select-kit),
 .loading-container {
   display: none !important;
 }
