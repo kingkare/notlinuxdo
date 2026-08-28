@@ -5,6 +5,32 @@ const DisguiseEngine = (function () {
   let routeListenersAttached = false;
   let postImageInteractionsAttached = false;
 
+  const PAGE_SCOPE_CLASSES = [
+    'qqdocs-page-secondary',
+    'qqdocs-page-home',
+    'qqdocs-page-list',
+    'qqdocs-page-search',
+    'qqdocs-page-topic',
+    'qqdocs-page-categories',
+    'qqdocs-page-tags',
+    'qqdocs-page-badges',
+    'qqdocs-page-users',
+    'qqdocs-page-groups',
+    'qqdocs-page-group',
+    'qqdocs-page-user',
+    'qqdocs-page-preferences',
+    'qqdocs-page-bookmarks',
+    'qqdocs-page-notifications',
+    'qqdocs-page-messages',
+    'qqdocs-page-about',
+    'qqdocs-page-static',
+    'qqdocs-page-auth',
+    'qqdocs-page-review',
+    'qqdocs-page-chat',
+    'qqdocs-page-error',
+    'qqdocs-page-generic'
+  ];
+
   const POST_IMAGE_TOGGLE_WRAPPER = 'qqdocs-image-toggle';
   const POST_IMAGE_TOGGLE_HIDDEN = 'qqdocs-image-toggle--hidden';
   const POST_IMAGE_TOGGLE_SHOWN = 'qqdocs-image-toggle--shown';
@@ -1029,14 +1055,21 @@ const DisguiseEngine = (function () {
 
   // 1. Favicon 伪装
   function applyFavicon() {
-    let link = document.querySelector("link[rel*='icon']");
-    if (!link) {
-      link = document.createElement('link');
-      link.type = 'image/x-icon';
-      link.rel = 'shortcut icon';
-      document.getElementsByTagName('head')[0].appendChild(link);
+    const head = document.head || document.getElementsByTagName('head')[0];
+    if (!head) return;
+
+    let links = Array.from(head.querySelectorAll("link[rel~='icon'], link[rel='shortcut icon']"));
+    if (!links.length) {
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      head.appendChild(link);
+      links = [link];
     }
-    link.href = ICONS.favicon;
+
+    links.forEach((link) => {
+      link.type = 'image/x-icon';
+      link.href = ICONS.favicon;
+    });
   }
 
   // 2. Title 动态劫持
@@ -1048,9 +1081,10 @@ const DisguiseEngine = (function () {
       if (!rawTitle) return '腾讯文档';
 
       let clean = rawTitle.replace(/\s*-\s*LINUX DO.*$/i, '').trim();
+      clean = clean.replace(/(?:\s*-\s*腾讯文档)+\s*$/g, '').trim();
       clean = clean.replace(/^\(\d+\)\s*/, '');
 
-      if (!clean || clean === 'LINUX DO' || clean.includes('新的理想型社区')) {
+      if (!clean || clean === '腾讯文档' || clean === 'LINUX DO' || clean.includes('新的理想型社区')) {
         return '腾讯文档';
       }
       return `${clean} - 腾讯文档`;
@@ -1739,13 +1773,139 @@ const DisguiseEngine = (function () {
     document.body.classList.toggle('qqdocs-topic-detail', Boolean(document.querySelector('.post-stream')));
   }
 
+  function classifyCurrentPage() {
+    const path = window.location.pathname.replace(/\/+$/, '') || '/';
+
+    if (document.querySelector('.post-stream')) return 'topic';
+    if (path === '/search' || path.startsWith('/search/')) return 'search';
+    if (path === '/') return 'home';
+    if (path === '/categories') return 'categories';
+    if (path === '/tags') return 'tags';
+    if (path === '/badges' || path.startsWith('/badges/')) return 'badges';
+    if (path === '/u') return 'users';
+    if (path === '/g') return 'groups';
+    if (path.startsWith('/g/')) return 'group';
+    if (/^\/u\/[^/]+\/preferences(?:\/|$)/.test(path)) return 'preferences';
+    if (/^\/u\/[^/]+\/activity\/bookmarks(?:\/|$)/.test(path) || path === '/bookmarks') return 'bookmarks';
+    if (/^\/u\/[^/]+\/notifications(?:\/|$)/.test(path) || path === '/notifications') return 'notifications';
+    if (/^\/u\/[^/]+\/messages(?:\/|$)/.test(path) || path === '/my/messages') return 'messages';
+    if (path.startsWith('/u/')) return 'user';
+    if (path === '/about') return 'about';
+    if (/^\/(?:guidelines|faq|tos|privacy)$/.test(path)) return 'static';
+    if (/^\/(?:login|signup|password-reset|session)/.test(path)) return 'auth';
+    if (path.startsWith('/review')) return 'review';
+    if (path.startsWith('/chat')) return 'chat';
+    if (path === '/404' || document.body?.classList.contains('error-page') || document.querySelector('.page-not-found')) return 'error';
+    if (document.querySelector('.topic-list, .topic-list-container')) return 'list';
+    return 'generic';
+  }
+
+  function syncWorkspaceNavigation(pageKind) {
+    const path = window.location.pathname;
+    const sidebar = document.querySelector('.desktop-layout-sidebar-pc');
+    if (sidebar) {
+      const links = Array.from(sidebar.querySelectorAll('.desktop-node-link-router'));
+      links.forEach((link) => link.classList.remove('desktop-link-active'));
+
+      let activeHref = '/';
+      if (pageKind === 'categories' || pageKind === 'tags' || pageKind === 'groups' || pageKind === 'group' || pageKind === 'users') {
+        activeHref = '/categories';
+      } else if (pageKind === 'list' || path.startsWith('/c/') || path.startsWith('/tag/')) {
+        activeHref = '/latest';
+      } else if (path.startsWith('/top')) {
+        activeHref = '/top';
+      } else if (['user', 'preferences', 'bookmarks', 'notifications', 'messages'].includes(pageKind)) {
+        activeHref = '/my/activity';
+      }
+      sidebar.querySelector(`.desktop-node-link-router[href="${activeHref}"]`)?.classList.add('desktop-link-active');
+    }
+
+    const tabs = document.querySelector('.desktop-home-page-tab-header-pc');
+    if (tabs) {
+      const links = Array.from(tabs.querySelectorAll('.desktop-tab-link'));
+      links.forEach((link) => link.classList.remove('desktop-link-active'));
+      let activeHref = '/';
+      if (['categories', 'tags', 'groups', 'group', 'users'].includes(pageKind)) activeHref = '/categories';
+      else if (['user', 'bookmarks', 'notifications', 'messages', 'preferences'].includes(pageKind)) activeHref = '/my/activity';
+      tabs.querySelector(`.desktop-tab-link[href="${activeHref}"]`)?.classList.add('desktop-link-active');
+    }
+  }
+
+  function replaceText(selector, text) {
+    const element = document.querySelector(selector);
+    if (element && element.textContent !== text) element.textContent = text;
+  }
+
+  function renderSecondaryPageLabels(pageKind) {
+    const path = window.location.pathname;
+    if (pageKind === 'categories') {
+      replaceText('.category-list-header th.category', '空间名称');
+      replaceText('.category-list-header th.topics', '近期动态');
+      document.title = '团队空间';
+    } else if (pageKind === 'tags') {
+      replaceText('.tags-index .tags-controls h2', '模板标签');
+      document.title = '模板标签';
+    } else if (pageKind === 'badges') {
+      replaceText('.badges h1, .badges h2', '模板中心');
+      document.title = '模板中心';
+    } else if (pageKind === 'groups') {
+      replaceText('.groups-index > h1', '团队空间');
+      document.title = '团队空间';
+    } else if (pageKind === 'users') {
+      replaceText('.users-directory > h1', '协作者');
+      document.title = '协作者';
+    } else if (pageKind === 'about') {
+      replaceText('.about__header h1', '团队空间');
+      replaceText('.about__header .short-description', '成员、权限与协作概览');
+      replaceText('.about__left-side > h2', '空间说明');
+      replaceText('.about__admins > h2', '空间管理员');
+      replaceText('.about__moderators > h2', '协作管理员');
+      document.title = '团队空间概览';
+    } else if (pageKind === 'static') {
+      const titleByPath = {
+        '/guidelines': '共享空间规范',
+        '/faq': '帮助中心',
+        '/tos': '服务条款',
+        '/privacy': '隐私设置'
+      };
+      document.title = titleByPath[path] || '帮助中心';
+    } else if (pageKind === 'preferences') {
+      document.title = '帐户设置';
+    } else if (pageKind === 'bookmarks') {
+      document.title = '收藏文档';
+    } else if (pageKind === 'notifications') {
+      document.title = '消息通知';
+    } else if (pageKind === 'messages') {
+      document.title = '协作消息';
+    } else if (pageKind === 'error') {
+      replaceText('.page-not-found .title', '文档暂时无法打开');
+      replaceText('.page-not-found-search h2', '搜索其他文档');
+      document.title = '文档未找到';
+    }
+  }
+
+  function syncPageScope() {
+    if (!document.body) return;
+    const pageKind = classifyCurrentPage();
+    document.body.classList.add('qqdocs-page');
+    PAGE_SCOPE_CLASSES.forEach((className) => document.body.classList.remove(className));
+    document.body.classList.add(`qqdocs-page-${pageKind}`);
+    document.body.classList.toggle('qqdocs-page-secondary', !['home', 'list', 'search', 'topic'].includes(pageKind));
+    document.body.dataset.qqdocsPage = pageKind;
+    syncWorkspaceNavigation(pageKind);
+    renderSecondaryPageLabels(pageKind);
+  }
+
   function runRenderPass() {
+    applyFavicon();
+    syncPageScope();
     syncTopicDetailScope();
     renderHeader();
     renderSidebar();
     renderTopicList();
     renderSearchResults();
     renderTopicDetail();
+    syncWorkspaceNavigation(classifyCurrentPage());
     syncPostImageToggles();
     syncPostEmojiLabels();
   }

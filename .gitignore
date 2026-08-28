@@ -1,3 +1,4 @@
 # The theme directory keeps its own history; the outer repository tracks its files too.
 docs.qq.theme/.git/
 docs.qq.theme/.git-nested-backup/
+.browser-qa/

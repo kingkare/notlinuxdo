@@ -1,0 +1,638 @@
+/* Secondary Discourse routes shaped into Tencent Docs workspace surfaces. */
+
+body.qqdocs-page-secondary #main-outlet > section,
+body.qqdocs-page-secondary #main-outlet > .container:not(.list-container):not(:has(.desktop-home-page-tab-header-pc)),
+body.qqdocs-page-secondary #main-outlet .contents.body-page,
+body.qqdocs-page-secondary #main-outlet .user-main,
+body.qqdocs-page-secondary #main-outlet .groups-index,
+body.qqdocs-page-secondary #main-outlet .tags-index {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-page-secondary #main-outlet h1,
+body.qqdocs-page-secondary #main-outlet h2,
+body.qqdocs-page-secondary #main-outlet h3 {
+  color: #1f2329 !important;
+  letter-spacing: normal !important;
+}
+
+body.qqdocs-page-secondary #main-outlet a {
+  text-decoration: none !important;
+}
+
+body.qqdocs-page-secondary #main-outlet input:not([type='checkbox']):not([type='radio']),
+body.qqdocs-page-secondary #main-outlet textarea,
+body.qqdocs-page-secondary #main-outlet select,
+body.qqdocs-page-secondary #main-outlet .select-kit-header {
+  min-height: 34px !important;
+  padding: 7px 10px !important;
+  border: 1px solid #dee0e3 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  color: #1f2329 !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-page-secondary #main-outlet input:focus,
+body.qqdocs-page-secondary #main-outlet textarea:focus,
+body.qqdocs-page-secondary #main-outlet .select-kit.is-expanded .select-kit-header {
+  border-color: #2a65f5 !important;
+  box-shadow: 0 0 0 2px rgba(42, 101, 245, .12) !important;
+  outline: none !important;
+}
+
+body.qqdocs-page-secondary #main-outlet .btn,
+body.qqdocs-page-secondary #main-outlet button {
+  min-height: 32px;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+}
+
+body.qqdocs-page-secondary #main-outlet .btn-primary,
+body.qqdocs-page-secondary #main-outlet button.btn-primary {
+  color: #fff !important;
+  border-color: #2a65f5 !important;
+  background: #2a65f5 !important;
+}
+
+/* Category index becomes a single workspace table instead of a forum split view. */
+body.qqdocs-page-categories .categories-and-latest {
+  display: block !important;
+  width: 100% !important;
+}
+
+body.qqdocs-page-categories .categories-and-latest > .column.categories {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 !important;
+}
+
+body.qqdocs-page-categories .categories-and-latest > .column:not(.categories),
+body.qqdocs-page-categories .category-list + *,
+body.qqdocs-page-categories .category-list .category-logo,
+body.qqdocs-page-categories .category-list.subcategories-with-subcategories .category-logo {
+  display: none !important;
+}
+
+body.qqdocs-page-categories .category-list {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  background: #fff !important;
+  border: 0 !important;
+}
+
+body.qqdocs-page-categories .category-list-header tr,
+body.qqdocs-page-categories .category-list > tbody > tr {
+  border-bottom: 1px solid #eff0f2 !important;
+}
+
+body.qqdocs-page-categories .category-list-header th {
+  height: 38px !important;
+  padding: 0 14px !important;
+  color: #646a73 !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+}
+
+body.qqdocs-page-categories .category-list-header th.category { width: auto !important; }
+body.qqdocs-page-categories .category-list-header th.topics { width: 150px !important; text-align: right !important; }
+
+body.qqdocs-page-categories .category-list > tbody > tr:hover {
+  background: #f7f8fa !important;
+}
+
+body.qqdocs-page-categories .category-list > tbody > tr > td.category {
+  position: relative !important;
+  min-height: 76px !important;
+  padding: 16px 16px 16px 56px !important;
+  border: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-page-categories .category-list > tbody > tr > td.category::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  background: #2a65f5;
+  box-shadow: inset 0 -5px 0 rgba(255,255,255,.13);
+}
+
+body.qqdocs-page-categories .category-list > tbody > tr > td.category::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 26px;
+  width: 12px;
+  height: 9px;
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  opacity: .9;
+}
+
+body.qqdocs-page-categories .category-title-link,
+body.qqdocs-page-categories .category-name {
+  color: #1f2329 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 20px !important;
+}
+
+body.qqdocs-page-categories .category-description {
+  margin: 4px 0 0 !important;
+  color: #8f959e !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+}
+
+body.qqdocs-page-categories .subcategories {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: 6px !important;
+}
+
+body.qqdocs-page-categories .subcategory .badge-category {
+  padding: 2px 6px !important;
+  border: 0 !important;
+  border-radius: 3px !important;
+  background: #f2f3f5 !important;
+  color: #646a73 !important;
+  font-size: 11px !important;
+}
+
+body.qqdocs-page-categories .category-list > tbody > tr > td.topics {
+  width: 150px !important;
+  padding: 16px 14px !important;
+  color: #646a73 !important;
+  border: 0 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  text-align: right !important;
+  vertical-align: middle !important;
+}
+
+body.qqdocs-page-categories .category-list.subcategories-with-subcategories {
+  margin: 8px 0 0 !important;
+  border: 0 !important;
+}
+
+body.qqdocs-page-categories .category-list.subcategories-with-subcategories td.category {
+  min-height: 0 !important;
+  padding: 4px 0 !important;
+}
+
+body.qqdocs-page-categories .category-list.subcategories-with-subcategories td.category::before,
+body.qqdocs-page-categories .category-list.subcategories-with-subcategories td.category::after {
+  display: none !important;
+}
+
+/* Tags are represented as compact document labels inside section cards. */
+body.qqdocs-page-tags .tags-index .tags-controls h2,
+body.qqdocs-page-badges .badges > h1,
+body.qqdocs-page-groups .groups-index > h1,
+body.qqdocs-page-users .users-directory > h1 {
+  margin: 6px 0 18px !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+body.qqdocs-page-tags .tags-index .tag-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+  gap: 8px !important;
+  margin: 8px 0 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+body.qqdocs-page-tags .tags-index .tag-list > h3 {
+  grid-column: 1 / -1 !important;
+  margin: 10px 0 2px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+body.qqdocs-page-tags .tags-index .tag-box {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-width: 0 !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+  grid-column: auto !important;
+  width: auto !important;
+}
+
+body.qqdocs-page-tags .tags-index .tag-box:hover {
+  border-color: #c9d7fb !important;
+  background: #f7f9ff !important;
+}
+
+body.qqdocs-page-tags .tag-box .discourse-tag {
+  overflow: hidden !important;
+  color: #1f2329 !important;
+  background: transparent !important;
+  font-size: 13px !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+body.qqdocs-page-tags .tag-box .tag-count {
+  color: #8f959e !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+}
+
+/* Badges resemble reusable templates rather than forum trophies. */
+body.qqdocs-page-badges .badge-grouping {
+  margin: 0 0 26px !important;
+}
+
+body.qqdocs-page-badges .badge-grouping-title {
+  margin: 0 0 10px !important;
+  color: #454d5a !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+body.qqdocs-page-badges .badge-card {
+  min-height: 124px !important;
+  padding: 18px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+
+body.qqdocs-page-badges .badge-card:hover {
+  border-color: #c9d7fb !important;
+  background: #f9faff !important;
+}
+
+body.qqdocs-page-badges .badge-card .badge-icon,
+body.qqdocs-page-badges .badge-card .d-icon,
+body.qqdocs-page-badges .badge-card svg {
+  color: #2a65f5 !important;
+  fill: #2a65f5 !important;
+}
+
+body.qqdocs-page-badges .badge-card svg * {
+  fill: #2a65f5 !important;
+}
+
+body.qqdocs-page-badges .badge-card h3,
+body.qqdocs-page-badges .badge-card .badge-card__title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* People and groups use the same restrained cloud-workspace cards. */
+body.qqdocs-page-groups .groups-boxes {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body.qqdocs-page-groups .group-box,
+body.qqdocs-page-group .group-details-container,
+body.qqdocs-page-users .users-directory .directory-table-container,
+body.qqdocs-page-users .users-directory table {
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+
+body.qqdocs-page-groups .group-box {
+  min-height: 154px !important;
+  margin: 0 !important;
+  padding: 18px !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-page-groups .group-box:hover { border-color: #c9d7fb !important; }
+body.qqdocs-page-groups .group-box .group-box-inner { padding: 0 !important; }
+body.qqdocs-page-groups .group-box h2 { font-size: 16px !important; font-weight: 600 !important; }
+body.qqdocs-page-groups .group-box .group-user-count { color: #8f959e !important; }
+
+body.qqdocs-page-users .users-directory table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+body.qqdocs-page-users .users-directory th {
+  padding: 10px 14px !important;
+  color: #646a73 !important;
+  background: #fafbfc !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+}
+
+body.qqdocs-page-users .users-directory td {
+  padding: 12px 14px !important;
+  border-top: 1px solid #eff0f2 !important;
+  font-size: 13px !important;
+}
+
+/* Profile, activity, bookmarks, messages and settings. */
+body.qqdocs-page-user .user-main,
+body.qqdocs-page-preferences .user-main,
+body.qqdocs-page-bookmarks .user-main,
+body.qqdocs-page-notifications .user-main,
+body.qqdocs-page-messages .user-main {
+  color: #1f2329 !important;
+}
+
+body.qqdocs-page-user .user-main .about,
+body.qqdocs-page-preferences .user-main .about,
+body.qqdocs-page-bookmarks .user-main .about,
+body.qqdocs-page-notifications .user-main .about,
+body.qqdocs-page-messages .user-main .about {
+  margin-bottom: 16px !important;
+  padding: 16px 18px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+}
+
+body.qqdocs-page-user .user-navigation,
+body.qqdocs-page-preferences .user-navigation,
+body.qqdocs-page-bookmarks .user-navigation,
+body.qqdocs-page-notifications .user-navigation,
+body.qqdocs-page-messages .user-navigation {
+  border-bottom: 1px solid #eff0f2 !important;
+  background: transparent !important;
+}
+
+body.qqdocs-page-user .user-stream-item,
+body.qqdocs-page-bookmarks .user-stream-item,
+body.qqdocs-page-notifications .user-notifications-list li,
+body.qqdocs-page-messages .user-stream-item {
+  padding: 18px 12px !important;
+  border-bottom: 1px solid #eff0f2 !important;
+  background: #fff !important;
+}
+
+body.qqdocs-page-user .user-stream-item:hover,
+body.qqdocs-page-bookmarks .user-stream-item:hover,
+body.qqdocs-page-messages .user-stream-item:hover {
+  background: #f7f8fa !important;
+}
+
+body.qqdocs-page-preferences .user-content {
+  max-width: 1040px !important;
+  padding: 8px 0 40px !important;
+}
+
+body.qqdocs-page-preferences .control-group,
+body.qqdocs-page-preferences .pref-avatar,
+body.qqdocs-page-preferences .form-vertical > .control-group {
+  margin: 0 0 12px !important;
+  padding: 18px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+}
+
+body.qqdocs-page-preferences .control-label,
+body.qqdocs-page-preferences label {
+  color: #454d5a !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+body.qqdocs-page-preferences .instructions {
+  color: #8f959e !important;
+  font-size: 12px !important;
+}
+
+/* About and policy pages are presented as workspace documents. */
+body.qqdocs-page-about #main-outlet,
+body.qqdocs-page-static #main-outlet {
+  background: #f5f6f7 !important;
+}
+
+body.qqdocs-page.qqdocs-page-about #main-outlet .contents.body-page,
+body.qqdocs-page.qqdocs-page-static #main-outlet .contents.body-page,
+body.qqdocs-page.qqdocs-page-static #main-outlet > section > .container {
+  width: calc(100% - 48px) !important;
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  padding: 34px 52px 60px !important;
+  border: 1px solid #e8e9eb !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  box-shadow: 0 1px 3px rgba(31,35,41,.04) !important;
+}
+
+body.qqdocs-page-about .about__banner {
+  display: none !important;
+}
+
+body.qqdocs-page-about .about__header {
+  position: relative !important;
+  min-height: 84px !important;
+  margin: 0 0 20px !important;
+  padding: 18px 20px 18px 76px !important;
+  border: 1px solid #e8edfb !important;
+  border-radius: 6px !important;
+  background: linear-gradient(135deg, #f3f7ff 0%, #fbfcff 100%) !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-page-about .about__header::before {
+  content: 'T';
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  color: #fff;
+  background: #2a65f5;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+body.qqdocs-page-about .about__header h1 {
+  margin: 0 0 4px !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+body.qqdocs-page-about .about__header .short-description {
+  margin: 0 !important;
+  color: #646a73 !important;
+  font-size: 13px !important;
+}
+
+body.qqdocs-page-about .about__stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 0 0 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+body.qqdocs-page-about .about__stats-item {
+  padding: 12px !important;
+  border-radius: 4px !important;
+  background: #f7f8fa !important;
+  color: #454d5a !important;
+  font-size: 12px !important;
+}
+
+body.qqdocs-page-about .about__main-content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+}
+
+body.qqdocs-page-about .about__right-side {
+  display: none !important;
+}
+
+body.qqdocs-page-about .about-page-users-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 8px !important;
+}
+
+body.qqdocs-page-about .about-page-users-list .user-info {
+  margin: 0 !important;
+  padding: 10px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+}
+
+body.qqdocs-page-static .body-page {
+  color: #1f2329 !important;
+  font-size: 14px !important;
+  line-height: 1.75 !important;
+}
+
+body.qqdocs-page-static .body-page h1 { font-size: 24px !important; }
+body.qqdocs-page-static .body-page h2 { margin-top: 28px !important; font-size: 19px !important; }
+body.qqdocs-page-static .body-page h3 { margin-top: 22px !important; font-size: 16px !important; }
+body.qqdocs-page-static .body-page blockquote {
+  margin: 16px 0 !important;
+  padding: 12px 16px !important;
+  border-left: 3px solid #2a65f5 !important;
+  background: #f7f9ff !important;
+  color: #454d5a !important;
+}
+
+/* Authentication, review, chat and unknown routes still receive a safe panel. */
+body.qqdocs-page-auth #main-outlet > *,
+body.qqdocs-page-review #main-outlet > *,
+body.qqdocs-page-chat #main-outlet > *,
+body.qqdocs-page-error #main-outlet > *,
+body.qqdocs-page-generic #main-outlet > * {
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.qqdocs-page-auth .login-welcome-header,
+body.qqdocs-page-auth .login-form,
+body.qqdocs-page-error .page-not-found,
+body.qqdocs-page-generic #main-outlet > section {
+  padding: 28px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+  box-shadow: 0 1px 3px rgba(31,35,41,.04) !important;
+}
+
+body.qqdocs-page-error #main-outlet {
+  padding-top: 36px !important;
+  background: #f5f6f7 !important;
+}
+
+body.qqdocs-page-error .page-not-found {
+  width: calc(100% - 48px) !important;
+  max-width: 1120px !important;
+  margin: 0 auto 20px !important;
+  padding: 34px 44px !important;
+  border: 1px solid #e8e9eb !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+}
+
+body.qqdocs-page-error .page-not-found .heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 72px !important;
+}
+
+body.qqdocs-page-error .page-not-found .illustration-not-found {
+  display: none !important;
+}
+
+body.qqdocs-page-error .page-not-found .title_wrapper,
+body.qqdocs-page-error .page-not-found .title {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.qqdocs-page-error .page-not-found .title {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+}
+
+body.qqdocs-page-error .page-not-found-search {
+  margin-top: 22px !important;
+  padding: 20px !important;
+  border: 1px solid #e8edfb !important;
+  border-radius: 4px !important;
+  background: #f7f9ff !important;
+}
+
+body.qqdocs-page-error .page-not-found-topics {
+  width: calc(100% - 48px) !important;
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  padding: 24px !important;
+  border: 1px solid #eff0f2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
+  body.qqdocs-page-about .about__main-content { grid-template-columns: 1fr !important; }
+  body.qqdocs-page-about .about__stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  body.qqdocs-page.qqdocs-page-about #main-outlet .contents.body-page,
+  body.qqdocs-page.qqdocs-page-static #main-outlet .contents.body-page,
+  body.qqdocs-page.qqdocs-page-static #main-outlet > section > .container { padding: 24px !important; }
+}
+
+@media (max-width: 640px) {
+  body.qqdocs-page-tags .tags-index .tag-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  body.qqdocs-page-categories .category-list-header th.topics,
+  body.qqdocs-page-categories .category-list > tbody > tr > td.topics { width: 86px !important; }
+  body.qqdocs-page-categories .category-description { display: none !important; }
+}

@@ -270,6 +270,14 @@ body.qqdocs-search-page .search-results {
   max-width: none !important;
 }
 
+/* Discourse gives the labelled results region large responsive gutters. With
+   width: 100% and content-box sizing those gutters also expand it past the
+   available workspace, so keep this list flush with its parent instead. */
+body.qqdocs-search-page div.search-results[role="region"][aria-label] {
+  padding-inline: 0 !important;
+  box-sizing: border-box !important;
+}
+
 body.qqdocs-search-page .search-results .fps-result-entries {
   width: 100% !important;
   margin: 0 !important;
@@ -307,12 +315,17 @@ body.qqdocs-search-page .fps-result {
 
 body.qqdocs-search-page .fps-result {
   position: relative !important;
+  height: 56px !important;
   min-height: 56px !important;
+  grid-template-rows: 56px !important;
+  grid-auto-rows: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   border-bottom: 1px solid #f7f8fa !important;
   background: #fff !important;
+  font-size: var(--font-size-body) !important;
+  line-height: var(--line-height-body) !important;
   transition: background-color 0.1s ease !important;
 }
 
@@ -340,6 +353,7 @@ body.qqdocs-search-page .fps-result > .fps-topic > .blurb {
 body.qqdocs-search-page .fps-result .search-link {
   grid-column: 1 !important;
   grid-row: 1 !important;
+  align-self: center !important;
   min-width: 0 !important;
   padding: 0 8px 0 40px !important;
   display: block !important;
@@ -357,14 +371,18 @@ body.qqdocs-search-page .fps-result .search-link:hover { color: var(--accent-def
 
 body.qqdocs-search-page .fps-result .topic-title,
 body.qqdocs-search-page .fps-result .topic-title > span,
-body.qqdocs-search-page .fps-result .topic-title [dir="auto"] {
+body.qqdocs-search-page .fps-result .topic-title [dir="auto"],
+body.qqdocs-search-page .fps-result .topic-title .search-highlight {
   display: inline !important;
+  font-size: var(--font-size-body) !important;
+  line-height: var(--line-height-body) !important;
   white-space: nowrap !important;
 }
 
 body.qqdocs-search-page .fps-result > .author {
   grid-column: 2 !important;
   grid-row: 1 !important;
+  align-self: center !important;
   min-width: 0 !important;
   padding: 0 8px !important;
 }
@@ -374,7 +392,7 @@ body.qqdocs-search-page .fps-result > .author a {
   min-width: 0 !important;
   overflow: hidden !important;
   color: var(--text-strong) !important;
-  font-size: 12px !important;
+  font-size: var(--font-size-caption) !important;
   line-height: var(--line-height-caption) !important;
   text-decoration: none !important;
   text-overflow: ellipsis !important;
@@ -386,6 +404,7 @@ body.qqdocs-search-page .fps-result > .author img.avatar { display: none !import
 body.qqdocs-search-page .fps-result .search-category {
   grid-column: 3 !important;
   grid-row: 1 !important;
+  align-self: center !important;
   min-width: 0 !important;
   padding: 0 8px !important;
   overflow: hidden !important;
@@ -395,7 +414,7 @@ body.qqdocs-search-page .fps-result .search-category {
 
 body.qqdocs-search-page .fps-result .search-category .badge-category__wrapper {
   color: var(--text-strong) !important;
-  font-size: 12px !important;
+  font-size: var(--font-size-caption) !important;
   line-height: var(--line-height-caption) !important;
   text-decoration: none !important;
 }
@@ -410,11 +429,12 @@ body.qqdocs-search-page .fps-result > .ai-result__icon {
 body.qqdocs-search-page .fps-result .blurb > .date {
   grid-column: 4 !important;
   grid-row: 1 !important;
+  align-self: center !important;
   min-width: 0 !important;
   padding: 0 8px !important;
   overflow: hidden !important;
   color: var(--text-strong) !important;
-  font-size: 12px !important;
+  font-size: var(--font-size-caption) !important;
   line-height: var(--line-height-caption) !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
@@ -425,11 +445,12 @@ body.qqdocs-search-page .fps-result .blurb > .date .separator { display: none !i
 body.qqdocs-search-page .fps-result .blurb > span:not(.date) {
   grid-column: 5 !important;
   grid-row: 1 !important;
+  align-self: center !important;
   min-width: 0 !important;
   padding: 0 8px !important;
   overflow: hidden !important;
   color: var(--text-strong) !important;
-  font-size: 12px !important;
+  font-size: var(--font-size-caption) !important;
   line-height: var(--line-height-caption) !important;
   text-align: right !important;
   text-overflow: ellipsis !important;

@@ -16,6 +16,7 @@ const styleFiles = [
   'header.css',
   'sidebar.css',
   'topic-list.css',
+  'page-shells.css',
   'topic-detail.css',
   'composer.css',
   'modal-menu.css'
@@ -30,7 +31,13 @@ for (const file of styleFiles) {
 }
 
 // 读取官方图标资产与 JS 逻辑
-const iconsJS = fs.readFileSync(path.join(srcDir, 'assets', 'icons.js'), 'utf8');
+const faviconPath = path.join(srcDir, 'assets', 'favicon2.ico');
+if (!fs.existsSync(faviconPath)) {
+  throw new Error(`Missing local favicon asset: ${faviconPath}`);
+}
+const faviconDataUrl = `data:image/x-icon;base64,${fs.readFileSync(faviconPath).toString('base64')}`;
+const iconsJS = fs.readFileSync(path.join(srcDir, 'assets', 'icons.js'), 'utf8')
+  .replace('__QQDOCS_FAVICON_DATA_URL__', faviconDataUrl);
 const disguiseJS = fs.readFileSync(path.join(srcDir, 'core', 'disguise.js'), 'utf8');
 
 // 油猴脚本元数据头
