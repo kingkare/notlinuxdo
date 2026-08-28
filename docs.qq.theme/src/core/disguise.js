@@ -12,16 +12,62 @@ const DisguiseEngine = (function () {
   const POST_IMAGE_BOUND_ATTRIBUTE = 'data-qqdocs-image-toggle-bound';
   const POST_IMAGE_WRAPPER_ATTRIBUTE = 'data-qqdocs-image-toggle-wrapper';
 
-  const POST_EMOJI_SELECTOR = [
+  const POST_BODY_EMOJI_SELECTOR = [
     '.post-stream .cooked img.emoji',
     '.post-stream .cooked img.emoticon',
     '.post-stream .cooked img[data-emoji]',
     '.post-stream .cooked img[data-emoticon]',
     '.post-stream .cooked [data-emoji] > img',
     '.post-stream .cooked [data-emoticon] > img',
-    '.post-stream .cooked [data-emoji-image]'
+    '.post-stream .cooked [data-emoji-image]',
+    '.post-stream .cooked [data-emoji-image] > img'
   ].join(', ');
+  // Post metadata can contain the same emoji renderers as the cooked body,
+  // but it is a separate, deliberately narrow scope. Metadata also contains
+  // identity/avatar markup, so only the known emoji markers below qualify.
+  const POST_META_EMOJI_SELECTOR = [
+    '.post-stream .topic-meta-data img.emoji',
+    '.post-stream .topic-meta-data img.emoticon',
+    '.post-stream .topic-meta-data img[data-emoji]',
+    '.post-stream .topic-meta-data img[data-emoticon]',
+    '.post-stream .topic-meta-data [data-emoji] > img',
+    '.post-stream .topic-meta-data [data-emoticon] > img',
+    '.post-stream .topic-meta-data img[data-emoji-image]',
+    '.post-stream .topic-meta-data [data-emoji-image] > img'
+  ].join(', ');
+  // Reaction summaries live in the post action bar rather than .cooked. Keep
+  // this scope anchored to Discourse's reaction-list container so SVG action
+  // icons, counters, avatars, and other controls are never treated as emoji.
+  const POST_REACTION_EMOJI_SELECTOR = [
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji img.emoji',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji img.emoticon',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji img[data-emoji]',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji img[data-emoticon]',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji [data-emoji] > img',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji [data-emoticon] > img',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji [data-emoji-image]',
+    '.post-stream nav.post-controls.collapsed .discourse-reactions-list-emoji [data-emoji-image] > img',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji img.emoji',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji img.emoticon',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji img[data-emoji]',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji img[data-emoticon]',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji [data-emoji] > img',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji [data-emoticon] > img',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji [data-emoji-image]',
+    '.post-stream nav.post-controls .discourse-reactions-list-emoji [data-emoji-image] > img'
+  ].join(', ');
+  const POST_BOOST_EMOJI_SELECTOR = [
+    '.post-stream button.discourse-boosts__cooked img.emoji',
+    '.post-stream button.discourse-boosts__cooked img.emoticon',
+    '.post-stream button.discourse-boosts__cooked img[data-emoji]',
+    '.post-stream button.discourse-boosts__cooked img[data-emoticon]',
+    '.post-stream button.discourse-boosts__cooked [data-emoji] > img',
+    '.post-stream button.discourse-boosts__cooked [data-emoticon] > img',
+    '.post-stream button.discourse-boosts__cooked [data-emoji-image] > img'
+  ].join(', ');
+  const POST_EMOJI_SELECTOR = `${POST_BODY_EMOJI_SELECTOR}, ${POST_META_EMOJI_SELECTOR}, ${POST_REACTION_EMOJI_SELECTOR}, ${POST_BOOST_EMOJI_SELECTOR}`;
   const POST_EMOJI_WRAPPER = 'qqdocs-emoji-wrapper';
+  const POST_REACTION_EMOJI_WRAPPER = 'qqdocs-emoji-wrapper--reaction';
   const POST_EMOJI_LABEL = 'qqdocs-emoji-label';
   const POST_EMOJI_BOUND_ATTRIBUTE = 'data-qqdocs-emoji-bound';
   const POST_EMOJI_WRAPPER_ATTRIBUTE = 'data-qqdocs-emoji-wrapper';
@@ -505,6 +551,24 @@ const DisguiseEngine = (function () {
 
   const POST_IMAGE_EXCLUDED_CLASS_PATTERN = /(?:^|[\s_-])(avatar|emoji|emoticon|badge|icon|reaction|retort|flair)(?:$|[\s_-])/i;
 
+  // These containers/classes are identity or control UI that may coexist in
+  // .topic-meta-data. They must never be converted merely because a nested
+  // image happens to carry an emoji-like attribute.
+  const POST_META_EMOJI_EXCLUDED_ANCESTORS = [
+    '.avatar',
+    '.avatar-flair',
+    '.user-badge',
+    '.badge',
+    '.badge-card',
+    '.badge-icon',
+    '.post-avatar',
+    '.topic-avatar',
+    '.user-card',
+    '.post-controls',
+    '.topic-map',
+    '[data-user-card]'
+  ];
+
   function isTopicDetailActive() {
     return Boolean(document.querySelector('.post-stream'));
   }
@@ -689,6 +753,9 @@ const DisguiseEngine = (function () {
 
     const cooked = image.closest('.cooked');
     if (!cooked || !cooked.closest('.post-stream')) return false;
+    // Metadata has its own selector and validator below. Keeping it out of
+    // this body-only predicate makes the .topic-meta-data boundary explicit.
+    if (image.closest('.topic-meta-data')) return false;
 
     // Discourse currently uses img.emoji; the data-* variants cover older
     // renderers and custom emoji markup without broadening this to ordinary
@@ -697,7 +764,55 @@ const DisguiseEngine = (function () {
       return true;
     }
 
-    return Boolean(image.closest('[data-emoji], [data-emoticon]'));
+    return Boolean(image.closest('[data-emoji], [data-emoticon], [data-emoji-image]'));
+  }
+
+  function isPostMetaEmoji(image) {
+    if (!image || image.tagName !== 'IMG') return false;
+
+    const metadata = image.closest('.post-stream .topic-meta-data');
+    if (!metadata) return false;
+
+    // Keep avatar, badge, user-card, and control images out even if a site
+    // decorates them with a generic emoji/data-* class or attribute.
+    if (image.closest(POST_META_EMOJI_EXCLUDED_ANCESTORS.join(', '))) return false;
+
+    const className = typeof image.className === 'string' ? image.className : '';
+    if (/(?:^|[\s_-])(avatar|badge|icon|reaction|retort|flair)(?:$|[\s_-])/i.test(className)) {
+      return false;
+    }
+
+    return image.matches(
+      'img.emoji, img.emoticon, img[data-emoji], img[data-emoticon], img[data-emoji-image]'
+    ) || Boolean(image.closest('[data-emoji], [data-emoticon], [data-emoji-image]'));
+  }
+
+  function isPostReactionEmoji(image) {
+    if (!image || image.tagName !== 'IMG') return false;
+
+    const reactionList = image.closest(
+      '.post-stream nav.post-controls .discourse-reactions-list-emoji'
+    );
+    if (!reactionList) return false;
+
+    // Keep the operation-bar scope just as narrow as the query selector:
+    // ordinary images or SVG-backed action controls must not be wrapped.
+    return image.matches(
+      'img.emoji, img.emoticon, img[data-emoji], img[data-emoticon], img[data-emoji-image]'
+    ) || Boolean(image.closest('[data-emoji], [data-emoticon], [data-emoji-image]'));
+  }
+
+  function isPostBoostEmoji(image) {
+    if (!image || image.tagName !== 'IMG') return false;
+    if (!image.closest('.post-stream button.discourse-boosts__cooked')) return false;
+
+    return image.matches(
+      'img.emoji, img.emoticon, img[data-emoji], img[data-emoticon], img[data-emoji-image]'
+    ) || Boolean(image.closest('[data-emoji], [data-emoticon], [data-emoji-image]'));
+  }
+
+  function isTopicEmoji(image) {
+    return isPostEmoji(image) || isPostMetaEmoji(image) || isPostReactionEmoji(image) || isPostBoostEmoji(image);
   }
 
   function normalizeEmojiAttribute(value) {
@@ -785,18 +900,36 @@ const DisguiseEngine = (function () {
     const description = getEmojiDescription(image);
     const labelText = `[emoji:${description}]`;
     const label = wrapper.querySelector(`.${POST_EMOJI_LABEL}`);
+    const isReactionWrapper = wrapper.classList.contains(POST_REACTION_EMOJI_WRAPPER);
 
-    wrapper.setAttribute('aria-label', labelText);
-    wrapper.setAttribute('title', labelText);
-    wrapper.dataset.qqdocsEmojiDescription = description;
+    if (isReactionWrapper) {
+      // The wrapper is purely visual inside an existing reaction button. It
+      // must not create a nested accessible name/focus target; the button's
+      // original aria-label remains the sole accessible name and action.
+      if (wrapper.getAttribute('aria-hidden') !== 'true') wrapper.setAttribute('aria-hidden', 'true');
+      wrapper.removeAttribute('aria-label');
+      wrapper.removeAttribute('role');
+      wrapper.removeAttribute('tabindex');
+      wrapper.removeAttribute('title');
+    } else {
+      if (wrapper.getAttribute('aria-label') !== labelText) wrapper.setAttribute('aria-label', labelText);
+      if (wrapper.getAttribute('title') !== labelText) wrapper.setAttribute('title', labelText);
+    }
+    if (wrapper.dataset.qqdocsEmojiDescription !== description) {
+      wrapper.dataset.qqdocsEmojiDescription = description;
+    }
     if (label) {
-      label.textContent = labelText;
-      label.setAttribute('aria-label', labelText);
+      if (label.textContent !== labelText) label.textContent = labelText;
+      if (label.getAttribute('aria-label') !== labelText) label.setAttribute('aria-label', labelText);
     }
   }
 
   function createPostEmojiLabel(image) {
-    if (!isPostEmoji(image) || image.hasAttribute(POST_EMOJI_BOUND_ATTRIBUTE)) return;
+    const isReactionEmoji = isPostReactionEmoji(image);
+    const isBoostEmoji = isPostBoostEmoji(image);
+    const isButtonEmoji = isReactionEmoji || isBoostEmoji;
+    const isMetaEmoji = isPostMetaEmoji(image);
+    if ((!isPostEmoji(image) && !isMetaEmoji && !isButtonEmoji) || image.hasAttribute(POST_EMOJI_BOUND_ATTRIBUTE)) return;
 
     const media = image.parentElement?.tagName === 'PICTURE' ? image.parentElement : image;
     const parent = media.parentNode;
@@ -805,8 +938,15 @@ const DisguiseEngine = (function () {
     const wrapper = document.createElement('span');
     wrapper.className = POST_EMOJI_WRAPPER;
     wrapper.setAttribute(POST_EMOJI_WRAPPER_ATTRIBUTE, 'true');
-    wrapper.setAttribute('role', 'img');
-    wrapper.tabIndex = 0;
+    if (isButtonEmoji) {
+      wrapper.classList.add(POST_REACTION_EMOJI_WRAPPER);
+      wrapper.setAttribute('aria-hidden', 'true');
+      // Do not set role or tabindex here. This span sits inside a native
+      // reaction/boost button and must never become a nested focusable control.
+    } else {
+      wrapper.setAttribute('role', 'img');
+      wrapper.tabIndex = 0;
+    }
 
     const label = document.createElement('span');
     label.className = POST_EMOJI_LABEL;
@@ -815,9 +955,11 @@ const DisguiseEngine = (function () {
     parent.insertBefore(wrapper, media);
     wrapper.append(media, label);
 
-    // Keep the original alt/title untouched. The wrapper provides one stable
-    // accessible name while the child image remains the original DOM node.
-    if (!image.hasAttribute('aria-hidden')) {
+    // Keep the original alt/title untouched. The body wrapper provides one
+    // stable accessible name while the child image remains the original DOM
+    // node. Reaction wrappers are already aria-hidden as a whole, so do not
+    // alter the image's own accessibility attributes inside a button.
+    if (!isButtonEmoji && !image.hasAttribute('aria-hidden')) {
       image.setAttribute('aria-hidden', 'true');
       image.setAttribute(POST_EMOJI_ARIA_HIDDEN_ADDED_ATTRIBUTE, 'true');
     }
@@ -868,10 +1010,19 @@ const DisguiseEngine = (function () {
 
     document.querySelectorAll(`.${POST_EMOJI_WRAPPER}[${POST_EMOJI_WRAPPER_ATTRIBUTE}]`).forEach((wrapper) => {
       const image = getPostEmojiImage(wrapper);
-      if (!image || !isPostEmoji(image)) {
+      if (!image || !isTopicEmoji(image)) {
         unwrapPostEmojiLabel(wrapper);
         return;
       }
+
+      const shouldBeReactionWrapper = isPostReactionEmoji(image) || isPostBoostEmoji(image);
+      const isReactionWrapper = wrapper.classList.contains(POST_REACTION_EMOJI_WRAPPER);
+      if (shouldBeReactionWrapper !== isReactionWrapper) {
+        unwrapPostEmojiLabel(wrapper);
+        createPostEmojiLabel(image);
+        return;
+      }
+
       updatePostEmojiLabel(wrapper, image);
     });
   }
@@ -1561,6 +1712,23 @@ const DisguiseEngine = (function () {
     window.addEventListener('hashchange', queueRenderPass);
   }
 
+  function handleDomMutations(records) {
+    // Child-list and text mutations cover Discourse's normal re-rendering and
+    // virtualized post/reaction replacement. Attribute observation fills the
+    // remaining case where the same emoji image or its data-* marker wrapper
+    // gets a new shortcode/source. Our own wrapper mutations may enqueue one
+    // coalesced pass, but all sync operations remain idempotent.
+    const shouldRender = records.some((record) => {
+      if (record.type !== 'attributes') return true;
+
+      const target = record.target;
+      if (!target || target.nodeType !== 1) return false;
+      return Boolean(target.closest('.post-stream .cooked, .post-stream .topic-meta-data, .post-stream nav.post-controls .discourse-reactions-list-emoji, .post-stream button.discourse-boosts__cooked'));
+    });
+
+    if (shouldRender) queueRenderPass();
+  }
+
   function init() {
     applyFavicon();
     hijackTitle();
@@ -1568,12 +1736,25 @@ const DisguiseEngine = (function () {
     runRenderPass();
 
     if (domObserver) domObserver.disconnect();
-    domObserver = new MutationObserver(queueRenderPass);
+    domObserver = new MutationObserver(handleDomMutations);
 
     domObserver.observe(document.body, {
       childList: true,
       subtree: true,
-      characterData: true
+      characterData: true,
+      attributes: true,
+      attributeFilter: [
+        'alt',
+        'title',
+        'src',
+        'data-src',
+        'data-emoji',
+        'data-emoji-name',
+        'data-emoji-shortcode',
+        'data-name',
+        'aria-label',
+        'class'
+      ]
     });
   }
 
