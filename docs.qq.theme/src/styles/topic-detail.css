@@ -506,6 +506,79 @@ body.qqdocs-topic-detail .cooked {
 
 body.qqdocs-topic-detail .cooked p { margin: 0 0 14px !important; }
 
+/*
+ * Post images are intentionally represented by an opaque, same-size surface
+ * until the reader double-clicks them. The wrapper keeps an actual hit target
+ * even while the image itself is visibility-hidden, so no source pixels can
+ * leak through a blur or translucent veil.
+ */
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle {
+  position: relative !important;
+  display: inline-block !important;
+  max-width: 100% !important;
+  vertical-align: baseline !important;
+  line-height: inherit !important;
+  overflow: hidden !important;
+  cursor: zoom-in !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > img,
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > picture,
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle > picture > img {
+  max-width: 100% !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > img,
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > picture,
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--hidden > picture > img {
+  visibility: hidden !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 120px !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  padding: 10px 18px !important;
+  border: 1px dashed rgba(30, 111, 255, 0.38) !important;
+  border-radius: 4px !important;
+  background: #f3f5f7 !important;
+  color: #646a73 !important;
+  font-family: var(--font-family) !important;
+  font-size: 13px !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: 20px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  cursor: zoom-in !important;
+  user-select: none !important;
+  outline: none !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay:hover,
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay:focus-visible {
+  border-color: var(--accent-default) !important;
+  background: #eaf2ff !important;
+  color: var(--accent-default) !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--shown {
+  cursor: zoom-out !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle--shown .qqdocs-image-toggle-overlay {
+  display: none !important;
+}
+
+body.qqdocs-topic-detail.qqdocs-image-toggle-enabled .qqdocs-image-toggle-overlay[hidden] {
+  display: none !important;
+}
+
 /* Hide forum identity avatars only; ordinary content images remain visible. */
 body.qqdocs-topic-detail .topic-avatar,
 body.qqdocs-topic-detail .topic-map__users-list,

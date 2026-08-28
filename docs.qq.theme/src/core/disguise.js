@@ -5,6 +5,213 @@ const DisguiseEngine = (function () {
   let domObserver = null;
   let renderPassQueued = false;
   let routeListenersAttached = false;
+  let postImageInteractionsAttached = false;
+
+  const POST_IMAGE_TOGGLE_WRAPPER = 'qqdocs-image-toggle';
+  const POST_IMAGE_TOGGLE_HIDDEN = 'qqdocs-image-toggle--hidden';
+  const POST_IMAGE_TOGGLE_SHOWN = 'qqdocs-image-toggle--shown';
+  const POST_IMAGE_TOGGLE_OVERLAY = 'qqdocs-image-toggle-overlay';
+  const POST_IMAGE_BOUND_ATTRIBUTE = 'data-qqdocs-image-toggle-bound';
+  const POST_IMAGE_WRAPPER_ATTRIBUTE = 'data-qqdocs-image-toggle-wrapper';
+
+  const POST_IMAGE_EXCLUDED_ANCESTORS = [
+    '.avatar',
+    '.avatar-flair',
+    '.emoji',
+    '.emoticon',
+    '.user-badge',
+    '.badge',
+    '.badge-card',
+    '.badge-icon',
+    '.post-avatar',
+    '.topic-avatar',
+    '.user-card',
+    '.post-controls',
+    '.topic-map',
+    '[data-emoji]',
+    '[data-user-card]'
+  ];
+
+  const POST_IMAGE_EXCLUDED_CLASS_PATTERN = /(?:^|[\s_-])(avatar|emoji|emoticon|badge|icon|reaction|retort|flair)(?:$|[\s_-])/i;
+
+  function isTopicDetailActive() {
+    return Boolean(document.querySelector('.post-stream'));
+  }
+
+  function isPostImageExcluded(image) {
+    if (!image || image.tagName !== 'IMG') return true;
+
+    const cooked = image.closest('.cooked');
+    if (!cooked || !cooked.closest('.post-stream')) return true;
+    if (image.closest(POST_IMAGE_EXCLUDED_ANCESTORS.join(', '))) return true;
+
+    const className = typeof image.className === 'string' ? image.className : '';
+    if (POST_IMAGE_EXCLUDED_CLASS_PATTERN.test(className)) return true;
+
+    const alt = normalizeStatText(image.getAttribute('alt')).toLowerCase();
+    const title = normalizeStatText(image.getAttribute('title')).toLowerCase();
+    if (/^:[\w+.-]+:$/.test(alt) || /emoji|emoticon|avatar|badge|icon|头像|表情|徽章|图标/.test(`${alt} ${title}`)) return true;
+
+    const src = normalizeStatText(image.currentSrc || image.getAttribute('src') || image.getAttribute('data-src')).toLowerCase();
+
+    // Tiny transparent pixels are tracking/layout helpers, not post content.
+    const width = Number(image.getAttribute('width') || image.width || 0);
+    const height = Number(image.getAttribute('height') || image.height || 0);
+    if (width > 0 && height > 0 && width <= 16 && height <= 16 && /(?:pixel|spacer|blank|transparent|tracking)/.test(`${src} ${alt} ${title}`)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function getPostImageFromToggle(toggle) {
+    if (!toggle) return null;
+    const media = Array.from(toggle.children).find((child) => child.tagName === 'IMG' || child.tagName === 'PICTURE');
+    return media?.tagName === 'IMG' ? media : media?.querySelector('img');
+  }
+
+  function setPostImageToggleState(toggle, isVisible) {
+    if (!toggle) return;
+    const overlay = toggle.querySelector(`.${POST_IMAGE_TOGGLE_OVERLAY}`);
+    const image = getPostImageFromToggle(toggle);
+    const alt = normalizeStatText(image?.getAttribute('alt'));
+    const imageDescription = alt ? `图片：${alt}，` : '图片，';
+    const label = `${imageDescription}${isVisible ? '双击隐藏图片' : '双击显示图片'}`;
+
+    toggle.classList.toggle(POST_IMAGE_TOGGLE_HIDDEN, !isVisible);
+    toggle.classList.toggle(POST_IMAGE_TOGGLE_SHOWN, isVisible);
+    toggle.dataset.qqdocsImageVisible = String(isVisible);
+
+    if (overlay) {
+      overlay.hidden = isVisible;
+      overlay.textContent = isVisible ? '双击隐藏图片' : '双击显示图片';
+      overlay.setAttribute('aria-label', label);
+      overlay.setAttribute('title', label);
+    }
+  }
+
+  function findPostImageToggle(eventTarget) {
+    if (!(eventTarget instanceof Element)) return null;
+    const toggle = eventTarget.closest(`.${POST_IMAGE_TOGGLE_WRAPPER}`);
+    if (!toggle || !toggle.closest('.cooked') || !toggle.closest('.post-stream')) return null;
+    return toggle;
+  }
+
+  function handlePostImageClick(event) {
+    if (!isDisguiseEnabled || !isTopicDetailActive()) return;
+    const toggle = findPostImageToggle(event.target);
+    if (!toggle) return;
+
+    // A lightbox is normally opened from a delegated click handler. Suppress
+    // both clicks that precede dblclick so a deliberate double-click never
+    // navigates away or opens the native lightbox first.
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function handlePostImageDoubleClick(event) {
+    if (!isDisguiseEnabled || !isTopicDetailActive()) return;
+    const toggle = findPostImageToggle(event.target);
+    if (!toggle) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    setPostImageToggleState(toggle, !toggle.classList.contains(POST_IMAGE_TOGGLE_SHOWN));
+  }
+
+  function handlePostImageKeydown(event) {
+    if (!isDisguiseEnabled || !isTopicDetailActive()) return;
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+
+    // The surrounding lightbox anchor can remain in the tab order. Treat a
+    // keyboard activation anywhere on the target as the same toggle action so
+    // Enter/Space cannot accidentally navigate while the image is concealed.
+    const toggle = event.target instanceof Element ? findPostImageToggle(event.target) : null;
+    if (!toggle) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    if (!event.repeat) setPostImageToggleState(toggle, !toggle.classList.contains(POST_IMAGE_TOGGLE_SHOWN));
+  }
+
+  function attachPostImageInteractions() {
+    if (postImageInteractionsAttached) return;
+    postImageInteractionsAttached = true;
+    document.addEventListener('click', handlePostImageClick, true);
+    document.addEventListener('dblclick', handlePostImageDoubleClick, true);
+    document.addEventListener('keydown', handlePostImageKeydown, true);
+  }
+
+  function createPostImageToggle(image) {
+    if (isPostImageExcluded(image) || image.hasAttribute(POST_IMAGE_BOUND_ATTRIBUTE)) return;
+
+    // Keep <picture>'s source/img relationship valid by wrapping the whole
+    // picture element. For ordinary images only the image node is wrapped.
+    const media = image.parentElement?.tagName === 'PICTURE' ? image.parentElement : image;
+    const parent = media.parentNode;
+    if (!parent || parent.closest(`.${POST_IMAGE_TOGGLE_WRAPPER}`)) return;
+
+    const toggle = document.createElement('span');
+    toggle.className = `${POST_IMAGE_TOGGLE_WRAPPER} ${POST_IMAGE_TOGGLE_HIDDEN}`;
+    toggle.setAttribute(POST_IMAGE_WRAPPER_ATTRIBUTE, 'true');
+    toggle.setAttribute('role', 'group');
+
+    const overlay = document.createElement('span');
+    overlay.className = POST_IMAGE_TOGGLE_OVERLAY;
+    overlay.setAttribute('role', 'button');
+    overlay.tabIndex = 0;
+    overlay.setAttribute('aria-label', '双击显示图片');
+    overlay.setAttribute('title', '双击显示图片');
+
+    parent.insertBefore(toggle, media);
+    toggle.append(media, overlay);
+    image.setAttribute(POST_IMAGE_BOUND_ATTRIBUTE, 'true');
+    setPostImageToggleState(toggle, false);
+  }
+
+  function unwrapPostImageToggle(toggle) {
+    if (!toggle || !toggle.hasAttribute(POST_IMAGE_WRAPPER_ATTRIBUTE)) return;
+    const media = Array.from(toggle.children).find((child) => child.tagName === 'IMG' || child.tagName === 'PICTURE');
+    const image = media?.tagName === 'IMG' ? media : media?.querySelector('img');
+
+    if (media && toggle.parentNode) toggle.parentNode.insertBefore(media, toggle);
+    if (image) image.removeAttribute(POST_IMAGE_BOUND_ATTRIBUTE);
+    toggle.remove();
+  }
+
+  function cleanupPostImageToggles() {
+    document.querySelectorAll(`.${POST_IMAGE_TOGGLE_WRAPPER}[${POST_IMAGE_WRAPPER_ATTRIBUTE}]`).forEach(unwrapPostImageToggle);
+    document.body?.classList.remove('qqdocs-image-toggle-enabled');
+  }
+
+  function syncPostImageToggles() {
+    const active = isDisguiseEnabled && isTopicDetailActive();
+    if (!active) {
+      cleanupPostImageToggles();
+      return;
+    }
+
+    attachPostImageInteractions();
+    document.body?.classList.add('qqdocs-image-toggle-enabled');
+
+    document.querySelectorAll('.post-stream .cooked img').forEach((image) => {
+      if (image.hasAttribute(POST_IMAGE_BOUND_ATTRIBUTE) && !image.closest(`.${POST_IMAGE_TOGGLE_WRAPPER}`)) {
+        image.removeAttribute(POST_IMAGE_BOUND_ATTRIBUTE);
+      }
+      createPostImageToggle(image);
+    });
+
+    document.querySelectorAll(`.${POST_IMAGE_TOGGLE_WRAPPER}[${POST_IMAGE_WRAPPER_ATTRIBUTE}]`).forEach((toggle) => {
+      const image = getPostImageFromToggle(toggle);
+      if (!image || isPostImageExcluded(image)) {
+        unwrapPostImageToggle(toggle);
+        return;
+      }
+      if (!toggle.classList.contains(POST_IMAGE_TOGGLE_HIDDEN) && !toggle.classList.contains(POST_IMAGE_TOGGLE_SHOWN)) {
+        setPostImageToggleState(toggle, false);
+      }
+    });
+  }
 
   // 1. Favicon 伪装
   function applyFavicon() {
@@ -674,6 +881,7 @@ const DisguiseEngine = (function () {
     renderSidebar();
     renderTopicList();
     renderTopicDetail();
+    syncPostImageToggles();
     mountToggleBadge();
   }
 
@@ -745,8 +953,10 @@ const DisguiseEngine = (function () {
       applyFavicon();
       document.title = document.title;
       renderTopicDetail();
+      syncPostImageToggles();
     } else {
       document.title = 'LINUX DO';
+      cleanupPostImageToggles();
       renderTopicDetail();
     }
   }
