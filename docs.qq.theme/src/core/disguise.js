@@ -2,6 +2,9 @@
 const DisguiseEngine = (function () {
   let isDisguiseEnabled = true;
   let customStyleElement = null;
+  let domObserver = null;
+  let renderPassQueued = false;
+  let routeListenersAttached = false;
 
   // 1. Favicon 伪装
   function applyFavicon() {
@@ -322,6 +325,247 @@ const DisguiseEngine = (function () {
     });
   }
 
+  const TOPIC_STAT_DEFINITIONS = {
+    views: {
+      label: '浏览量',
+      markers: ['view', 'views', 'visit', 'visits', '浏览', '访问']
+    },
+    likes: {
+      label: '赞',
+      markers: ['like', 'likes', 'liked', 'heart', '赞']
+    },
+    users: {
+      label: '用户',
+      markers: ['user', 'users', 'participant', 'participants', 'poster', 'member', '用户', '参与者', '成员']
+    }
+  };
+
+  function normalizeStatText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function getNodeMetadata(node) {
+    if (!node) return '';
+    const className = typeof node.className === 'string' ? node.className : '';
+    return normalizeStatText([
+      className,
+      node.getAttribute?.('data-stat'),
+      node.getAttribute?.('data-type'),
+      node.getAttribute?.('data-topic-stat'),
+      node.getAttribute?.('aria-label'),
+      node.getAttribute?.('title')
+    ].filter(Boolean).join(' ')).toLowerCase();
+  }
+
+  function getTopicStatKey(node) {
+    const metadata = getNodeMetadata(node);
+    const text = normalizeStatText(node?.textContent).toLowerCase();
+    const source = `${metadata} ${text}`;
+    const keys = Object.keys(TOPIC_STAT_DEFINITIONS);
+    let bestKey = null;
+    let bestScore = 0;
+
+    keys.forEach((key) => {
+      const definition = TOPIC_STAT_DEFINITIONS[key];
+      let score = 0;
+      definition.markers.forEach((marker) => {
+        if (metadata.includes(marker)) score += marker.length > 2 ? 8 : 6;
+        else if (text.includes(marker)) score += marker.length > 2 ? 3 : 2;
+      });
+      if (score > bestScore) {
+        bestKey = key;
+        bestScore = score;
+      }
+    });
+
+    // Avoid treating generic words in an unrelated node as a statistic.
+    return bestScore > 0 && source ? bestKey : null;
+  }
+
+  function firstTopicStatText(node, selectors) {
+    for (const selector of selectors) {
+      const child = node?.querySelector(selector);
+      const text = normalizeStatText(child?.textContent || child?.getAttribute?.('data-value'));
+      if (text) return text;
+    }
+    return '';
+  }
+
+  function extractNumericText(text) {
+    const normalized = normalizeStatText(text);
+    const match = normalized.match(/[+-]?(?:\d[\d,.]*)(?:\s*[万亿kKmMbB])?/);
+    return match ? normalizeStatText(match[0]) : '';
+  }
+
+  function removeStatValueFromLabel(label, value) {
+    const normalizedLabel = normalizeStatText(label);
+    const normalizedValue = normalizeStatText(value);
+    if (!normalizedLabel || !normalizedValue) return normalizedLabel;
+    const escapedValue = normalizedValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return normalizeStatText(normalizedLabel
+      .replace(new RegExp(escapedValue, 'g'), '')
+      .replace(/^[\s:：|·-]+|[\s:：|·-]+$/g, ''));
+  }
+
+  function getTopicStatCandidates(topicMap) {
+    const selectors = [
+      '.topic-map__stats-item',
+      '[class*="topic-map__stats-item"]',
+      '.topic-map__stat',
+      '[class*="topic-map__stat-"]',
+      '[data-topic-stat]',
+      '[data-stat]',
+      '.topic-map__stats > *'
+    ];
+    const seen = new Set();
+    const candidates = [];
+
+    selectors.forEach((selector) => {
+      topicMap.querySelectorAll(selector).forEach((node) => {
+        if (!seen.has(node)) {
+          seen.add(node);
+          candidates.push(node);
+        }
+      });
+    });
+
+    return candidates;
+  }
+
+  function extractUserCount(topicMap) {
+    const countSelectors = [
+      '[data-users-count]',
+      '[data-user-count]',
+      '[data-count]',
+      '.topic-map__users-count',
+      '.topic-map__user-count',
+      '[class*="users-count"]',
+      '[class*="user-count"]'
+    ];
+    for (const selector of countSelectors) {
+      const countNode = topicMap.querySelector(selector);
+      if (!countNode) continue;
+      const attributeCount = countNode.getAttribute?.('data-users-count') ||
+        countNode.getAttribute?.('data-user-count') || countNode.getAttribute?.('data-count');
+      const countText = normalizeStatText(attributeCount || countNode.textContent);
+      if (countText) return extractNumericText(countText) || countText;
+    }
+
+    const userSelectors = [
+      '.topic-map__user',
+      '.topic-map__user-link',
+      '.topic-map__users-list [data-user-card]',
+      '.topic-map__users-list .poster',
+      '.topic-map__users [data-user-card]',
+      '.topic-map__users .poster'
+    ];
+    const users = new Set();
+    userSelectors.forEach((selector) => {
+      topicMap.querySelectorAll(selector).forEach((node) => {
+        const identity = node.getAttribute?.('data-user-card') || node.getAttribute?.('href') || node.textContent;
+        if (normalizeStatText(identity)) users.add(normalizeStatText(identity));
+      });
+    });
+    return users.size ? String(users.size) : '';
+  }
+
+  function extractTopicStat(node, key) {
+    const definition = TOPIC_STAT_DEFINITIONS[key];
+    const value = firstTopicStatText(node, [
+      '.topic-map__value',
+      '.number',
+      '.value',
+      '[class*="__value"]',
+      '[class*="-value"]',
+      '[class*="number"]',
+      '[data-value]',
+      '[data-stat-value]',
+      '[data-count]'
+    ]) || extractNumericText(node.textContent);
+    const nestedLabel = firstTopicStatText(node, [
+      '.topic-map__label',
+      '.label',
+      'dt',
+      'small',
+      '[class*="__label"]',
+      '[class*="-label"]'
+    ]);
+    const attributeLabel = removeStatValueFromLabel(node.getAttribute?.('aria-label') || node.getAttribute?.('title'), value);
+    const textLabel = removeStatValueFromLabel(node.textContent, value);
+    const label = nestedLabel || attributeLabel || textLabel || definition.label;
+    const statValue = key === 'users' && !value ? extractUserCount(node) : value;
+
+    if (!statValue) return null;
+    return { key, label, value: normalizeStatText(statValue) };
+  }
+
+  function readTopicMapStats() {
+    const maps = Array.from(document.querySelectorAll('.topic-map'));
+    maps.sort((first, second) => {
+      const firstIsBottom = first.classList.contains('--bottom') ? 1 : 0;
+      const secondIsBottom = second.classList.contains('--bottom') ? 1 : 0;
+      return secondIsBottom - firstIsBottom;
+    });
+
+    const stats = new Map();
+    maps.forEach((topicMap) => {
+      const candidates = getTopicStatCandidates(topicMap);
+      candidates.forEach((candidate) => {
+        const key = getTopicStatKey(candidate);
+        if (!key || stats.has(key)) return;
+        const stat = extractTopicStat(candidate, key);
+        if (stat) stats.set(key, stat);
+      });
+
+      if (!stats.has('users')) {
+        const usersSection = topicMap.querySelector('.topic-map__users, .topic-map__users-list');
+        const userCount = usersSection ? extractUserCount(usersSection) : '';
+        if (userCount) {
+          stats.set('users', {
+            key: 'users',
+            label: firstTopicStatText(topicMap, ['.topic-map__users .topic-map__label', '.topic-map__users .label']) || TOPIC_STAT_DEFINITIONS.users.label,
+            value: userCount
+          });
+        }
+      }
+    });
+
+    return ['views', 'likes', 'users'].map((key) => stats.get(key)).filter(Boolean);
+  }
+
+  function renderTopicStatistics(shell) {
+    const statsContainer = shell?.querySelector('.qqdocs-topic-stats');
+    if (!statsContainer) return;
+
+    const stats = readTopicMapStats();
+    const signature = stats.map((stat) => `${stat.key}\u0000${stat.value}\u0000${stat.label}`).join('\u0001');
+    const hasStats = stats.length > 0;
+    if (statsContainer.dataset.qqdocsStatsSignature === signature && statsContainer.hidden === !hasStats) return;
+
+    const fragment = document.createDocumentFragment();
+    stats.forEach((stat) => {
+      const item = document.createElement('span');
+      item.className = `qqdocs-topic-stat qqdocs-topic-stat--${stat.key}`;
+      item.setAttribute('data-stat-key', stat.key);
+
+      const value = document.createElement('strong');
+      value.className = 'qqdocs-topic-stat-value';
+      value.textContent = stat.value;
+
+      const label = document.createElement('span');
+      label.className = 'qqdocs-topic-stat-label';
+      label.textContent = stat.label;
+
+      item.append(value, label);
+      fragment.appendChild(item);
+    });
+
+    statsContainer.replaceChildren(fragment);
+    statsContainer.dataset.qqdocsStatsSignature = signature;
+    statsContainer.hidden = !hasStats;
+    statsContainer.setAttribute('aria-hidden', String(!hasStats));
+  }
+
   // 6. 详情页腾讯文档编辑器外壳（全部为无交互的视觉装饰）
   function renderTopicDetail() {
     const postStream = document.querySelector('.post-stream');
@@ -333,8 +577,8 @@ const DisguiseEngine = (function () {
       return;
     }
 
-    const rawTitle = document.querySelector('#topic-title h1')?.textContent || '在线文档';
-    const topicTitle = rawTitle.replace(/\s+/g, ' ').trim();
+    const rawTitle = document.querySelector('#topic-title h1, #topic-title [data-topic-title]')?.textContent || '在线文档';
+    const topicTitle = normalizeStatText(rawTitle) || '在线文档';
 
     // Remove the outline shell left by pre-update userscript versions.
     document.querySelectorAll('[class*="outline"]').forEach((node) => {
@@ -344,7 +588,7 @@ const DisguiseEngine = (function () {
 
     let shell = document.querySelector('.qqdocs-editor-shell');
     // Rebuild a shell injected by an older userscript version during hot update.
-    if (shell && !shell.querySelector('.qqdocs-editor-divider')) {
+    if (shell && (!shell.querySelector('.qqdocs-editor-divider') || !shell.querySelector('.qqdocs-topic-stats'))) {
       shell.remove();
       shell = null;
     }
@@ -359,6 +603,7 @@ const DisguiseEngine = (function () {
             <span class="qqdocs-editor-plus">${renderTdocsChromeIcon('plus', 24)}</span>
             <span class="qqdocs-editor-divider"></span>
             <strong class="qqdocs-editor-title-text"></strong>
+            <span class="qqdocs-topic-stats" role="group" aria-label="主题统计" aria-live="polite"></span>
             <span class="qqdocs-editor-readonly"><span>只能查看</span>${renderTdocsChromeIcon('arrow', 6)}</span>
             <span class="qqdocs-editor-star">${renderTdocsChromeIcon('star', 16)}</span>
             <span class="qqdocs-editor-folder">${renderTdocsChromeIcon('folder', 16)}</span>
@@ -367,7 +612,7 @@ const DisguiseEngine = (function () {
             <span class="qqdocs-editor-action">${renderTdocsChromeIcon('more', 24)}</span>
             <span class="qqdocs-editor-action">${renderTdocsChromeIcon('ai', 24)}</span>
             <span class="qqdocs-editor-action qqdocs-editor-presentation">${renderTdocsChromeIcon('presentation', 24)}</span>
-            <span class="qqdocs-editor-collaborator">${renderTdocsChromeIcon('collaborator', 24)}<sup>3</sup></span>
+            <span class="qqdocs-editor-collaborator">${renderTdocsChromeIcon('collaborator', 24)}</span>
             <span class="qqdocs-editor-share">分享</span>
             <span class="qqdocs-editor-account">${renderTdocsChromeIcon('collaborator', 24)}${renderTdocsChromeIcon('wechat', 14)}</span>
           </div>
@@ -414,12 +659,40 @@ const DisguiseEngine = (function () {
 
     const shellTitle = shell.querySelector('.qqdocs-editor-title-text');
     if (shellTitle && shellTitle.textContent !== topicTitle) shellTitle.textContent = topicTitle;
+    renderTopicStatistics(shell);
   }
 
   // 详情页样式必须有明确的页面作用域，避免列表页或弹窗被误伤。
   function syncTopicDetailScope() {
     if (!document.body) return;
     document.body.classList.toggle('qqdocs-topic-detail', Boolean(document.querySelector('.post-stream')));
+  }
+
+  function runRenderPass() {
+    syncTopicDetailScope();
+    renderHeader();
+    renderSidebar();
+    renderTopicList();
+    renderTopicDetail();
+    mountToggleBadge();
+  }
+
+  function queueRenderPass() {
+    if (renderPassQueued) return;
+    renderPassQueued = true;
+    const flush = () => {
+      renderPassQueued = false;
+      runRenderPass();
+    };
+    if (typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(flush);
+    else window.setTimeout(flush, 0);
+  }
+
+  function attachRouteListeners() {
+    if (routeListenersAttached) return;
+    routeListenersAttached = true;
+    window.addEventListener('popstate', queueRenderPass);
+    window.addEventListener('hashchange', queueRenderPass);
   }
 
   // 7. 快捷切换悬浮徽标 (Alt + Q)
@@ -474,32 +747,24 @@ const DisguiseEngine = (function () {
       renderTopicDetail();
     } else {
       document.title = 'LINUX DO';
+      renderTopicDetail();
     }
   }
 
   function init(styleEl) {
     customStyleElement = styleEl;
-    syncTopicDetailScope();
     applyFavicon();
     hijackTitle();
-    renderHeader();
-    renderSidebar();
-    renderTopicList();
-    renderTopicDetail();
-    mountToggleBadge();
+    attachRouteListeners();
+    runRenderPass();
 
-    const observer = new MutationObserver(() => {
-      syncTopicDetailScope();
-      renderHeader();
-      renderSidebar();
-      renderTopicList();
-      renderTopicDetail();
-      mountToggleBadge();
-    });
+    if (domObserver) domObserver.disconnect();
+    domObserver = new MutationObserver(queueRenderPass);
 
-    observer.observe(document.body, {
+    domObserver.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
+      characterData: true
     });
   }
 

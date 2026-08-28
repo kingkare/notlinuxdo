@@ -95,6 +95,7 @@ body.qqdocs-topic-detail .container.posts {
 .qqdocs-editor-title-left {
   height: 40px !important;
   margin-right: 16px !important;
+  flex: 1 1 auto !important;
   overflow: hidden !important;
 }
 
@@ -128,6 +129,8 @@ body.qqdocs-topic-detail .container.posts {
 }
 
 .qqdocs-editor-title-text {
+  min-width: 0 !important;
+  flex: 0 1 auto !important;
   max-width: min(560px, 42vw) !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -427,47 +430,26 @@ body.qqdocs-topic-detail .container.posts {
   overflow: visible !important;
 }
 
-/* Title and post stream are one continuous 794px document page. */
-body.qqdocs-topic-detail #topic-title,
+/* The native title stays in the DOM as a source for the shell, but is not part
+   of the document paper. This keeps the Discourse route reversible when the
+   disguise is toggled off. */
+body.qqdocs-topic-detail #topic-title {
+  display: none !important;
+}
+
+/* The post stream is one continuous 794px document page. */
 body.qqdocs-topic-detail .topic-area {
   width: min(794px, calc(100% - 48px)) !important;
   max-width: 794px !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  min-height: calc(100vh - var(--qqdocs-editor-top) - 84px) !important;
   box-sizing: border-box !important;
   background: #fff !important;
-}
-
-body.qqdocs-topic-detail #topic-title {
-  margin-bottom: 0 !important;
-  padding: 66px 56px 22px !important;
+  padding: 46px 56px 70px !important;
   border: 1px solid rgba(0, 0, 0, 0.09) !important;
-  border-bottom: 0 !important;
-  border-radius: 2px 2px 0 0 !important;
-  box-shadow: 0 -1px 14px rgba(31, 35, 41, 0.06) !important;
-}
-
-body.qqdocs-topic-detail #topic-title h1 {
-  margin: 0 !important;
-  color: #1f2329 !important;
-  font-size: 27px !important;
-  font-weight: 600 !important;
-  line-height: 38px !important;
-  text-align: center !important;
-}
-
-body.qqdocs-topic-detail #topic-title .topic-category,
-body.qqdocs-topic-detail #topic-title .badge-wrapper,
-body.qqdocs-topic-detail #topic-title .topic-status {
-  display: none !important;
-}
-
-body.qqdocs-topic-detail .topic-area {
-  padding: 0 56px 70px !important;
-  border: 1px solid rgba(0, 0, 0, 0.09) !important;
-  border-top: 0 !important;
-  border-radius: 0 0 2px 2px !important;
-  box-shadow: 0 8px 14px rgba(31, 35, 41, 0.06) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 4px 16px rgba(31, 35, 41, 0.08) !important;
 }
 
 body.qqdocs-topic-detail .posts-wrapper,
@@ -547,6 +529,62 @@ body.qqdocs-topic-detail .topic-map__users-list .poster {
 body.qqdocs-topic-detail .topic-avatar + .post__body { margin-left: 0 !important; }
 body.qqdocs-topic-detail .topic-navigation { display: none !important; }
 
+/* The same facts are rendered in the shell titlebar. Hide both native maps so
+   the avatar strip and the duplicate first-post map cannot overflow the page. */
+body.qqdocs-topic-detail .topic-map.--bottom,
+body.qqdocs-topic-detail .post__topic-map.topic-map.--op {
+  display: none !important;
+}
+
+.qqdocs-topic-stats {
+  min-width: 0 !important;
+  max-width: min(280px, 25vw) !important;
+  margin-left: 12px !important;
+  padding-left: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex: 0 1 auto !important;
+  overflow: hidden !important;
+  border-left: 1px solid #dfe2e7 !important;
+  color: #81868f !important;
+  font-size: 11px !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+}
+
+.qqdocs-topic-stats[hidden] { display: none !important; }
+
+.qqdocs-topic-stat {
+  min-width: 0 !important;
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 3px !important;
+  flex: 0 1 auto !important;
+  overflow: hidden !important;
+}
+
+.qqdocs-topic-stat-value {
+  min-width: 0 !important;
+  max-width: 8ch !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #454d5a !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 18px !important;
+}
+
+.qqdocs-topic-stat-label {
+  min-width: 0 !important;
+  max-width: 4em !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #81868f !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+}
+
 body.qqdocs-topic-detail nav.post-controls .actions button {
   padding: 4px 8px !important;
   background: transparent !important;
@@ -560,6 +598,16 @@ body.qqdocs-topic-detail nav.post-controls .actions button {
   .qqdocs-ribbon-tools { display: none !important; }
   .qqdocs-ribbon-font { width: 320px !important; }
   .qqdocs-ribbon-paragraph { width: 272px !important; }
+
+  .qqdocs-editor-title-left { margin-right: 8px !important; }
+  .qqdocs-editor-title-actions { gap: 8px !important; }
+  .qqdocs-editor-title-text { max-width: min(360px, 32vw) !important; }
+  .qqdocs-topic-stats {
+    max-width: min(230px, 24vw) !important;
+    margin-left: 8px !important;
+    padding-left: 8px !important;
+    gap: 6px !important;
+  }
 }
 
 @media (max-width: 760px) {
@@ -574,18 +622,34 @@ body.qqdocs-topic-detail nav.post-controls .actions button {
   .qqdocs-editor-folder,
   .qqdocs-ribbon-styles { display: none !important; }
 
-  .qqdocs-editor-title-text { max-width: 44vw !important; }
+  .qqdocs-editor-title-left { margin-right: 0 !important; }
+  .qqdocs-editor-title-text {
+    min-width: 0 !important;
+    max-width: min(44vw, 220px) !important;
+  }
+  .qqdocs-topic-stats {
+    max-width: min(36vw, 190px) !important;
+    margin-left: 6px !important;
+    padding-left: 6px !important;
+    gap: 5px !important;
+  }
+  .qqdocs-topic-stat { gap: 2px !important; }
   .qqdocs-editor-tabs { gap: 14px !important; }
   .qqdocs-editor-ribbon { margin-left: 4px !important; margin-right: 4px !important; }
   .qqdocs-ribbon-font { width: 240px !important; }
   .qqdocs-ribbon-paragraph { width: 180px !important; }
 
-  body.qqdocs-topic-detail #topic-title,
   body.qqdocs-topic-detail .topic-area {
     width: 100% !important;
     max-width: none !important;
   }
 
-  body.qqdocs-topic-detail #topic-title { padding: 44px 24px 18px !important; }
-  body.qqdocs-topic-detail .topic-area { padding: 0 24px 48px !important; }
+  body.qqdocs-topic-detail .topic-area { padding: 46px 24px 48px !important; }
+}
+
+@media (max-width: 500px) {
+  .qqdocs-editor-plus { display: none !important; }
+  .qqdocs-editor-title-text { max-width: 26vw !important; }
+  .qqdocs-topic-stats { max-width: 32vw !important; gap: 4px !important; }
+  .qqdocs-topic-stat-label { display: none !important; }
 }
