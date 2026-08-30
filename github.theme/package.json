@@ -1,0 +1,19 @@
+{
+  "name": "linuxdo-github-theme",
+  "version": "1.0.0",
+  "description": "将 LINUX DO 伪装为 GitHub 仓库搜索与 README 页面",
+  "main": "github.theme.user.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "keywords": [
+    "tampermonkey",
+    "userscript",
+    "linux-do",
+    "github"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@primer/octicons": "^19.33.0"
+  }
+}

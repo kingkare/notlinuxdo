@@ -1,0 +1,29 @@
+html, body { margin: 0 !important; color: var(--gh-fg) !important; background: var(--gh-canvas) !important; font-family: var(--gh-font) !important; font-size: 14px !important; line-height: 1.5 !important; }
+body.github-disguise { padding-top: 64px !important; }
+body.github-disguise.gh-page-topic { padding-top: 100px !important; }
+body.github-disguise a { color: var(--gh-link); }
+body.github-disguise .d-header,
+body.github-disguise .sidebar-wrapper,
+body.github-disguise .header-sidebar-toggle,
+body.github-disguise .welcome-banner,
+body.github-disguise .custom-search-banner-wrap,
+body.github-disguise .global-notice,
+body.github-disguise .top-notices,
+body.github-disguise .alert.alert-info { display: none !important; }
+/* Hide pre-2.0 shells when upgrading while the old script is still enabled. */
+body.github-disguise .gh-global-header,
+body.github-disguise .gh-search-shell,
+body.github-disguise .gh-repo-header,
+body.github-disguise .gh-code-toolbar:not(.gh-repo-toolbar),
+body.github-disguise .gh-file-table:not(.gh-official-file-table) { display: none !important; }
+body.github-disguise #main-outlet-wrapper { display: block !important; width: 100% !important; max-width: none !important; padding: 0 !important; }
+body.github-disguise #main-outlet { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; }
+body.github-disguise button, body.github-disguise input, body.github-disguise textarea { font-family: var(--gh-font) !important; }
+.gh-octicon { display: inline-block; flex: 0 0 auto; overflow: visible; fill: currentColor; vertical-align: text-bottom; }
+.gh-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 5px 12px; border: 1px solid var(--gh-border); border-radius: 6px; color: var(--gh-fg) !important; background: var(--gh-subtle); box-shadow: 0 1px 0 rgba(31,35,40,.04), inset 0 1px 0 rgba(255,255,255,.25); font-size: 14px; font-weight: 500; line-height: 20px; text-decoration: none !important; white-space: nowrap; box-sizing: border-box; cursor: pointer; }
+.gh-btn:hover { background: #eff2f5; }
+.gh-btn-primary { color: #fff !important; background: var(--gh-accent); border-color: rgba(31,35,40,.15); }
+.gh-btn-primary:hover { background: #1a7f37; }
+.gh-counter { display: inline-flex; min-width: 20px; height: 20px; align-items: center; justify-content: center; padding: 0 6px; border-radius: 2em; background: #e8eaed; color: var(--gh-fg); font-size: 12px; font-weight: 500; box-sizing: border-box; }
+.gh-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 767px) { body.github-disguise, body.github-disguise.gh-page-topic { padding-top: 56px !important; } }

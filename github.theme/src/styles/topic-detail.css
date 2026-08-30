@@ -1,0 +1,78 @@
+body.gh-page-topic #main-outlet { max-width: 1216px !important; margin: 0 auto !important; padding: 20px 0 64px !important; }
+.gh-repo-overview { display: flex; min-height: 46px; align-items: center; gap: 8px; padding: 0; border-bottom: 1px solid var(--gh-border-muted); }
+.gh-repo-overview-avatar { width: 24px; height: 24px; border-radius: 6px; }
+.gh-repo-overview-name { color: var(--gh-fg) !important; font-size: 20px; font-weight: 600; line-height: 30px; text-decoration: none !important; }
+.gh-public-badge { padding: 0 7px; border: 1px solid var(--gh-border); border-radius: 2em; color: var(--gh-muted); font-size: 12px; font-weight: 500; line-height: 20px; }
+.gh-repo-actions { display: flex; gap: 8px; margin-left: auto; }
+.gh-split-btn { padding-right: 8px; }
+.gh-repo-content-grid { display: grid; grid-template-columns: minmax(0, 896px) 272px; gap: 48px; align-items: start; }
+.gh-repo-main { min-width: 0; padding-top: 24px; }
+.gh-repo-main #main-container, .gh-repo-main .container.posts, .gh-repo-main .container.posts > .row, .gh-repo-main .topic-area, .gh-repo-main .posts-wrapper, .gh-repo-main .post-stream { display: block !important; width: 100% !important; max-width: none !important; margin-right: 0 !important; margin-left: 0 !important; }
+.gh-repo-toolbar { display: flex !important; align-items: center; gap: 8px; margin-bottom: 16px; }
+.gh-branch-button { margin-right: 0; }
+.gh-branches { display: flex; align-items: center; gap: 16px; margin-right: auto; }
+.gh-branches a { display: inline-flex; align-items: center; gap: 6px; color: var(--gh-fg) !important; text-decoration: none; }
+.gh-go-file { width: 232px; justify-content: flex-start; color: var(--gh-muted) !important; background: var(--gh-canvas); }
+.gh-official-file-table { margin-bottom: 16px; border: 1px solid var(--gh-border); border-radius: 6px; overflow: hidden; }
+.gh-latest-commit { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto; gap: 12px; align-items: center; min-height: 52px; padding: 8px 16px; background: var(--gh-subtle); font-size: 14px; box-sizing: border-box; }
+.gh-commit-author { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.gh-commit-avatar { width: 24px; height: 24px; border-radius: 50%; }
+.gh-commit-message { overflow: hidden; color: var(--gh-muted); text-overflow: ellipsis; white-space: nowrap; }
+.gh-commit-history { display: inline-flex; align-items: center; gap: 6px; color: var(--gh-fg); white-space: nowrap; }
+.gh-file-row { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.4fr) 105px; gap: 16px; align-items: center; min-height: 40px; padding: 0 16px; border-top: 1px solid var(--gh-border-muted); color: var(--gh-muted); font-size: 14px; box-sizing: border-box; }
+.gh-file-name { display: flex; min-width: 0; align-items: center; gap: 8px; overflow: hidden; color: var(--gh-fg); text-overflow: ellipsis; white-space: nowrap; }
+.gh-folder-icon { color: #54aeff; }
+.gh-file-message { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gh-file-time { text-align: right; white-space: nowrap; }
+.gh-about { min-width: 0; padding-top: 10px; }
+.gh-about-section { padding: 16px 0; border-bottom: 1px solid var(--gh-border-muted); }
+.gh-about-section:first-child { padding-top: 0; }
+.gh-about h2 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+.gh-about p { margin: 0 0 12px; font-size: 16px; line-height: 24px; }
+.gh-about-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.gh-about-list a, .gh-about-list li { display: flex; align-items: center; gap: 8px; color: var(--gh-muted) !important; text-decoration: none; }
+.gh-about-stat { color: var(--gh-fg); }
+body.gh-page-topic #topic-title, body.gh-page-topic .topic-navigation, body.gh-page-topic .timeline-container, body.gh-page-topic .topic-map, body.gh-page-topic .post-notice, body.gh-page-topic .topic-status-info, body.gh-page-topic .more-topics__container, body.gh-page-topic .more-topics { display: none !important; }
+body.gh-page-topic .post-stream { width: auto !important; max-width: none !important; margin: 0 !important; }
+body.gh-page-topic .topic-post:first-child { border: 1px solid var(--gh-border) !important; border-radius: 6px !important; overflow: hidden; }
+body.gh-page-topic .topic-post:first-child::before { content: 'README.md'; display: flex; min-height: 48px; align-items: center; padding: 0 16px; border-bottom: 1px solid var(--gh-border); color: var(--gh-fg); background: var(--gh-subtle); font-size: 14px; font-weight: 600; box-sizing: border-box; }
+body.gh-page-topic .topic-post:first-child article { padding: 0 !important; border: 0 !important; background: var(--gh-canvas) !important; box-shadow: none !important; }
+body.gh-page-topic .topic-post:first-child .topic-avatar, body.gh-page-topic .topic-post:first-child .topic-meta-data, body.gh-page-topic .topic-post:first-child nav.post-controls { display: none !important; }
+body.gh-page-topic .topic-post:first-child .topic-body { float: none !important; width: auto !important; margin: 0 !important; padding: 32px !important; border: 0 !important; }
+body.gh-page-topic .topic-post:first-child .cooked { max-width: none; margin: 0; color: var(--gh-fg) !important; font-size: 16px !important; line-height: 1.5 !important; }
+body.gh-page-topic .cooked h1, body.gh-page-topic .cooked h2 { padding-bottom: .3em; border-bottom: 1px solid var(--gh-border-muted); }
+body.gh-page-topic .cooked h1 { font-size: 2em !important; }
+body.gh-page-topic .cooked h2 { margin-top: 24px !important; font-size: 1.5em !important; }
+body.gh-page-topic .cooked h3 { margin-top: 24px !important; font-size: 1.25em !important; }
+body.gh-page-topic .cooked p, body.gh-page-topic .cooked ul, body.gh-page-topic .cooked ol, body.gh-page-topic .cooked blockquote { margin-top: 0 !important; margin-bottom: 16px !important; }
+body.gh-page-topic .cooked pre { padding: 16px !important; border-radius: 6px !important; background: var(--gh-subtle) !important; font-size: 85% !important; }
+body.gh-page-topic .cooked code { padding: .2em .4em; border-radius: 6px; background: rgba(175,184,193,.2); font-size: 85%; }
+body.gh-page-topic .cooked pre code { padding: 0; background: transparent; }
+body.gh-page-topic .cooked blockquote { padding: 0 1em !important; border-left: .25em solid var(--gh-border) !important; color: var(--gh-muted) !important; }
+.gh-discussion-heading { max-width: 896px; margin: 32px auto 12px; padding-bottom: 8px; border-bottom: 1px solid var(--gh-border); font-size: 18px; font-weight: 600; }
+body.gh-page-topic .topic-post:not(:first-child) { max-width: 896px; margin: 16px auto 0; }
+body.gh-page-topic .topic-post:not(:first-child) article { display: block !important; border: 0 !important; background: transparent !important; }
+body.gh-page-topic .topic-post:not(:first-child) article .post__row, body.gh-page-topic .topic-post:not(:first-child) article > .row { display: grid !important; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; width: 100% !important; }
+body.gh-page-topic .topic-post:not(:first-child) .topic-avatar { position: static !important; float: none !important; width: 44px !important; margin: 0 !important; padding: 0 !important; }
+body.gh-page-topic .topic-post:not(:first-child) .topic-avatar img { width: 40px !important; height: 40px !important; border-radius: 50% !important; }
+body.gh-page-topic .topic-post:not(:first-child) .topic-body { float: none !important; width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; border: 1px solid var(--gh-border) !important; border-radius: 6px !important; }
+body.gh-page-topic .topic-post:not(:first-child) .topic-meta-data { min-height: 40px; padding: 8px 16px !important; border-bottom: 1px solid var(--gh-border); background: var(--gh-subtle); box-sizing: border-box; }
+body.gh-page-topic .topic-post:not(:first-child) .cooked { padding: 16px !important; }
+body.gh-page-topic .topic-post:not(:first-child) nav.post-controls { padding: 0 8px 8px !important; }
+/* Post images are completely opaque until deliberate double-click. */
+body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle { position: relative !important; display: inline-block !important; max-width: 100% !important; overflow: hidden !important; vertical-align: baseline !important; cursor: zoom-in !important; }
+body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle > img, body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle > picture, body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle > picture > img { max-width: 100% !important; }
+body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle--hidden > img, body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle--hidden > picture, body.gh-page-topic.gh-image-toggle-enabled .gh-image-toggle--hidden > picture > img { visibility: hidden !important; }
+.gh-image-toggle-overlay { position: absolute !important; inset: 0 !important; z-index: 2 !important; display: flex !important; min-width: 160px !important; min-height: 64px !important; align-items: center !important; justify-content: center !important; gap: 8px; padding: 12px 18px !important; border: 1px dashed var(--gh-border) !important; border-radius: 6px !important; color: var(--gh-muted) !important; background: var(--gh-subtle) !important; font-size: 14px !important; text-align: center; cursor: zoom-in !important; box-sizing: border-box !important; }
+.gh-image-toggle-overlay:hover, .gh-image-toggle-overlay:focus-visible { border-color: var(--gh-link) !important; color: var(--gh-link) !important; background: #ddf4ff !important; outline: none; }
+.gh-image-toggle--shown { cursor: zoom-out !important; }
+.gh-image-toggle--shown .gh-image-toggle-overlay, .gh-image-toggle-overlay[hidden] { display: none !important; }
+/* Emoji render as readable labels; hovering reveals the original emoji without reflow. */
+.gh-emoji-wrapper { position: relative !important; display: inline-grid !important; place-items: center !important; vertical-align: middle !important; line-height: 1 !important; outline: none !important; }
+.gh-emoji-wrapper > img, .gh-emoji-wrapper > picture, .gh-emoji-wrapper > picture > img { grid-area: 1 / 1 !important; display: block !important; visibility: hidden !important; opacity: 0 !important; }
+.gh-emoji-label { grid-area: 1 / 1 !important; display: inline-flex !important; min-height: 20px !important; align-items: center !important; padding: 1px 5px !important; border: 1px solid #b6e3ff !important; border-radius: 6px !important; color: var(--gh-link) !important; background: #ddf4ff !important; font-size: 12px !important; line-height: 18px !important; white-space: nowrap !important; pointer-events: none !important; box-sizing: border-box; }
+.gh-emoji-wrapper:hover > img, .gh-emoji-wrapper:focus-within > img, .gh-emoji-wrapper:hover > picture, .gh-emoji-wrapper:focus-within > picture, .gh-emoji-wrapper:hover > picture > img, .gh-emoji-wrapper:focus-within > picture > img { visibility: visible !important; opacity: 1 !important; }
+.gh-emoji-wrapper:hover > .gh-emoji-label, .gh-emoji-wrapper:focus-within > .gh-emoji-label { visibility: hidden !important; opacity: 0 !important; }
+@media (max-width: 1280px) { body.gh-page-topic #main-outlet { padding-right: 24px !important; padding-left: 24px !important; } }
+@media (max-width: 980px) { .gh-repo-content-grid { grid-template-columns: 1fr; } .gh-about { display: none; } }
+@media (max-width: 767px) { body.gh-page-topic #main-outlet { padding: 16px !important; } .gh-repo-overview { align-items: flex-start; } .gh-repo-actions { display: none; } .gh-branches { display: none; } .gh-go-file { flex: 1; width: auto; } .gh-file-row { grid-template-columns: 1fr auto; } .gh-file-message { display: none; } body.gh-page-topic .topic-post:first-child .topic-body { padding: 20px !important; } body.gh-page-topic .topic-post:not(:first-child) article .post__row, body.gh-page-topic .topic-post:not(:first-child) article > .row { grid-template-columns: 36px minmax(0, 1fr); gap: 8px; } body.gh-page-topic .topic-post:not(:first-child) .topic-avatar, body.gh-page-topic .topic-post:not(:first-child) .topic-avatar img { width: 32px !important; height: 32px !important; } }

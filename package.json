@@ -4,7 +4,8 @@
   "description": "LINUX DO 多主题与伪装油猴脚本合集项目",
   "scripts": {
     "build:docs.qq": "node docs.qq.theme/build.js",
-    "build:all": "node docs.qq.theme/build.js"
+    "build:github": "node github.theme/build.js",
+    "build:all": "node docs.qq.theme/build.js && node github.theme/build.js"
   },
   "keywords": [
     "tampermonkey",
