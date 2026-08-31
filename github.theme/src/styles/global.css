@@ -1,4 +1,12 @@
 html, body { margin: 0 !important; color: var(--gh-fg) !important; background: var(--gh-canvas) !important; font-family: var(--gh-font) !important; font-size: 14px !important; line-height: 1.5 !important; }
+
+/* Keep Discourse's startup flow, but suppress its oversized site logo. */
+#d-splash .splash-logo-container {
+  display: none !important;
+  background-image: none !important;
+  animation: none !important;
+}
+
 body.github-disguise { padding-top: 64px !important; }
 body.github-disguise.gh-page-topic { padding-top: 100px !important; }
 body.github-disguise a { color: var(--gh-link); }

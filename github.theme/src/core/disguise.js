@@ -148,7 +148,7 @@ const GitHubDisguise = (function () {
       <li><a href="#">${icon('play')} Actions</a></li><li><a href="#">${icon('table')} Projects</a></li>
       <li><a href="#">${icon('shield')} Security and quality</a></li><li><a href="#">${icon('graph')} Insights</a></li>
     </ul></nav>` : '';
-    header.innerHTML = `<div class="gh-app-header-top">${left}${searchBox(kind === 'list' ? 'linux.do' : '', kind === 'topic' ? 'Type / to search' : 'Search')}${headerActions()}</div>${nav}`;
+    header.innerHTML = `<div class="gh-app-header-top">${left}${searchBox('', kind === 'topic' ? 'Type / to search' : 'Search')}${headerActions()}</div>${nav}`;
   }
 
   function filterItem(href, iconName, label, count, active = false) {
