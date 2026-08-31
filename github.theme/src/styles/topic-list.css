@@ -55,5 +55,13 @@ body.gh-page-list .topic-list-item .topic-statuses, body.gh-page-list .topic-lis
 .gh-feedback-card { margin-top: 16px; padding: 9px 16px; border: 1px solid var(--gh-border); border-radius: 6px; }
 .gh-search-tip { margin-top: 12px; color: var(--gh-muted); }
 .gh-search-tip strong { color: #9a6700; font-weight: 500; }
+/* GitHub expands the search result column on wide desktop displays while keeping
+   the filter rail and sponsor panel readable. Leave a small right gutter for
+   the browser scrollbar and keep the compact 1512px layout unchanged. */
+@media (min-width: 1600px) {
+  .gh-search-layout { width: calc(100% - 40px); grid-template-columns: 296px minmax(0, 1fr) clamp(352px, calc(12.1vw + 169px), 416px); column-gap: 24px; }
+  .gh-search-aside { padding-right: 0; }
+  .gh-repo-description, .gh-real-title-line { max-width: calc(100% - 100px); }
+}
 @media (max-width: 1180px) { .gh-search-layout { grid-template-columns: 270px minmax(0, 1fr); } .gh-search-aside { display: none; } }
-@media (max-width: 767px) { .gh-search-layout { display: block; } .gh-search-pane { display: none; } .gh-search-results { padding: 16px; } .gh-results-toolbar .gh-btn:not(:first-of-type) { display: none; } body.gh-page-list .topic-list-item { min-height: 132px; } .gh-repo-description { white-space: normal; } }
+@media (max-width: 768px) { .gh-search-layout { display: block; } .gh-search-pane { display: none; } .gh-search-results { padding: 16px; } .gh-results-toolbar .gh-btn:not(:first-of-type) { display: none; } body.gh-page-list .topic-list-item { min-height: 132px; } .gh-repo-description { white-space: normal; } }

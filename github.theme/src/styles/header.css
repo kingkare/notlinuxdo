@@ -21,4 +21,4 @@ body.gh-page-topic .gh-app-header-top { grid-template-columns: minmax(320px, 1fr
 .gh-repo-nav a:hover { background: rgba(208,215,222,.32); border-radius: 6px 6px 0 0; }
 .gh-repo-nav a.is-active { border-bottom-color: #fd8c73; font-weight: 600; }
 @media (max-width: 900px) { .gh-app-header-top, body.gh-page-topic .gh-app-header-top { grid-template-columns: auto minmax(120px, 1fr) auto; } .gh-header-right .gh-icon-button:nth-of-type(-n+3), .gh-header-separator { display: none; } .gh-breadcrumbs { max-width: 180px; } }
-@media (max-width: 767px) { .gh-app-header-top, body.gh-page-topic .gh-app-header-top { height: 56px; padding: 10px 12px; } body.gh-page-topic .gh-repo-nav { display: none; } .gh-header-search { margin-left: 4px; } .gh-home-link { display: none; } .gh-breadcrumbs { max-width: 140px; } }
+@media (max-width: 768px) { .gh-app-header-top, body.gh-page-topic .gh-app-header-top { height: 56px; padding: 10px 12px; } body.gh-page-topic .gh-repo-nav { display: none; } .gh-header-search { margin-left: 4px; } .gh-home-link { display: none; } .gh-breadcrumbs { max-width: 140px; } }
