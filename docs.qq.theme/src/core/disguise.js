@@ -1669,8 +1669,12 @@ const DisguiseEngine = (function () {
     if (oldToolbar) oldToolbar.remove();
 
     if (!postStream) {
-      document.querySelector('.qqdocs-editor-shell')?.remove();
-      removeTopicOutline();
+      // Ember 路由跳转（如大纲跳到未加载楼层）会短暂移除 .post-stream 并重建，
+      // 此时仍在 /t/ 帖子路由内，必须保留伪装外壳与大纲，否则闪退成原生界面。
+      if (!/^\/t\//.test(window.location.pathname)) {
+        document.querySelector('.qqdocs-editor-shell')?.remove();
+        removeTopicOutline();
+      }
       return;
     }
 
@@ -1980,6 +1984,39 @@ const DisguiseEngine = (function () {
     });
   }
 
+  // 从当前地址提取帖子路由基座（/t/<slug>/<topicId>），用于构造楼层锚点。
+  function getTopicRouteBase() {
+    const match = window.location.pathname.match(/^\/t\/[^/]+\/\d+/);
+    return match ? match[0] : null;
+  }
+
+  // 走 Discourse 的 SPA 路由跳转到指定楼层，与原生点击楼层锚点链接
+  // （转圈加载→滚动到位，不整页刷新）的行为完全一致。
+  function routeToPostNumber(number) {
+    const base = getTopicRouteBase();
+    if (!base) return false;
+    const url = `${base}/${number}`;
+    try {
+      const pageWindow = getPageWindow();
+      const container = pageWindow.Discourse && pageWindow.Discourse.__container__;
+      const urlService = container?.lookup?.('service:url');
+      if (typeof urlService?.routeTo === 'function') {
+        urlService.routeTo(url);
+        return true;
+      }
+      const amdRequire = pageWindow.require;
+      if (typeof amdRequire === 'function') {
+        const urlModule = amdRequire('discourse/lib/url');
+        const routeTo = urlModule?.default?.routeTo || urlModule?.routeTo;
+        if (typeof routeTo === 'function') {
+          routeTo.call(urlModule?.default || urlModule, url);
+          return true;
+        }
+      }
+    } catch (e) { /* 继续走旧兜底 */ }
+    return false;
+  }
+
   function jumpToOutlinePost(number) {
     if (!Number.isFinite(number) || number <= 0) return;
     // 滚动容器上的 scroll-margin 不可靠（smooth 会被 Discourse 的滚动管理打断），
@@ -1992,8 +2029,11 @@ const DisguiseEngine = (function () {
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
       return;
     }
+    // 未加载楼层：SPA 路由加载（原生锚点行为），失败再退回 Ember action。
+    if (routeToPostNumber(number)) return;
     try {
-      const container = getPageWindow().Discourse && getPageWindow().Discourse.__container__;
+      const pageWindow = getPageWindow();
+      const container = pageWindow.Discourse && pageWindow.Discourse.__container__;
       container?.lookup?.('controller:topic')?.send?.('jumpToPost', number);
     } catch (e) {
       /* 未加载楼层跳转失败时静默忽略 */
@@ -2034,7 +2074,14 @@ const DisguiseEngine = (function () {
         return;
       }
       const row = event.target.closest?.('.qqdocs-toc-headline');
-      if (row) jumpToOutlinePost(Number(row.dataset.postNumber));
+      if (row) {
+        // 未加载楼层走异步路由加载，先给该行一个转圈反馈。
+        if (!row.classList.contains('is-loaded')) {
+          row.classList.add('is-jumping');
+          window.setTimeout(() => row.classList.remove('is-jumping'), 3500);
+        }
+        jumpToOutlinePost(Number(row.dataset.postNumber));
+      }
     });
 
     fab.addEventListener('click', () => {
@@ -2098,15 +2145,21 @@ const DisguiseEngine = (function () {
 
 
   // 详情页样式必须有明确的页面作用域，避免列表页或弹窗被误伤。
+  // 路由内模型重载期间 .post-stream 会短暂消失，此时按 /t/ 路径保持作用域。
+  function isTopicRoute() {
+    return /^\/t\//.test(window.location.pathname);
+  }
+
   function syncTopicDetailScope() {
     if (!document.body) return;
-    document.body.classList.toggle('qqdocs-topic-detail', Boolean(document.querySelector('.post-stream')));
+    const inTopic = Boolean(document.querySelector('.post-stream')) || isTopicRoute();
+    document.body.classList.toggle('qqdocs-topic-detail', inTopic);
   }
 
   function classifyCurrentPage() {
     const path = window.location.pathname.replace(/\/+$/, '') || '/';
 
-    if (document.querySelector('.post-stream')) return 'topic';
+    if (document.querySelector('.post-stream') || isTopicRoute()) return 'topic';
     if (path === '/search' || path.startsWith('/search/')) return 'search';
     if (path === '/') return 'home';
     if (path === '/categories') return 'categories';

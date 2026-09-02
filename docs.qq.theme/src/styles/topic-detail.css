@@ -992,6 +992,28 @@ body.qqdocs-topic-detail nav.post-controls .actions button {
   display: inline !important;
 }
 
+/* 点击未加载楼层后的路由加载反馈。 */
+.qqdocs-toc-headline.is-jumping .qqdocs-toc-headline-inner-text {
+  color: #1e6fff !important;
+}
+
+.qqdocs-toc-headline.is-jumping::after {
+  content: "" !important;
+  flex: 0 0 12px !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin-left: 2px !important;
+  border: 2px solid #d8dce3 !important;
+  border-top-color: #1e6fff !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  animation: qqdocs-toc-spin 0.7s linear infinite !important;
+}
+
+@keyframes qqdocs-toc-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* 大纲收起后的浮动展开按钮。 */
 .qqdocs-toc-fab {
   position: fixed !important;
