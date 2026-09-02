@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 伪装腾讯文档 (Docs QQ Theme)
 // @namespace    https://linux.do/
-// @version      1.1.1
+// @version      1.1.2
 // @description  将 LINUX DO 论坛界面深度伪装为腾讯文档工作台与在线文档风格，支持 Favicon/Title 劫持、文档列表转换与 Word 视图
 // @author       Antigravity
 // @match        https://linux.do/*
@@ -1920,6 +1920,10 @@ const DisguiseEngine = (function () {
   let topicOutlinePostObserver = null;
   const topicOutlineObservedPosts = new WeakSet();
   const topicOutlineVisibleRatios = new Map();
+  // postId -> { number, author, summary }。Discourse 会把 postStream.posts 换
+  // 成目标楼附近的新窗口，本地缓存保证已点亮的楼层信息不回退。
+  const topicOutlinePostCache = new Map();
+  let topicOutlineCacheTopicKey = '';
 
   function removeTopicOutline() {
     document.querySelector('.qqdocs-toc-panel')?.remove();
@@ -1977,6 +1981,28 @@ const DisguiseEngine = (function () {
     return { title: document.querySelector('#topic-title h1')?.textContent?.trim() || '', entries };
   }
 
+  function getTopicIdKey() {
+    const model = getTopicControllerModel();
+    const fromModel = Number(model?.id);
+    if (Number.isFinite(fromModel) && fromModel > 0) return String(fromModel);
+    // 路由跳转瞬间 model 可能还没解析完，退回从地址栏取主题 id。
+    return window.location.pathname.match(/^\/t\/[^/]+\/(\d+)/)?.[1] || '';
+  }
+
+  function syncOutlinePostCache(loadedPosts) {
+    if (!Array.isArray(loadedPosts)) return;
+    loadedPosts.forEach((post) => {
+      const id = Number(post?.id);
+      if (!Number.isFinite(id) || id <= 0) return;
+      // 实时数据覆盖缓存，楼层被编辑后大纲同步更新。
+      topicOutlinePostCache.set(id, {
+        number: Number(post?.post_number) || 0,
+        author: normalizeStatText(post?.name || post?.username || ''),
+        summary: buildOutlineSummary(post?.cooked, 36)
+      });
+    });
+  }
+
   function collectOutlineEntries() {
     const model = getTopicControllerModel();
     const postStream = model?.postStream;
@@ -1984,25 +2010,27 @@ const DisguiseEngine = (function () {
     const loadedPosts = postStream?.posts;
     if (!Array.isArray(stream) || !stream.length) return collectOutlineEntriesFromDom();
 
-    const loadedById = new Map();
-    if (Array.isArray(loadedPosts)) {
-      loadedPosts.forEach((post) => {
-        const id = Number(post?.id);
-        if (Number.isFinite(id) && !loadedById.has(id)) loadedById.set(id, post);
-      });
+    // 换主题时清空缓存，避免把上一个帖子的楼层信息带到新帖子。
+    const topicKey = getTopicIdKey();
+    if (topicKey && topicOutlineCacheTopicKey !== topicKey) {
+      topicOutlineCacheTopicKey = topicKey;
+      topicOutlinePostCache.clear();
     }
 
+    // Discourse 跳转到未加载楼层时会把 postStream.posts 替换成目标楼附近的
+    // 新窗口，之前点亮的楼层数据会被丢掉。这里先把实时数据并入本地缓存，
+    // 再由缓存合成条目，已见过的楼层信息就不会退回"加载中"。
+    syncOutlinePostCache(loadedPosts);
+
     const entries = stream.map((rawId, index) => {
-      const post = loadedById.get(Number(rawId)) || null;
-      // 已加载楼层用真实 post_number；未加载的用顺序号近似，加载后自动修正。
-      const number = Number(post?.post_number) || index + 1;
-      const author = normalizeStatText(post?.name || post?.username || '');
+      const cached = topicOutlinePostCache.get(Number(rawId)) || null;
+      // 已见过的楼层用真实 post_number；其余用顺序号近似，加载后自动修正。
+      const number = Number(cached?.number) || index + 1;
       return {
         number,
-        loaded: Boolean(post),
-        author,
-        summary: post ? buildOutlineSummary(post.cooked, 36) : '',
-        replyTo: Number.isFinite(Number(post?.reply_to_post_number)) ? Number(post.reply_to_post_number) : 0
+        loaded: Boolean(cached),
+        author: cached?.author || '',
+        summary: cached?.summary || ''
       };
     });
 
