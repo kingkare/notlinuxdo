@@ -44,11 +44,12 @@ const disguiseJS = fs.readFileSync(path.join(srcDir, 'core', 'disguise.js'), 'ut
 const userscriptHeader = `// ==UserScript==
 // @name         LINUX DO 伪装腾讯文档 (Docs QQ Theme)
 // @namespace    https://linux.do/
-// @version      1.0.0
+// @version      1.1.0
 // @description  将 LINUX DO 论坛界面深度伪装为腾讯文档工作台与在线文档风格，支持 Favicon/Title 劫持、文档列表转换与 Word 视图
 // @author       Antigravity
 // @match        https://linux.do/*
 // @grant        GM_addStyle
+// @grant        unsafeWindow
 // @run-at       document-start
 // ==/UserScript==
 

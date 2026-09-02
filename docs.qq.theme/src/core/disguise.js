@@ -1670,6 +1670,7 @@ const DisguiseEngine = (function () {
 
     if (!postStream) {
       document.querySelector('.qqdocs-editor-shell')?.remove();
+      removeTopicOutline();
       return;
     }
 
@@ -1765,7 +1766,336 @@ const DisguiseEngine = (function () {
       homeButton.addEventListener('click', () => window.history.back());
     }
     renderTopicStatistics(shell);
+    renderTopicOutline();
   }
+
+  // 6.1 详情页左侧大纲面板（复刻腾讯文档"大纲"导航）
+  const TOPIC_OUTLINE_HIDDEN_KEY = 'qqdocs.toc.hidden';
+  const TOPIC_OUTLINE_COLLAPSED_KEY = 'qqdocs.toc.collapsed';
+  let topicOutlinePostObserver = null;
+  const topicOutlineObservedPosts = new WeakSet();
+  const topicOutlineVisibleRatios = new Map();
+
+  function removeTopicOutline() {
+    document.querySelector('.qqdocs-toc-panel')?.remove();
+    document.querySelector('.qqdocs-toc-fab')?.remove();
+    if (topicOutlinePostObserver) {
+      topicOutlinePostObserver.disconnect();
+      topicOutlinePostObserver = null;
+    }
+    topicOutlineObservedPosts.clear?.();
+    topicOutlineVisibleRatios.clear();
+  }
+
+  // Tampermonkey 沙箱中 window.Discourse 等页面全局只能经 unsafeWindow 访问。
+  function getPageWindow() {
+    try {
+      if (typeof unsafeWindow !== 'undefined' && unsafeWindow !== window) return unsafeWindow;
+    } catch (e) { /* 无 unsafeWindow 授权时退回 window */ }
+    return window;
+  }
+
+  function getTopicControllerModel() {
+    try {
+      const pageWindow = getPageWindow();
+      const container = pageWindow.Discourse && pageWindow.Discourse.__container__;
+      return container?.lookup?.('controller:topic')?.model || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function buildOutlineSummary(cooked, maxChars) {
+    if (!cooked) return '';
+    const scratch = document.createElement('div');
+    scratch.innerHTML = String(cooked);
+    const text = normalizeStatText(scratch.textContent || '');
+    return text.length > maxChars ? `${text.slice(0, maxChars)}…` : text;
+  }
+
+  // Ember 数据不可达时的兜底：直接从已渲染的楼层 DOM 提取条目，
+  // 跟随虚拟滚动逐步补全（楼层总数未知，只列当前已渲染楼层）。
+  function collectOutlineEntriesFromDom() {
+    const posts = document.querySelectorAll('.post-stream .topic-post[data-post-number]');
+    if (!posts.length) return null;
+    const entries = Array.from(posts).map((post) => {
+      const number = Number(post.getAttribute('data-post-number'));
+      const author = normalizeStatText(post.querySelector('.names .first a, .names a')?.textContent || '');
+      return {
+        number,
+        loaded: true,
+        author,
+        summary: buildOutlineSummary(post.querySelector('.cooked')?.innerHTML, 36),
+        replyTo: 0
+      };
+    });
+    return { title: document.querySelector('#topic-title h1')?.textContent?.trim() || '', entries };
+  }
+
+  function collectOutlineEntries() {
+    const model = getTopicControllerModel();
+    const postStream = model?.postStream;
+    const stream = postStream?.stream; // Discourse 内部存的是 post id 数组，按楼层顺序排列
+    const loadedPosts = postStream?.posts;
+    if (!Array.isArray(stream) || !stream.length) return collectOutlineEntriesFromDom();
+
+    const loadedById = new Map();
+    if (Array.isArray(loadedPosts)) {
+      loadedPosts.forEach((post) => {
+        const id = Number(post?.id);
+        if (Number.isFinite(id) && !loadedById.has(id)) loadedById.set(id, post);
+      });
+    }
+
+    const entries = stream.map((rawId, index) => {
+      const post = loadedById.get(Number(rawId)) || null;
+      // 已加载楼层用真实 post_number；未加载的用顺序号近似，加载后自动修正。
+      const number = Number(post?.post_number) || index + 1;
+      const author = normalizeStatText(post?.name || post?.username || '');
+      return {
+        number,
+        loaded: Boolean(post),
+        author,
+        summary: post ? buildOutlineSummary(post.cooked, 36) : '',
+        replyTo: Number.isFinite(Number(post?.reply_to_post_number)) ? Number(post.reply_to_post_number) : 0
+      };
+    });
+
+    return { title: document.querySelector('#topic-title h1')?.textContent?.trim() || '', entries };
+  }
+
+  function renderOutlineHeadlineMarkup(entry) {
+    const row = document.createElement('div');
+    row.className = 'qqdocs-toc-headline' + (entry.loaded ? ' is-loaded' : '');
+    row.dataset.postNumber = String(entry.number);
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', `跳转到第 ${entry.number} 楼`);
+
+    const triangle = document.createElement('div');
+    triangle.className = 'qqdocs-toc-headline-triangle';
+    triangle.setAttribute('aria-hidden', 'true');
+    triangle.style.display = 'none';
+    row.appendChild(triangle);
+
+    const text = document.createElement('div');
+    text.className = 'qqdocs-toc-headline-text is-floor';
+    text.style.paddingLeft = '16px';
+
+    const inner = document.createElement('span');
+    inner.className = 'qqdocs-toc-headline-inner-text';
+    if (entry.loaded) {
+      inner.textContent = `#${entry.number} ${entry.author}${entry.summary ? ` ${entry.summary}` : ''}`.trim();
+      row.title = inner.textContent;
+    } else {
+      inner.textContent = `#${entry.number} 加载中…`;
+    }
+    text.appendChild(inner);
+    row.appendChild(text);
+    return row;
+  }
+
+  function renderOutlineTitleMarkup(title) {
+    const row = document.createElement('div');
+    row.className = 'qqdocs-toc-headline is-loaded is-title-row';
+    row.dataset.postNumber = '1';
+    row.setAttribute('role', 'button');
+    row.setAttribute('aria-label', '回到顶部');
+
+    const triangle = document.createElement('div');
+    triangle.className = 'qqdocs-toc-headline-triangle';
+    triangle.setAttribute('aria-hidden', 'true');
+    triangle.style.display = 'none';
+    row.appendChild(triangle);
+
+    const text = document.createElement('div');
+    text.className = 'qqdocs-toc-headline-text is-title';
+    const inner = document.createElement('span');
+    inner.className = 'qqdocs-toc-headline-inner-text';
+    inner.textContent = title || '在线文档';
+    row.title = inner.textContent;
+    text.appendChild(inner);
+    row.appendChild(text);
+    return row;
+  }
+
+  function syncTopicOutlineList(panel, data) {
+    const list = panel.querySelector('.qqdocs-toc-headlines');
+    if (!list) return;
+
+    const signature = `${data.title}\u0002${data.entries
+      .map((entry) => `${entry.number}:${entry.loaded ? `${entry.author}\u0000${entry.summary}` : ''}`)
+      .join('\u0001')}`;
+    if (panel.dataset.qqdocsOutlineSignature === signature) return;
+    panel.dataset.qqdocsOutlineSignature = signature;
+
+    const fragment = document.createDocumentFragment();
+    fragment.appendChild(renderOutlineTitleMarkup(data.title));
+    data.entries.forEach((entry) => fragment.appendChild(renderOutlineHeadlineMarkup(entry)));
+    list.replaceChildren(fragment);
+    applyTopicOutlineActiveState();
+  }
+
+  function applyTopicOutlineActiveState() {
+    const list = document.querySelector('.qqdocs-toc-panel .qqdocs-toc-headlines');
+    if (!list) return;
+
+    let bestNumber = 0;
+    let bestRatio = 0;
+    topicOutlineVisibleRatios.forEach((ratio, number) => {
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        bestNumber = number;
+      }
+    });
+
+    list.querySelectorAll('.qqdocs-toc-headline.is-active').forEach((row) => row.classList.remove('is-active'));
+    if (!bestNumber) return;
+
+    const activeRow = list.querySelector(`.qqdocs-toc-headline[data-post-number="${bestNumber}"]`);
+    if (!activeRow) return;
+    activeRow.classList.add('is-active');
+    if (activeRow.scrollIntoView) activeRow.scrollIntoView({ block: 'nearest' });
+  }
+
+  function ensureTopicOutlineObserver() {
+    if (!topicOutlinePostObserver) {
+      topicOutlinePostObserver = new IntersectionObserver((records) => {
+        records.forEach((record) => {
+          const number = Number(record.target?.getAttribute('data-post-number'));
+          if (!Number.isFinite(number)) return;
+          if (record.isIntersecting && record.intersectionRatio > 0.08) {
+            topicOutlineVisibleRatios.set(number, record.intersectionRatio);
+          } else {
+            topicOutlineVisibleRatios.delete(number);
+          }
+        });
+        applyTopicOutlineActiveState();
+      }, { threshold: [0, 0.08, 0.25, 0.5, 0.75, 1] });
+    }
+
+    document.querySelectorAll('.post-stream .topic-post[data-post-number]').forEach((post) => {
+      if (topicOutlineObservedPosts.has(post)) return;
+      topicOutlineObservedPosts.add(post);
+      topicOutlinePostObserver.observe(post);
+    });
+  }
+
+  function jumpToOutlinePost(number) {
+    if (!Number.isFinite(number) || number <= 0) return;
+    // 滚动容器上的 scroll-margin 不可靠（smooth 会被 Discourse 的滚动管理打断），
+    // 这里手动计算目标位置，避开顶部编辑器外壳的 150px。
+    const target = document.querySelector(`.post-stream .topic-post[data-post-number="${number}"]`)
+      || document.getElementById(`post_${number}`);
+    if (target) {
+      const editorTop = parseInt(getComputedStyle(document.body).getPropertyValue('--qqdocs-editor-top'), 10) || 150;
+      const top = target.getBoundingClientRect().top + window.scrollY - editorTop - 12;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      return;
+    }
+    try {
+      const container = getPageWindow().Discourse && getPageWindow().Discourse.__container__;
+      container?.lookup?.('controller:topic')?.send?.('jumpToPost', number);
+    } catch (e) {
+      /* 未加载楼层跳转失败时静默忽略 */
+    }
+  }
+
+  function bindTopicOutlineEvents(panel, fab) {
+    const collapsedAtBind = panel.dataset.qqdocsOutlineBound === 'true';
+    if (collapsedAtBind) return;
+    panel.dataset.qqdocsOutlineBound = 'true';
+
+    const applyVisibility = () => {
+      const hidden = panel.classList.contains('is-hidden');
+      fab.classList.toggle('is-hidden', !hidden);
+      try {
+        window.localStorage.setItem(TOPIC_OUTLINE_HIDDEN_KEY, hidden ? '1' : '0');
+      } catch (e) { /* 隐私模式等场景忽略 */ }
+    };
+    const applyCollapsed = () => {
+      const collapsed = panel.classList.contains('is-collapsed');
+      panel.querySelector('.qqdocs-toc-collapse')?.setAttribute('aria-expanded', String(!collapsed));
+      try {
+        window.localStorage.setItem(TOPIC_OUTLINE_COLLAPSED_KEY, collapsed ? '1' : '0');
+      } catch (e) { /* 忽略 */ }
+    };
+
+    panel.addEventListener('click', (event) => {
+      const close = event.target.closest?.('.qqdocs-toc-close');
+      if (close) {
+        panel.classList.add('is-hidden');
+        applyVisibility();
+        return;
+      }
+      const collapse = event.target.closest?.('.qqdocs-toc-collapse');
+      if (collapse) {
+        panel.classList.toggle('is-collapsed');
+        applyCollapsed();
+        return;
+      }
+      const row = event.target.closest?.('.qqdocs-toc-headline');
+      if (row) jumpToOutlinePost(Number(row.dataset.postNumber));
+    });
+
+    fab.addEventListener('click', () => {
+      panel.classList.remove('is-hidden');
+      applyVisibility();
+    });
+
+    try {
+      if (window.localStorage.getItem(TOPIC_OUTLINE_HIDDEN_KEY) === '1') panel.classList.add('is-hidden');
+      if (window.localStorage.getItem(TOPIC_OUTLINE_COLLAPSED_KEY) === '1') panel.classList.add('is-collapsed');
+    } catch (e) { /* 忽略 */ }
+    applyVisibility();
+    applyCollapsed();
+  }
+
+  function renderTopicOutline() {
+    const postStream = document.querySelector('.post-stream');
+    if (!postStream) {
+      removeTopicOutline();
+      return;
+    }
+
+    const data = collectOutlineEntries();
+    if (!data || !data.entries.length) {
+      removeTopicOutline();
+      return;
+    }
+
+    let panel = document.querySelector('.qqdocs-toc-panel');
+    let fab = document.querySelector('.qqdocs-toc-fab');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'qqdocs-toc-panel';
+      panel.innerHTML = `
+        <div class="qqdocs-toc-header">
+          <div class="qqdocs-toc-title">大纲</div>
+          <div class="qqdocs-toc-button-common">
+            <div class="qqdocs-toc-btn qqdocs-toc-collapse" role="button" aria-label="折叠大纲" title="折叠/展开"></div>
+            <div class="qqdocs-toc-btn qqdocs-toc-close" role="button" aria-label="关闭大纲" title="关闭"></div>
+          </div>
+        </div>
+        <div class="qqdocs-toc-body">
+          <div class="qqdocs-toc-headlines"></div>
+        </div>
+      `;
+      document.body.appendChild(panel);
+    }
+    if (!fab) {
+      fab = document.createElement('div');
+      fab.className = 'qqdocs-toc-fab';
+      fab.setAttribute('role', 'button');
+      fab.setAttribute('aria-label', '展开大纲');
+      fab.title = '大纲';
+      document.body.appendChild(fab);
+    }
+
+    bindTopicOutlineEvents(panel, fab);
+    syncTopicOutlineList(panel, data);
+    ensureTopicOutlineObserver();
+  }
+
 
   // 详情页样式必须有明确的页面作用域，避免列表页或弹窗被误伤。
   function syncTopicDetailScope() {

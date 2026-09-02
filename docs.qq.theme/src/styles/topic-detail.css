@@ -829,3 +829,217 @@ body.qqdocs-topic-detail nav.post-controls .actions button {
   .qqdocs-topic-stats { max-width: 32vw !important; gap: 4px !important; }
   .qqdocs-topic-stat-label { display: none !important; }
 }
+
+/*
+ * 左侧大纲面板：复刻腾讯文档"大纲"导航，固定在文档纸左侧空白处。
+ * 类名刻意避开 "outline" 子串，防止 renderTopicDetail 的旧版残留清理误删。
+ */
+.qqdocs-toc-panel {
+  position: fixed !important;
+  left: 16px !important;
+  top: calc(var(--qqdocs-editor-top, 150px) + 10px) !important;
+  width: 248px !important;
+  max-height: calc(100vh - var(--qqdocs-editor-top, 150px) - 40px) !important;
+  z-index: 1300 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(31, 35, 41, 0.08) !important;
+  box-sizing: border-box !important;
+  font-family: var(--font-family) !important;
+  color: #1f2329 !important;
+  user-select: none !important;
+}
+
+.qqdocs-toc-panel.is-hidden { display: none !important; }
+
+.qqdocs-toc-panel.is-collapsed .qqdocs-toc-body { display: none !important; }
+
+.qqdocs-toc-header {
+  height: 38px !important;
+  padding: 0 6px 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex: 0 0 auto !important;
+  border-bottom: 1px solid #eceef1 !important;
+  box-sizing: border-box !important;
+}
+
+.qqdocs-toc-title {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: #1f2329 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+}
+
+.qqdocs-toc-button-common {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.qqdocs-toc-btn {
+  width: 24px !important;
+  height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+  color: #81868f !important;
+  cursor: pointer !important;
+}
+
+.qqdocs-toc-btn:hover {
+  background: rgba(51, 77, 102, 0.06) !important;
+  color: #1f2329 !important;
+}
+
+.qqdocs-toc-btn::before {
+  content: "" !important;
+  width: 12px !important;
+  height: 12px !important;
+  display: block !important;
+  background: currentColor !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-size: 12px 12px !important;
+  mask-size: 12px 12px !important;
+}
+
+.qqdocs-toc-collapse::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M1 6h10' stroke='black' stroke-width='1.4' stroke-linecap='round'/></svg>") !important;
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M1 6h10' stroke='black' stroke-width='1.4' stroke-linecap='round'/></svg>") !important;
+}
+
+.qqdocs-toc-close::before {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 2l8 8M10 2l-8 8' stroke='black' stroke-width='1.4' stroke-linecap='round'/></svg>") !important;
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 2l8 8M10 2l-8 8' stroke='black' stroke-width='1.4' stroke-linecap='round'/></svg>") !important;
+}
+
+.qqdocs-toc-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 6px 0 10px !important;
+  box-sizing: border-box !important;
+}
+
+.qqdocs-toc-headlines {
+  display: block !important;
+}
+
+.qqdocs-toc-headline {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  min-height: 26px !important;
+  padding: 2px 10px 2px 8px !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+}
+
+.qqdocs-toc-headline:hover {
+  background: #f5f7fa !important;
+}
+
+.qqdocs-toc-headline.is-active {
+  background: #eaf2ff !important;
+}
+
+.qqdocs-toc-headline-triangle {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+}
+
+.qqdocs-toc-headline-text {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.qqdocs-toc-headline-text.is-title {
+  color: #1f2329 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 22px !important;
+}
+
+.qqdocs-toc-headline-text.is-floor {
+  color: #4e5969 !important;
+  font-size: 12px !important;
+  font-weight: var(--font-weight-regular) !important;
+  line-height: 20px !important;
+}
+
+.qqdocs-toc-headline.is-active .qqdocs-toc-headline-text {
+  color: #1e6fff !important;
+  font-weight: 600 !important;
+}
+
+.qqdocs-toc-headline-inner-text {
+  display: inline !important;
+}
+
+/* 大纲收起后的浮动展开按钮。 */
+.qqdocs-toc-fab {
+  position: fixed !important;
+  left: 16px !important;
+  top: calc(var(--qqdocs-editor-top, 150px) + 10px) !important;
+  width: 34px !important;
+  height: 34px !important;
+  z-index: 1300 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #fff !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(31, 35, 41, 0.12) !important;
+  box-sizing: border-box !important;
+  color: #454d5a !important;
+  cursor: pointer !important;
+  font-family: var(--font-family) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  user-select: none !important;
+}
+
+.qqdocs-toc-fab.is-hidden { display: none !important; }
+
+.qqdocs-toc-fab::before {
+  content: "" !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: block !important;
+  background: currentColor !important;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><path d='M2 4h12M2 8h12M2 12h8' stroke='black' stroke-width='1.5' stroke-linecap='round'/></svg>") !important;
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><path d='M2 4h12M2 8h12M2 12h8' stroke='black' stroke-width='1.5' stroke-linecap='round'/></svg>") !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-size: 16px 16px !important;
+  mask-size: 16px 16px !important;
+}
+
+/* 点击大纲跳转后，楼层不被固定顶栏遮住。 */
+body.qqdocs-topic-detail .topic-post {
+  scroll-margin-top: calc(var(--qqdocs-editor-top, 150px) + 12px) !important;
+}
+
+@media (max-width: 1100px) {
+  .qqdocs-toc-panel,
+  .qqdocs-toc-fab { display: none !important; }
+}

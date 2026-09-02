@@ -3,3 +3,5 @@ docs.qq.theme/.git/
 docs.qq.theme/.git-nested-backup/
 .browser-qa/
 github.theme/node_modules/
+# WorkBuddy workspace metadata (session notes, memory, project data).
+.workbuddy/
